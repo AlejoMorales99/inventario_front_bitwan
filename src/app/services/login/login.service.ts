@@ -14,12 +14,17 @@ export class LoginService {
   url: String = "http://localhost:4001/getBodegas"
   urlServicios:string = "http://104.131.8.122:8000/login"
 
+  private tecnico = "tecnico"
   private storageKey = 'userData';
   private token = 'bitwan';
 
   //funcion que guarda el usuario que inicia sesion
   setUser(user: any) {
     localStorage.setItem(this.storageKey, JSON.stringify(user));
+  }
+
+  setTecnico(user: any) {
+    localStorage.setItem(this.tecnico, JSON.stringify(user));
   }
 
   //funcion que guarda el token cuando se inicia sesion
@@ -30,6 +35,11 @@ export class LoginService {
   //funcion que retorna la informacion del usuario que inicio sesion
   getUser(): any {
     const userData = localStorage.getItem(this.storageKey);
+    return userData ? JSON.parse(userData) : null;
+  }
+
+  getTecnico(): any {
+    const userData = localStorage.getItem(this.tecnico);
     return userData ? JSON.parse(userData) : null;
   }
 
@@ -73,7 +83,7 @@ export class LoginService {
     const body = new URLSearchParams();
     body.set('json', JSON.stringify({"alias":username,"password":password}));
 
-    return this.http.post<any>("login", body.toString() , {headers:header})
+    return this.http.post<any>("https://bitwan.info/api/public/login", body.toString() , {headers:header})
   }
 
   loginUsuario(nombreUsuario:string,numTercero:string){

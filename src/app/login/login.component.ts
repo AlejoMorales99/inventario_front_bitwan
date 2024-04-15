@@ -3,6 +3,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LoginService } from '../services/login/login.service';
 import {  Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { ActivosFijosService } from '../services/activosFijos/activos-fijos.service';
 
 
 
@@ -23,7 +24,7 @@ export class LoginComponent  {
 
 
 
-  constructor(private loginServicio:LoginService , private rout: Router){}
+  constructor(private loginServicio:LoginService , private rout: Router,private activosFijos: ActivosFijosService){}
 
   ngOnInit() {
 
@@ -58,26 +59,31 @@ export class LoginComponent  {
 
          if (res.code == 200) {
 
-          this.loginServicio.loginUsuario(res.data.nombres.toLowerCase().trim(),res.data.numerotercero).subscribe( (nombreUsuario:any)=>{
+          this.loginServicio.setToken(res.data.token);
+          this.loginServicio.setUser(res)
 
-            if(nombreUsuario.error == false){
 
-              this.loginServicio.postLoginUsuario(res.data.nombres.toLowerCase().trim(),res.data.numerotercero,this.password).subscribe(newUsuario=>{
-              })
+          this.activosFijos.nombreTecnicoCompleto(res.data.numerotercero).subscribe((nomTecnico:any)=>{
 
-              this.loginServicio.setToken(res.data.token);
-              this.loginServicio.setUser(res)
+            this.loginServicio.setTecnico(nomTecnico.data[0].nombres.toLowerCase().trim() +" "+ nomTecnico.data[0].apellidos.toLowerCase().trim());
 
-              this.rout.navigate(['/inicio']);
+            this.loginServicio.loginUsuario(nomTecnico.data[0].nombres.toLowerCase().trim() +" "+ nomTecnico.data[0].apellidos.toLowerCase().trim(),res.data.numerotercero).subscribe( (nombreUsuario:any)=>{
 
-            }else{
 
-              this.loginServicio.setToken(res.data.token);
-              this.loginServicio.setUser(res)
+              if(nombreUsuario.error == false){
 
-              this.rout.navigate(['/inicio']);
+                this.loginServicio.postLoginUsuario(nomTecnico.data[0].nombres.toLowerCase().trim() +" "+ nomTecnico.data[0].apellidos.toLowerCase().trim(),res.data.numerotercero,this.password).subscribe(newUsuario=>{
+                })
 
-            }
+                this.rout.navigate(['/inicio']);
+
+              }else{
+
+                this.rout.navigate(['/inicio']);
+
+              }
+
+            })
 
           })
 

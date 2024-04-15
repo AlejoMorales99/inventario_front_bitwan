@@ -23,6 +23,8 @@ export class ActaMovimientoComponent implements OnInit {
   //variable la cual uso para guardar la informacion del usuario que se loguea como el nombre el id etc
   usuario: any;
 
+  userTecnico:any;
+
   //varibale para validar a que usuarios mostrarles el boton de poder descargar reportes
   mostrarBotonDescargaExcel:boolean = true;
 
@@ -121,6 +123,7 @@ export class ActaMovimientoComponent implements OnInit {
 
     //al iniciar la pagina llamo a la funcion getUser la cual me trae la informacion del usuario que se logue
     this.usuario = this.loginServices.getUser();
+    this.userTecnico = this.loginServices.getTecnico();
 
     this.infoTextoActivosFijos = false;
     //si al iniciar la pagina esta variable es nula significa que el usuario esta intentando accerder a una pagina sin loguearse primero por lo cual no podra y sere redireccionado al login
@@ -145,7 +148,7 @@ export class ActaMovimientoComponent implements OnInit {
       this.guardarTiposDeMovimientos = [];
 
       //se valida que usuario es el que se esta logueando si no es ninguna de estos 2 por logica entonces se sabria que el que se loguea es un tecnico
-      if (this.usuario.data.nombres == "KAROL YISETH"  ||  this.usuario.data.nombres == "MARI LUZ") {
+      if (this.userTecnico == "karol yiseth mosquera alzate"  ||  this.userTecnico == "mari luz pulgarin" || this.userTecnico == "milton ferley renteria florez") {
 
         this.usuario.data.nombres = "alcala1"
 
@@ -433,7 +436,6 @@ export class ActaMovimientoComponent implements OnInit {
             } else {
 
               if (this.guardarValorOnts.includes(this.guardarActivosFijos[0].idactivoFijo)) {
-                console.log("Valor duplicado:", this.guardarActivosFijos[0].idactivoFijo);
 
                 Swal.fire({
                   title: 'ERROR',
@@ -1406,30 +1408,7 @@ export class ActaMovimientoComponent implements OnInit {
     return index;
   }
 
-  //funcion que sirve para obtener el texto de los select y no obtener el value que es lo que pasa por defecto
-  obtenerNombre(evento: any) {
 
-    this.activosFijos.cedulaTecnico(evento).subscribe((cedula:any)=>{
-
-      this.activosFijos.nombreTecnicoCompleto(cedula[0].cedula).subscribe(nomTecnico=>{
-
-        this.nombreTecnicoCompleto = nomTecnico
-        if(this.nombreTecnicoCompleto.code == 401){
-          this.ocultarNombreCompletoTecnico = false
-        }else{
-          this.ocultarNombreCompletoTecnico = true
-        }
-
-
-
-      })
-    })
-
-
-    const selectedIndex = evento.target.selectedIndex;
-    this.valorNombreBodega = evento.target.options[selectedIndex].text;
-
-  }
 
 
   //funcion para buscar un cliente por medio de el numero de servicio a la hora de hacer un retiro de un activo fijo
@@ -1656,7 +1635,9 @@ export class ActaMovimientoComponent implements OnInit {
 
   }
 
-
+  borrarSeleccion(){
+    this.ocultarNombreCompletoTecnico = false
+  }
 
 }
 

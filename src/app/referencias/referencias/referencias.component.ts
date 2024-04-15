@@ -81,7 +81,7 @@ public buscarActivos: any;
     }else if(usuario.data.nombres!= "KAROL YISETH" && usuario.data.nombres!="MARI LUZ"){
       Swal.fire({
         title: 'ERROR',
-        text: 'NO TIENE PERMISOS PARA ACCERDER A ESTA RUTA',
+        text: 'NO TIENE PERMISOS PARA ACCEDER A ESTA RUTA',
         icon: 'error',
         customClass: {
           popup: 'bg-dark',

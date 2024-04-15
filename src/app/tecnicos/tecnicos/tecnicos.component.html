@@ -21,7 +21,7 @@
               <ng-option class="text-white" *ngFor="let tecnicos of inventarioTecnicos" [value]="tecnicos">{{tecnicos.tercerocol}}</ng-option>
             </ng-select>
 
-            <input  *ngIf="ocultarNombreCompletoTecnico" disabled  type="text" value="{{nombreTecnicoCompleto.data[0].apellidos}}"  class="form-control w-25 bg-dark border-secondary text-white">
+           
 
             <button class="btn  botonesActa mx-3 text-white " (click)="generateExcelReport()" >
               Generar Reporte Excel

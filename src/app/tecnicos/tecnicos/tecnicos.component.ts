@@ -107,23 +107,7 @@ export class TecnicosComponent implements OnInit {
       this.totalOnts = total;
     })
 
-    this.activosFijos.cedulaTecnico(servicio).subscribe((cedula:any)=>{
-
-      this.activosFijos.nombreTecnicoCompleto(cedula[0].cedula).subscribe(nomTecnico=>{
-
-        this.nombreTecnicoCompleto = nomTecnico
-
-        if(this.nombreTecnicoCompleto.code == 401){
-          this.ocultarNombreCompletoTecnico = false
-        }else{
-          this.ocultarNombreCompletoTecnico = true
-        }
-
-      })
-
-
-
-    })
+    
 
 
   }

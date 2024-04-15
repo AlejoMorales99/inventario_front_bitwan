@@ -147,8 +147,9 @@ buscarActivoFijoMover(buscar:string,razon:string){
 buscarActivoFijoMoverTecnicos(buscar:string){
   const headers = this.loginServices.getAuthHeaders();
   const usuario = this.loginServices.getUser();
+  const userTecnico = this.loginServices.getTecnico();
 
-  return this.http.get(`${this.urlActivosFijos}/buscarActivoFijoMoverTecnicos/${buscar}/${usuario.data.nombres}/${usuario.data.numerotercero}`, {headers} );
+  return this.http.get(`${this.urlActivosFijos}/buscarActivoFijoMoverTecnicos/${buscar}/${userTecnico}/${usuario.data.numerotercero}`, {headers} );
 }
 
 
@@ -188,9 +189,11 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
 
-    if(usuario.data.nombres == 'KAROL YISETH' ||  usuario.data.nombres == 'MARI LUZ'){
+    if(usuario.data.nombres == 'KAROL YISETH' ||  usuario.data.nombres == 'MARI LUZ' || usuario.data.nombres == 'MILTON FERLEY'){
       usuario.data.nombres = "alcala1"
       usuario.data.numerotercero = 5065;
+    }else{
+      usuario.data.nombres = this.loginServices.getTecnico();
     }
 
     return this.http.get(`${this.urlActivosFijos}/getBodegasTecnicos/${usuario.data.nombres}/${usuario.data.numerotercero}`, {headers} );
@@ -216,7 +219,8 @@ buscarActivoFijoMoverTecnicos(buscar:string){
   postActaDeMovimiento(RazonMovimiento:string, TipoEntrega:string, BodegaEntra:string, BodegaSale:string, Descripcion:string, GuiaTrasportadora:string,  ImgGuia:string, idOnts:any,ServicioDelClienteEspecifico:string){
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
-    console.log(ServicioDelClienteEspecifico);
+    const tecnico = this.loginServices.getTecnico();
+    console.log(tecnico);
     const form = new FormData();
 
     form.append('RazonMovimiento', RazonMovimiento);
@@ -226,7 +230,7 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     form.append('Descripcion', Descripcion);
     form.append('GuiaTrasportadora', GuiaTrasportadora);
     form.append('estadoActa', '1');
-    form.append('nombre', usuario.data.nombres.trim());
+    form.append('nombre', tecnico);
     form.append('files',ImgGuia);
     form.append('idOnts', JSON.stringify(idOnts));
     form.append('ServicioDelClienteEspecifico',ServicioDelClienteEspecifico);
@@ -252,14 +256,19 @@ buscarActivoFijoMoverTecnicos(buscar:string){
   aceptarActa(idActa:string,servicio:string,servicioSale:string,numTercero:string,tipoMovimiento:string){
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
+    const tecnico = this.loginServices.getTecnico();
 
-    return this.http.get(`${this.urlActivosFijos}/validarActa/${idActa}/${servicio}/${servicioSale}/${usuario.data.nombres}/${usuario.data.numerotercero}/${numTercero}/${tipoMovimiento}`, {headers} )
+    return this.http.get(`${this.urlActivosFijos}/validarActa/${idActa}/${servicio}/${servicioSale}/${tecnico}/${usuario.data.numerotercero}/${numTercero}/${tipoMovimiento}`, {headers} )
   }
 
   anularActa(idActa:string , servicio:string,anular:string,numTercero:string,tipoMovimiento:string){
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
-    return this.http.get(`${this.urlActivosFijos}/anularActa/${idActa}/${servicio}/${anular}/${usuario.data.nombres}/${usuario.data.numerotercero}/${numTercero}/${tipoMovimiento}`, {headers} )
+    const tecnico = this.loginServices.getTecnico();
+
+
+
+    return this.http.get(`${this.urlActivosFijos}/anularActa/${idActa}/${servicio}/${anular}/${tecnico}/${usuario.data.numerotercero}/${numTercero}/${tipoMovimiento}`, {headers} )
   }
 
 
@@ -327,17 +336,17 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     return this.http.get(`${this.urlActivosFijos}/cedulaTecnico/${cedula}`, {headers} )
   }
 
-  nombreTecnicoCompleto(cedula:string){
+  nombreTecnicoCompleto(numTercero:string){
 
     const token = this.loginServices.getToken();
     const header = this.loginServices.getAuthHeadersLogin();
 
     const body = new URLSearchParams();
 
-    body.set('json', JSON.stringify({"criteria":["identificacion"],"value":cedula,"onlyusers":false,"page":0,"limit":10}));
+    body.set('json', JSON.stringify({"criteria":["numerotercero"],"value":numTercero,"onlyusers":true,"page":0,"limit":10}));
     body.set('authorization',token)
 
-    return this.http.post("nomTecnico", body.toString() , {headers:header})
+    return this.http.post("https://bitwan.info/api/public/terceros/searchbycriteria", body.toString() , {headers:header})
 
   }
 

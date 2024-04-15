@@ -201,7 +201,7 @@
                 guardarAllMovimientos.razonMovimientocol !='Retiro Migración' &&
                 guardarAllMovimientos.estadoActaMovimiento!='Aceptada' &&
                 guardarAllMovimientos.estadoActaMovimiento!='Rechazada'  &&
-                guardarAllMovimientos.tercerocolEntrada==usuario.data.nombres.toLowerCase().trim()">
+                guardarAllMovimientos.tercerocolEntrada==userTecnico">
 
                 <!-- Botón con evento de clic que llama a la función aceptarActa() para aceptar el acta y hacer el movimiento de las onts -->
                 <button
@@ -224,7 +224,7 @@
                 guardarAllMovimientos.razonMovimientocol !='Retiro Migración' &&
                 guardarAllMovimientos.estadoActaMovimiento!='Aceptada' &&
                 guardarAllMovimientos.estadoActaMovimiento!='Rechazada'  &&
-                guardarAllMovimientos.tercerocolEntrada==usuario.data.nombres.toLowerCase().trim()">
+                guardarAllMovimientos.tercerocolEntrada==userTecnico">
 
                 <!-- Botón con evento de clic que llama a la función anularActa() para anular el acta y dejar todo como estaba -->
                 <button
@@ -345,8 +345,7 @@
               <!-- Agrego condiciones en los botones de validar acta y de rechazar acta para dependiendo del estado del acta y del usuario  muestre el boton correspondiente o no
               en este caso solo mostrara el boton aceptar si la acta tiene estado pendiente y si se cumple alguna condicion  y si el usuario que este logueado sea del cual salio
               el inventario -->
-              <td *ngIf="(guardarAllMovimientos.razonMovimientocol =='Salida Baja' ||
-                guardarAllMovimientos.razonMovimientocol =='Ajuste Inventario Salida') &&
+              <td *ngIf="(guardarAllMovimientos.razonMovimientocol =='Salida Baja') &&
                 guardarAllMovimientos.tercerocolSalida==usuario.data.nombres.toLowerCase().trim() &&
                 guardarAllMovimientos.estadoActaMovimiento != 'Aceptada' &&
                 guardarAllMovimientos.estadoActaMovimiento != 'Rechazada' &&
@@ -362,8 +361,7 @@
                 </button>
               </td>
 
-              <td *ngIf="(guardarAllMovimientos.razonMovimientocol == 'Salida Baja' ||
-                guardarAllMovimientos.razonMovimientocol == 'Ajuste Inventario Salida') &&
+              <td *ngIf="(guardarAllMovimientos.razonMovimientocol == 'Salida Baja') &&
                 guardarAllMovimientos.tercerocolSalida==usuario.data.nombres.toLowerCase().trim() &&
                 guardarAllMovimientos.estadoActaMovimiento != 'Aceptada' &&
                 guardarAllMovimientos.estadoActaMovimiento != 'Rechazada' &&
@@ -400,6 +398,39 @@
                 guardarAllMovimientos.estadoActaMovimiento != 'Aceptada' &&
                 guardarAllMovimientos.estadoActaMovimiento != 'Rechazada' &&
                 guardarAllMovimientos.tercerocolEntrada=='venta'">
+                <button
+                  (click)="anularActa(guardarAllMovimientos.idactaMovimiento, guardarAllMovimientos.tercerocolEntrada,guardarAllMovimientos.numTercero, guardarAllMovimientos.razonMovimientocol)" class="btn btn-danger">
+
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                  </svg>
+
+                  Rechazar
+                </button>
+              </td>
+
+
+              <td *ngIf="(guardarAllMovimientos.razonMovimientocol =='Ajuste Inventario Salida') &&
+              guardarAllMovimientos.tercerocolSalida=='Pendiente ' || 'alcala2' &&
+              guardarAllMovimientos.estadoActaMovimiento != 'Aceptada' &&
+              guardarAllMovimientos.estadoActaMovimiento != 'Rechazada' &&
+              (guardarAllMovimientos.tercerocolEntrada == usuario.data.nombres.toLowerCase().trim() )  ">
+              <button
+                (click)="aceptarActa(guardarAllMovimientos.idactaMovimiento ,guardarAllMovimientos.tercerocolEntrada,guardarAllMovimientos.tercerocolSalida,guardarAllMovimientos.numTercero,guardarAllMovimientos.razonMovimientocol)" class="btn btn-success">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                </svg>
+
+                Aceptar
+              </button>
+            </td>
+
+            <td *ngIf="(guardarAllMovimientos.razonMovimientocol == 'Ajuste Inventario Salida' ) &&
+                guardarAllMovimientos.tercerocolSalida=='Pendiente ' || 'alcala2' &&
+                guardarAllMovimientos.estadoActaMovimiento != 'Aceptada' &&
+                guardarAllMovimientos.estadoActaMovimiento != 'Rechazada' &&
+                guardarAllMovimientos.tercerocolEntrada==usuario.data.nombres.toLowerCase().trim()">
                 <button
                   (click)="anularActa(guardarAllMovimientos.idactaMovimiento, guardarAllMovimientos.tercerocolEntrada,guardarAllMovimientos.numTercero, guardarAllMovimientos.razonMovimientocol)" class="btn btn-danger">
 
@@ -478,11 +509,11 @@
                 </select>
 
                 <label *ngIf="condicionOcultarBodegaEntra" class="form-label">Bodega a la que entrara la ont</label>
-                <ng-select *ngIf="condicionOcultarBodegaEntra" [notFoundText]="'Referencia no encontrada'" (change)="obtenerNombre($event)" name="BodegaEntra" [(ngModel)]="BodegaEntra" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example" >
+                <ng-select *ngIf="condicionOcultarBodegaEntra" (clear)="borrarSeleccion()" [notFoundText]="'Referencia no encontrada'"  name="BodegaEntra" [(ngModel)]="BodegaEntra" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example" >
                   <ng-option *ngFor="let guardarServicio of guardarServicio" [value]="guardarServicio.ID">{{guardarServicio.nombre}}</ng-option>
                </ng-select>
 
-                <input  *ngIf="ocultarNombreCompletoTecnico" disabled  type="text" value="{{nombreTecnicoCompleto.data[0].apellidos}}"  class="form-control bg-dark border-secondary text-white"> <br>
+
 
                 <label *ngIf="condicionEntraBodega" for="">Numero de servicio de la instalacion</label>
                 <input *ngIf="condicionEntraBodega" [(ngModel)]="BodegaEntra" name="numeroCedulaRetirar" class="form-control mb-3 bg-dark border-secondary text-white" type="number">
@@ -494,31 +525,7 @@
 
 
 
-                <label *ngIf="condicionRetiro" for="">Ingrese el numero de servicio a retirar</label>
-                <div class="row ">
-                  <div *ngIf="condicionRetiro" class="col-md-6">
 
-                    <input [disabled]="desahibilitarBuscarCliente" [(ngModel)]="BodegaSale" name="numeroCedulaRetirar" class="form-control mb-3 bg-dark border-secondary text-white" *ngIf="condicionRetiro"type="number">
-
-                    <label class="text-white" *ngIf="condicionVariosServiciosCliente" for="">Selecione el numero de equipo que desea retirar de este cliente</label>
-                    <select *ngIf="condicionVariosServiciosCliente" [(ngModel)]="ServicioDelClienteEspecifico" (change)="servicioEspecificoCliente()" name="servicioEspecificoCliente" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
-                      <option   selected value=""></option>
-                      <option  *ngFor="let guardarClienteRetirar of guardarServiciosClientesEspecificos"  value="{{guardarClienteRetirar.numeroActivo}}">{{guardarClienteRetirar.numeroActivo}},{{guardarClienteRetirar.MAC}},{{guardarClienteRetirar.serial}} </option>
-                    </select>
-
-                  </div>
-                  <div class="col-md-6">
-
-                    <button (click)="buscarCliente()" *ngIf="ocultarBotonBuscarCliente"
-                      class=" mb-3 btn botonesActa text-white">Buscar Cliente
-                    </button>
-
-                    <button (click)="buscarOtroCliente()" *ngIf="ocultarBotonBorrarCliente"
-                      class="btn mb-3 btn-danger text-white">Buscar otro cliente
-                    </button>
-
-                  </div>
-                </div>
 
               </div>
 
