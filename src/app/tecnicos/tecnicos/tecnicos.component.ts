@@ -21,7 +21,7 @@ export class TecnicosComponent implements OnInit {
 
 
 
-  constructor(private loginService:LoginService,private route: ActivatedRoute,  private rout: Router, private activosFijos: ActivosFijosService){}
+  constructor(private loginService:LoginService,private route: ActivatedRoute, private router: Router,  private rout: Router, private activosFijos: ActivosFijosService){}
 
 
   ocultarNombreCompletoTecnico: boolean = false;
@@ -31,6 +31,8 @@ export class TecnicosComponent implements OnInit {
   inventarioTecnicos:any;
   activosFijosTecnicos:any;
   filtroTecnico:string = "Seleciona al tecnico"
+
+  selectedIndex:string = "";
 
   crearNuevoTecnico:string = "";
 
@@ -63,7 +65,7 @@ export class TecnicosComponent implements OnInit {
     }else if(usuario.data.nombres!= "KAROL YISETH" && usuario.data.nombres!="MARI LUZ"){
       Swal.fire({
         title: 'ERROR',
-        text: 'NO TIENE PERMISOS PARA ACCERDER A ESTA RUTA',
+        text: 'NO TIENE PERMISOS PARA ACCEDER A ESTA RUTA',
         icon: 'error',
         customClass: {
           popup: 'bg-dark',
@@ -76,11 +78,8 @@ export class TecnicosComponent implements OnInit {
 
     }else{
 
-      this.loginService.getTecnicos().subscribe(tecnicos=>{
-        this.inventarioTecnicos = tecnicos;
-
-
-
+      this.loginService.getTecnicos().subscribe((tecnicos:any)=>{
+        this.inventarioTecnicos = tecnicos.sort((a:any, b:any) => a.tercerocol.localeCompare(b.tercerocol));
       })
 
     }
@@ -92,10 +91,10 @@ export class TecnicosComponent implements OnInit {
   listarInventarioTecnicos(evento:any){
 
     const servicio = evento.idservicio;
-    const selectedIndex = evento.numeroTercero;
+    this.selectedIndex = evento.numeroTercero;
 
 
-    this.activosFijos.getActivosFijosTecnicosInventario(selectedIndex).subscribe(inventarioTecnico=>{
+    this.activosFijos.getActivosFijosTecnicosInventario(this.selectedIndex).subscribe(inventarioTecnico=>{
 
       this.activosFijosTecnicos = inventarioTecnico;
 
@@ -103,11 +102,11 @@ export class TecnicosComponent implements OnInit {
 
     this.validarTotalOnts = true;
 
-    this.activosFijos.totalActivosFijosTecnicos(selectedIndex).subscribe(total=>{
+    this.activosFijos.totalActivosFijosTecnicos(this.selectedIndex).subscribe(total=>{
       this.totalOnts = total;
     })
 
-    
+
 
 
   }
@@ -251,6 +250,70 @@ export class TecnicosComponent implements OnInit {
 
 
     })
+
+  }
+
+
+  cambiarEstadoTecnico(){
+
+    if(this.selectedIndex == ""){
+      Swal.fire({
+        title: 'ERROR',
+        text: `Por favor selecione primero al tecnico que desea Deshabilitar`,
+        icon: 'error',
+        customClass: {
+          popup: 'bg-dark',
+          title: 'text-white',
+          htmlContainer: 'text-white'
+        }
+      });
+    }else{
+
+      Swal.fire({
+        title: '¿Estás seguro de querer deshabilitar a este tecnico?',
+        text: 'Una vez deshabilitado no podra deshacer el cambio!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, estoy seguro',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          popup: 'bg-dark',
+          title: 'text-white',
+          htmlContainer: 'text-white'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+          this.activosFijos.cambiarEstadoTecnico(this.selectedIndex).subscribe(res=>{
+
+
+
+            this.ngOnInit();
+
+            Swal.fire({
+              title: 'EXITO',
+              text: `Tecnico deshabilitado cone exito, por favor refresque la pagina`,
+              icon: 'success',
+              customClass: {
+                popup: 'bg-dark',
+                title: 'text-white',
+                htmlContainer: 'text-white'
+              }
+            });
+
+
+
+          });
+
+
+
+
+
+        }})
+
+    }
+
+
 
   }
 

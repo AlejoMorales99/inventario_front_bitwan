@@ -22,11 +22,8 @@
         <!-- Buscador y botón de creación de acta de movimiento -->
         <div class="mb-3 d-md-flex flex-md-row  justify-content-around mt-4">
 
-          <!-- Input para búsqueda con *ngIf que verifica el usuario logueado para saber si mostrar el boton o no -->
-          <input *ngIf="operacionesRol" class="form-control botonesActa w-50  bg-dark border-secondary mb-3 text-white" placeholder="BUSCADOR" name="search" [(ngModel)]="buscarActivos" autocomplete="on">
-
           <!-- Select con *ngIf que verifica el usuario logueado para saber si mostrar todas las opciones o no -->
-          <select *ngIf="operacionesRol" class="form-select w-25  mx-1 botonesActa mb-3   bg-dark text-white border-secondary"  (change)="filtroLimpiar($event.target)" [(ngModel)]="selectedColumn">
+          <select *ngIf="operacionesRol" class="form-select w-25  mx-1  botonesActa mb-3   bg-dark text-white border-secondary"  (change)="filtroLimpiar($event.target)" [(ngModel)]="selectedColumn">
             <!-- Opciones del select -->
             <option value="mostrarTodo">Filtrar todo</option>
             <option value="razon de movimiento">Razon de movimiento</option>
@@ -41,11 +38,16 @@
             <option  *ngIf="bloquearColumnas" value="fecha creacion">fecha de creacion del acta</option>
           </select>
 
+
+          <!-- Input para búsqueda con *ngIf que verifica el usuario logueado para saber si mostrar el boton o no -->
+          <input *ngIf="operacionesRol" disabled="{{dashabilitarBuscador}}" class="form-control botonesActa w-25  bg-dark border-secondary mb-3 text-white" placeholder="BUSCADOR" name="search" [(ngModel)]="buscarActivos" autocomplete="on">
+
+
           <!-- Botón para buscar con *ngIf que verifica el usuario logueado para saber si puede buscar registros o no -->
-          <button *ngIf="operacionesRol" type="button" class="btn mb-3 botonesActa mx-1 fondoTable text-white " (click)="buscarRegistro()"  >Buscar</button>
+          <button style="border: none;" *ngIf="operacionesRol" [disabled]="dashabilitarBuscador" type="button" class="btn mb-3 botonesActa mx-1 fondoTable text-white " (click)="buscarRegistro()"  >Buscar</button>
 
           <!-- Botón para abrir el modal con *ngIf que verifica el usuario logueado para saber si mostrarle el boton o no -->
-           <button *ngIf="operacionesRol" type="button" class="btn  botonesActa  text-white " data-bs-toggle="modal"
+           <button *ngIf="operacionesRol" type="button" class="btn mb-3 botonesActa mx-1 fondoTable text-white  " data-bs-toggle="modal"
             data-bs-target="#modalActivosFijos">
 
             Crear Acta
@@ -58,7 +60,7 @@
           </button>
 
           <!-- Boton para descargar un reporte en excel con la informacion de la tabla con un *ngIf para saber si mostrar el boton o no dependiendo del usuario logueado -->
-          <br><button class="btn  botonesActa  text-white " *ngIf="mostrarBotonDescargaExcel"  (click)="generateExcelReport()">Generar Reporte</button>
+          <br><button class="btn mb-3 botonesActa mx-1 fondoTable text-white " *ngIf="mostrarBotonDescargaExcel"  (click)="generateExcelReport()">Generar Reporte</button>
 
         </div>
 
@@ -116,7 +118,7 @@
                 USUA QUE ACEPTO
               </th>
 
-              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('guiaTransportadora')"
+              <th *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos" (click)="cambiarOrden('guiaTransportadora')"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'guiaTransportadora' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'guiaTransportadora' && config.sortOrder === 'desc'}">
                 GUÍA_TRANS
               </th>
@@ -165,7 +167,7 @@
               <td *ngIf="bloquearColumnas" >{{guardarAllMovimientos.fechaRegistro}}</td>
               <td *ngIf="bloquearColumnas" >{{guardarAllMovimientos.nombreUsuarioRegistra}}</td>
               <td *ngIf="bloquearColumnas" >{{guardarAllMovimientos.nombreUsuarioValida}}</td>
-              <td>{{guardarAllMovimientos.guiaTransportadora}}</td>
+              <td *ngIf="bloquearColumnas" >{{guardarAllMovimientos.guiaTransportadora}}</td>
               <td>
                 <!-- hago una peticion a mi backend de manera estatica pero de una manera segura para mostrar la guia respectiva de cada acta -->
                 <a *ngIf="guardarAllMovimientos.imgGuiaTrans" (click)="abrirImagen(guardarAllMovimientos.imgGuiaTrans)">
@@ -180,10 +182,10 @@
 
                <td>
 
-                <button (click)="verOntsDeLasActas(guardarAllMovimientos.idactaMovimiento)" type="button" class="btn botonesActa text-white " data-bs-toggle="modal" data-bs-target="#nuevoModal">
+                <button (click)="verOntsDeLasActas(guardarAllMovimientos.idactaMovimiento)" type="button" class="btn botonVer text-white " data-bs-toggle="modal" data-bs-target="#nuevoModal">
 
                   Ver
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                     <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
                     <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
                   </svg>
@@ -211,7 +213,7 @@
                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
                   </svg>
 
-                  Aceptar
+
                 </button>
               </td>
 
@@ -234,7 +236,7 @@
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                   </svg>
 
-                  Rechazar
+
                 </button>
               </td>
 
@@ -258,13 +260,13 @@
 
                 <!-- Botón con evento de clic que llama a la función aceptarActa() para aceptar el acta y hacer el movimiento de las onts -->
                 <button
-                  (click)="aceptarActa(guardarAllMovimientos.idactaMovimiento, guardarAllMovimientos.tercerocolEntrada,guardarAllMovimientos.tercerocolSalida,guardarAllMovimientos.numTercero,guardarAllMovimientos.razonMovimientocol)" class="btn btn-success">
+                  (click)="aceptarActa(guardarAllMovimientos.idactaMovimiento, guardarAllMovimientos.tercerocolEntrada,guardarAllMovimientos.tercerocolSalida,guardarAllMovimientos.numTercero,guardarAllMovimientos.razonMovimientocol)" class="btn mx-5 btn-success">
 
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
                   </svg>
 
-                  Aceptar
+
                 </button>
               </td>
 
@@ -284,13 +286,13 @@
                 guardarAllMovimientos.tercerocolEntrada != 'alcala1'">
 
                 <button
-                  (click)="anularActa(guardarAllMovimientos.idactaMovimiento, guardarAllMovimientos.tercerocolEntrada,guardarAllMovimientos.numTercero, guardarAllMovimientos.razonMovimientocol)" class="btn btn-danger">
+                  (click)="anularActa(guardarAllMovimientos.idactaMovimiento, guardarAllMovimientos.tercerocolEntrada,guardarAllMovimientos.numTercero, guardarAllMovimientos.razonMovimientocol)" class="btn mx-5 btn-danger">
 
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                   </svg>
 
-                  Rechazar
+
                 </button>
               </td>
 
@@ -313,7 +315,7 @@
                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
                   </svg>
 
-                  Aceptar
+
                 </button>
               </td>
 
@@ -337,7 +339,7 @@
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                   </svg>
 
-                  Rechazar
+
                 </button>
               </td>
 
@@ -357,7 +359,7 @@
                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
                   </svg>
 
-                  Aceptar
+
                 </button>
               </td>
 
@@ -373,7 +375,7 @@
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                   </svg>
 
-                  Rechazar
+
                 </button>
               </td>
 
@@ -389,7 +391,7 @@
                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
                   </svg>
 
-                  Aceptar
+
                 </button>
               </td>
 
@@ -405,7 +407,7 @@
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                   </svg>
 
-                  Rechazar
+
                 </button>
               </td>
 
@@ -422,7 +424,7 @@
                   <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
                 </svg>
 
-                Aceptar
+
               </button>
             </td>
 
@@ -432,13 +434,13 @@
                 guardarAllMovimientos.estadoActaMovimiento != 'Rechazada' &&
                 guardarAllMovimientos.tercerocolEntrada==usuario.data.nombres.toLowerCase().trim()">
                 <button
-                  (click)="anularActa(guardarAllMovimientos.idactaMovimiento, guardarAllMovimientos.tercerocolEntrada,guardarAllMovimientos.numTercero, guardarAllMovimientos.razonMovimientocol)" class="btn btn-danger">
+                  (click)="anularActa(guardarAllMovimientos.idactaMovimiento, guardarAllMovimientos.tercerocolEntrada,guardarAllMovimientos.numTercero, guardarAllMovimientos.razonMovimientocol)" class="btn moverBotonRechazar btn-danger">
 
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x  "  viewBox="0 0 16 16">
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                   </svg>
 
-                  Rechazar
+
                 </button>
               </td>
 

@@ -111,6 +111,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
   public isScannerVisible: boolean = false;
   public isAnotherCondition: boolean = false;
+  public buscadorCondicion:boolean = true;
 
   action:any;
 
@@ -156,7 +157,7 @@ export class ConsultarInventarioComponent implements OnInit {
       this.prooveedorInventario = [];
 
 
-      if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ') {
+      if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ' || usuario.data.nombres=='MILTON FERLEY') {
 
         this.servicioActivosFijos.getActivosFijos().subscribe(activosFijos => {
           this.activosFijosInventario = activosFijos;
@@ -676,11 +677,14 @@ export class ConsultarInventarioComponent implements OnInit {
 
       this.buscarActivos = ""
       this.fechaReporte = false;
+      this.buscadorCondicion = true;
 
     }else if(selectedIndex == "fecha/bodega"){
       this.fechaReporte = true;
+      this.buscadorCondicion = false;
     }else{
       this.fechaReporte = false;
+      this.buscadorCondicion = false;
     }
 
 

@@ -351,6 +351,19 @@ buscarActivoFijoMoverTecnicos(buscar:string){
   }
 
 
+  cambiarEstadoTecnico(numTerceroTecnico:string){
+
+    const headers = this.loginServices.getAuthHeaders();
+
+    const data = {
+      numTerceroTecnico:numTerceroTecnico,
+    }
+
+
+    return this.http.put(`${this.urlActivosFijos}/cambiarEstadoTecnico`, data,  {headers} )
+
+  }
+
 
 }
 

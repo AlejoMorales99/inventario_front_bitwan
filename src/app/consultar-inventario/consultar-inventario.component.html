@@ -21,9 +21,8 @@
 
           <div class="mb-3 d-md-flex flex-md-row flex-md-nowrap align-items-center mt-4">
 
-            <input (keyup.enter)="buscarRegistro()" class="form-control botonesActa mb-3 w-50 bg-dark border-secondary text-white  " placeholder="BUSCADOR" name="search" [(ngModel)]="buscarActivos" autocomplete="on">
 
-             <select   class="form-select botonesActa mx-2  mb-3 w-auto bg-dark text-white border-secondary" (change)="filtroLimpiar($event.target)" [(ngModel)]="selectedColumn">
+            <select   class="form-select botonesActa mx-2  mb-3 w-auto bg-dark text-white border-secondary" (change)="filtroLimpiar($event.target)" [(ngModel)]="selectedColumn">
               <option value="mostrarTodo">Filtrar todo</option>
               <option value="Numero activo fijo">Numero activo fijo</option>
               <option value="Serial">Serial</option>
@@ -36,6 +35,10 @@
               <option *ngIf="operacionesRol" value="fechabodega">fecha/bodega</option>
             </select>
 
+            <input disabled="{{buscadorCondicion}}" (keyup.enter)="buscarRegistro()" class="form-control botonesActa mb-3 w-50 bg-dark border-secondary text-white  " placeholder="BUSCADOR" name="search" [(ngModel)]="buscarActivos" autocomplete="on">
+
+
+
 
             <div class="form-group text-center  ">
               <label class="text-white" *ngIf="fechaReporte"  for="fechaInicio">Fecha de Inicio</label>
@@ -47,7 +50,7 @@
               <input *ngIf="fechaReporte" class="form-control bg-dark text-white " type="date" id="fechaFin" [(ngModel)]="fechaFin">
             </div>
 
-            <button  type="button" class="btn botonesActa fondoTable text-white mx-2 w-25 mb-3  mx-md-5" (click)="buscarRegistro()" >
+            <button style="border: none;" [disabled]="buscadorCondicion" type="button" class="btn botonesActa fondoTable text-white mx-2 w-25 mb-3  mx-md-5" (click)="buscarRegistro()" >
 
 
 
@@ -114,9 +117,6 @@
               </tr>
             </thead>
             <tbody>
-
-
-
 
                <tr class="animacion" *ngFor="let activosFijos of activosFijosInventario  | orderBy:config.sortKey:config.sortReverse   | paginate: { itemsPerPage: itemsPerPage, currentPage:  page } " >
                 <td>{{activosFijos.numeroActivo}} </td>

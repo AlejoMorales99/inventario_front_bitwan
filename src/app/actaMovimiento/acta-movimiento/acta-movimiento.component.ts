@@ -66,6 +66,7 @@ export class ActaMovimientoComponent implements OnInit {
   bloquearColumnas:boolean = true;
   ocultarBotonCrearActa:boolean = true;
   ocultarNombreCompletoTecnico:boolean = false;
+  dashabilitarBuscador:boolean = true;
   //---------------------------------------------------------------------------------------//
 
 
@@ -1525,8 +1526,11 @@ export class ActaMovimientoComponent implements OnInit {
     if(selectedIndex == "Filtrar todo"){
       this.ngOnInit();
       this.buscarActivos = ""
-    }else if(selectedIndex == "fecha creacion"){
 
+      this.dashabilitarBuscador = true;
+
+    }else{
+      this.dashabilitarBuscador = false;
     }
 
 
