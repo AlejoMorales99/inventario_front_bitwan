@@ -292,7 +292,7 @@ export class TecnicosComponent implements OnInit {
 
             Swal.fire({
               title: 'EXITO',
-              text: `Tecnico deshabilitado cone exito, por favor refresque la pagina`,
+              text: `Tecnico deshabilitado con exito, por favor refresque la pagina`,
               icon: 'success',
               customClass: {
                 popup: 'bg-dark',
