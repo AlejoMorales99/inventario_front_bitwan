@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { environment } from '../../../../dotenv';
 
+
 @Component({
   selector: 'app-acta-movimiento',
   templateUrl: './acta-movimiento.component.html',
@@ -392,7 +393,7 @@ export class ActaMovimientoComponent implements OnInit {
 
       if (this.usuario.data.nombres == "alcala1") {
 
-        this.activosFijos.buscarActivoFijoMover(value,this.RazonMovimiento).subscribe(acta => {
+        this.activosFijos.buscarActivoFijoMover(value,this.RazonMovimiento,this.BodegaSale).subscribe(acta => {
 
           if (acta == "") {
 
@@ -1181,11 +1182,15 @@ export class ActaMovimientoComponent implements OnInit {
 
   //funcion que uso para dependiendo de la operacion de la acta instalacion retiro devolucion a central etc mostrar mas inputs o mostrar menos saber cuales son obligatorios cuales no etc
   validarCampos(evento: any) {
+    this.guardarServicioTecnicos = [];
+    this.ngOnInit();
     this.BodegaSale = "";
     this.BodegaEntra = "";
     const selectedIndex = evento.selectedIndex;
     this.valorNombreBodega = evento.options[selectedIndex].text;
 
+
+    this.guardarServicio = [];
 
     this.TipoEntrega = "";
     this.dynamicInputs = [];
@@ -1232,6 +1237,7 @@ export class ActaMovimientoComponent implements OnInit {
       this.desahibilitarBuscarCliente = false;
 
     } else if(this.valorNombreBodega == 'Ajuste Inventario Salida') {
+      this.guardarServicioTecnicos = [];
       this.ocultarNombreCompletoTecnico = false;
       this.infoTextoActivosFijos = false;
       this.BodegaSale = "";
@@ -1266,6 +1272,7 @@ export class ActaMovimientoComponent implements OnInit {
       this.condicionBodegaSale = true;
 
     } else if(this.valorNombreBodega == 'Ajuste Inventario Ingreso'){
+      this.guardarServicioTecnicos = [];
       this.BodegaSale = "";
       this.BodegaEntra = "";
       this.ocultarNombreCompletoTecnico = false;
@@ -1538,8 +1545,6 @@ export class ActaMovimientoComponent implements OnInit {
 
   //funcion que genera un reporte en excel dependiendo de lo que se este viendo en la tabla
   generateExcelReport() {
-
-
     Swal.fire({
       title: 'Generar Informe',
       text: '¿Estas seguro de generar un informe?',
@@ -1553,15 +1558,11 @@ export class ActaMovimientoComponent implements OnInit {
         htmlContainer: 'text-white'
       }
     }).then((result) => {
-
       if (result.isConfirmed) {
-
         const datosReporte:any[] = this.guardarAllMovimientos;
 
         const datosReporteSinIdActivoFijo = datosReporte.map(item => {
-          // Copia el objeto para evitar modificar el objeto original
           const newItem = { ...item };
-          // Elimina la propiedad idactivoFijo si existe
           delete newItem.idactaMovimiento;
           delete newItem.imgGuiaTrans;
           delete newItem.validarActa;
@@ -1571,72 +1572,60 @@ export class ActaMovimientoComponent implements OnInit {
           return newItem;
         });
 
-        const columnOrder = ['razonMovimientocol', 'tipoEntrega', 'estadoActaMovimiento','tercerocolEntrada', 'tercerocolSalida', 'fechaRegistro','fechaValidacion','nombreUsuarioRegistra','nombreUsuarioValida','guiaTransportadora','obsActaRecha','descripcion']; // Agrega todas las propiedades en el orden que deseas
-
-        const datosReporteConOrden = datosReporteSinIdActivoFijo.map(item => {
-          const newItem: any = {};
-          columnOrder.forEach(prop => {
-            newItem[prop] = item[prop];
+        const promises = datosReporteSinIdActivoFijo.map((item, index) => {
+          return this.activosFijos.getAllActas(this.guardarAllMovimientos[index].idactaMovimiento).toPromise().then(guardarActa => {
+            if (Array.isArray(guardarActa)) {
+              item['onts'] = guardarActa.map(ont => `${ont.numeroActivo}`).join(', ');
+            } else {
+              item['onts'] = ''; // O alguna otra acción adecuada si guardarActa no es un array
+            }
+          }).catch(error => {
+            console.error("Error al obtener las actas: ", error);
+            item['onts'] = ''; // O alguna otra acción adecuada si hay un error al obtener las actas
           });
-          return newItem;
         });
 
-        // Obtén la hoja de cálculo generada
-        // const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(document.getElementById('tableActivosFijos'));
+        Promise.all(promises).then(() => {
+          const columnOrder = ['razonMovimientocol', 'tipoEntrega', 'estadoActaMovimiento', 'tercerocolEntrada', 'tercerocolSalida', 'fechaRegistro', 'fechaValidacion', 'nombreUsuarioRegistra', 'nombreUsuarioValida', 'guiaTransportadora', 'obsActaRecha', 'descripcion', 'onts'];
 
-        const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosReporteConOrden);
+          const datosReporteConOrden = datosReporteSinIdActivoFijo.map(item => {
+            const newItem: any = {};
+            columnOrder.forEach(prop => {
+              newItem[prop] = item[prop];
+            });
+            return newItem;
+          });
 
-        // Define un estilo para las columnas (ancho y espacio)
+          console.log(datosReporteConOrden);
+
+          const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosReporteConOrden);
+          console.log(ws);
+
           const columnStyles = [
-          // Primera columna (A), ancho 20 (en unidades por defecto, aproximadamente 8.43 caracteres)
-          { width: 20 },
-          // Segunda columna (B), ancho 30
-          { width: 15 },
-          // Tercera columna (C), ancho 40
-          { width: 15 },
+            { width: 20 }, { width: 15 }, { width: 15 }, { width: 20 }, { width: 20 },
+            { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 }, { width: 20 },
+            { width: 20 }, { width: 20 }
+          ];
 
-          { width: 20 },
+          const colInfo = { wch: 20 };
 
-          { width: 20 },
+          columnStyles.forEach((style, columnIndex) => {
+            const col = XLSX.utils.encode_col(columnIndex);
+            if (!ws['!cols']) {
+              ws['!cols'] = [];
+            }
+            ws['!cols'].push({ ...colInfo, ...style });
+          });
 
-          { width: 20 },
+          const wb: XLSX.WorkBook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, 'InformeInventarioActas');
 
-          { width: 20 },
-
-          { width: 20 },
-
-          { width: 20 },
-
-          { width: 20 },
-
-          { width: 20 },
-
-          { width: 20 },
-        ];
-
-        const colInfo = { wch: 20 }; // Esto define el ancho de la columna en unidades de caracteres (20 caracteres en este caso)
-
-        // Aplica los estilos de ancho de columna a la hoja
-        columnStyles.forEach((style, columnIndex) => {
-        const col = XLSX.utils.encode_col(columnIndex); // Convierte el índice a la letra de la columna
-        if (!ws['!cols']) {
-          ws['!cols'] = [];
-        }
-        ws['!cols'].push({ ...colInfo, ...style });
+          XLSX.writeFile(wb, 'InformeInventarioActas.xlsx');
+        }).catch(error => {
+          console.error("Error al generar el reporte: ", error);
         });
-
-        // Crea un libro de Excel y agrega la hoja con los estilos
-        const wb: XLSX.WorkBook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'InformeInventarioActas');
-
-        // Guarda el archivo Excel
-        XLSX.writeFile(wb, 'InformeInventarioActas.xlsx');
       }
-
-
-
-    })
-
+    });
   }
 
   borrarSeleccion(){

@@ -10,7 +10,7 @@ import { environment } from '../../../../dotenv';
 })
 export class ActivosFijosService {
 
-  urlActivosFijos: String = environment.ip_server_pruebas
+  urlActivosFijos: String = environment.apiUrl
   bodegaExcel:String = "";
 
   constructor(private http: HttpClient, private loginServices: LoginService) {}
@@ -135,13 +135,13 @@ export class ActivosFijosService {
 
 //------------------------------------------------------------------------------------------------------------------//
 
-buscarActivoFijoMover(buscar:string,razon:string){
+buscarActivoFijoMover(buscar:string,razon:string,bodegaSale:string){
   const usuario = this.loginServices.getUser();
   const headers = this.loginServices.getAuthHeaders();
 
   usuario.data.nombres = "alcala1"
 
-  return this.http.get(`${this.urlActivosFijos}/buscarActivoFijoMover/${buscar}/${usuario.data.nombres}/${razon}`, {headers} );
+  return this.http.get(`${this.urlActivosFijos}/buscarActivoFijoMover/${buscar}/${usuario.data.nombres}/${razon}/${bodegaSale}`, {headers} );
 }
 
 buscarActivoFijoMoverTecnicos(buscar:string){
@@ -346,7 +346,7 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     body.set('json', JSON.stringify({"criteria":["numerotercero"],"value":numTercero,"onlyusers":true,"page":0,"limit":10}));
     body.set('authorization',token)
 
-    return this.http.post("https://bitwan.info/api/public/terceros/searchbycriteria", body.toString() , {headers:header})
+    return this.http.post("https://www.bitwan.info/api/public/terceros/searchbycriteria", body.toString() , {headers:header})
 
   }
 

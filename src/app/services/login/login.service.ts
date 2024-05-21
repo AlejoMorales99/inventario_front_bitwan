@@ -9,7 +9,7 @@ import { environment } from '../../../../dotenv';
 export class LoginService {
 
 
-  urlActivosFijos: String = environment.ip_server_pruebas
+  urlActivosFijos: String = environment.apiUrl
 
   url: String = "http://localhost:4001/getBodegas"
   urlServicios:string = "http://104.131.8.122:8000/login"
@@ -83,7 +83,7 @@ export class LoginService {
     const body = new URLSearchParams();
     body.set('json', JSON.stringify({"alias":username,"password":password}));
 
-    return this.http.post<any>("https://bitwan.info/api/public/login", body.toString() , {headers:header})
+    return this.http.post<any>("https://www.bitwan.info/api/public/login", body.toString() , {headers:header})
   }
 
   loginUsuario(nombreUsuario:string,numTercero:string){

@@ -9,7 +9,7 @@ import { environment } from '../../../../dotenv';
 export class ProveedorService {
 
 
-  urlProveedor: String = environment.ip_server_pruebas;
+  urlProveedor: String = environment.apiUrl;
 
   constructor(private http: HttpClient , private loginServices: LoginService) { }
 

@@ -9,7 +9,7 @@ import { environment } from '../../../../dotenv';
 })
 export class EstadosService {
 
-  urlEstados: String = environment.ip_server_pruebas
+  urlEstados: String = environment.apiUrl
 
   constructor(private http: HttpClient , private loginServices: LoginService) { }
 
