@@ -1,7 +1,6 @@
 export const environment = {
   production: false,
   apiUrl: 'http://192.168.50.46:4001',
-  // ip_server_pruebas: "http://45.55.193.86:4001",
   ip_serber_pruebas_https: "https://pruebas.bitawan.info/api",
   url_login_produccion: "https://www.bitwan.info/api/public/login",
   portServerPruebas: "44080",
