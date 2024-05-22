@@ -13,7 +13,7 @@ import { environment } from '../../../../dotenv';
 export class ArticulosInventarioService {
 
 
-  urlArticulos: String = `${environment.ip_server_pruebas}/getArticulos`
+  urlArticulos: String = `${environment.ip_serber_pruebas_https}/getArticulos`
 
   constructor(private http: HttpClient , private loginServices: LoginService) {}
 
