@@ -516,15 +516,52 @@
                </ng-select>
 
 
-
-                <label *ngIf="condicionEntraBodega" for="">Numero de servicio de la instalacion</label>
-                <input *ngIf="condicionEntraBodega" [(ngModel)]="BodegaEntra" name="numeroCedulaRetirar" class="form-control mb-3 bg-dark border-secondary text-white" type="number">
-
                 <label *ngIf="condicionBodegaSale" class="form-label">Bodega de la que saldra la ont</label>
-                  <select *ngIf="condicionBodegaSale" [(ngModel)]="BodegaSale" name="BodegaSale" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
-                  <option *ngFor="let guardarServicio of guardarServicioTecnicos" value="{{guardarServicio.ID}}"> {{guardarServicio.nombre}} </option>
-                </select>
+                  <ng-select *ngIf="condicionBodegaSale" [notFoundText]="'Referencia no encontrada'" [(ngModel)]="BodegaSale" name="BodegaSale" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
+                  <ng-option *ngFor="let guardarServicio of guardarServicioTecnicos" value="{{guardarServicio.ID}}"> {{guardarServicio.nombre}} </ng-option>
+                </ng-select>
 
+                <label *ngIf="condicionEntraBodega" for="">Ingrese el numero de servicio a instalar</label>
+                <div class="row" >
+                  <div class="col-md-12 d-flex" >
+                    <input *ngIf="condicionEntraBodega" [(ngModel)]="BodegaEntra" name="numeroCedulaRetirar" class="form-control w-50 mb-3 bg-dark border-secondary text-white" type="number">
+
+                    <button (click)="buscarClienteInstalar()" *ngIf="ocultarBotonBuscarClienteInstalacion" class="btn h-75 mx-3 botonesActa text-white">Buscar Cliente</button>
+
+                    <button (click)="buscarOtroClienteInstalacion()" *ngIf="ocultarBotonBorrarClienteInstalacion"
+                      class="btn mx-3 mb-3  btn-danger text-white">Buscar otro cliente
+                    </button>
+
+                  </div>
+
+                </div>
+
+
+                <label *ngIf="condicionRetiro" for="">Ingrese el numero de servicio a retirar</label>
+                <div class="row ">
+
+                  <div *ngIf="condicionRetiro" class="col-md-12 d-flex">
+
+                    <input [disabled]="desahibilitarBuscarCliente" [(ngModel)]="BodegaSale" name="numeroCedulaRetirar" class="form-control w-50 mb-3 bg-dark border-secondary text-white" *ngIf="condicionRetiro"type="number">
+
+                    <button (click)="buscarCliente()" *ngIf="ocultarBotonBuscarCliente"
+                      class=" mb-3 mx-3 btn botonesActa text-white">Buscar Cliente
+                    </button>
+
+                    <button (click)="buscarOtroCliente()" *ngIf="ocultarBotonBorrarCliente"
+                      class="btn mx-3 mb-3  btn-danger text-white">Buscar otro cliente
+                    </button>
+
+                  </div>
+
+
+                  <label class="text-white" *ngIf="condicionVariosServiciosCliente" for="">Selecione el numero de equipo que desea retirar de este cliente</label>
+                    <select *ngIf="condicionVariosServiciosCliente" [(ngModel)]="ServicioDelClienteEspecifico" (change)="servicioEspecificoCliente()" name="servicioEspecificoCliente" class=" w-50 mx-2 form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
+
+                      <option  *ngFor="let guardarClienteRetirar of guardarServiciosClientesEspecificos"  value="{{guardarClienteRetirar.numeroActivo}}">{{guardarClienteRetirar.numeroActivo}} </option>
+                    </select>
+
+                </div>
 
 
 
@@ -554,91 +591,131 @@
 
             </div>
 
-            <div class="container mt-3">
-              <div class="row ">
 
-                <label *ngIf="infoTextoActivosFijos" class="text-white" for="">ingresa el número de la ont de tu inventario para cargarla a la acta</label>
-
-                <div *ngFor="let input of dynamicInputs; let i = index; trackBy: trackByFn " class="col-md-12 mb-2  ">
-
-                  <!-- El siguiente grupo de entrada se renderiza solo si no hay resultados previos para la entrada específica (índice i). permite ingresar datos cuando no hay resultados previos para la entrada específica, evitando duplicaciones de información. -->
-                  <div class="input-group" *ngIf="!resultadosPorInput[i]">
-
-                    <input type="number" [name]="'dynamicInputs'+i" #valorOnts [id]="'input_' + i" placeholder="Agregar ont número {{i + 1}}" class="form-control bg-dark text-white border-secondary mx-2" autofocus [(ngModel)]="dynamicInputs[i]">
-
-                    <div class="input-group-append ">
-                      <button (click)="searchONTs(valorOnts.value, i)" class="btn botonesCrearActaMovimiento  botonesActa text-white mx-1">Buscar ONTS</button>
-                      <button (click)="eliminarInput(i)" class="btn btn-danger">Eliminar</button>
-                    </div>
-
-                  </div>
-                  <!-- Mostrar el resultado específico para este input -->
-                  <div *ngIf="resultadosPorInput[i]" class="mt-2 d-flex align-items-center">
-                    <input disabled type="text" [value]="resultadosPorInput[i].numeroActivo+ ''+
-                      resultadosPorInput[i].MAC + ',' +
-                      resultadosPorInput[i].serial + ',' +
-                      resultadosPorInput[i].referencia + ','+
-                      resultadosPorInput[i].proveedor +','+
-                      resultadosPorInput[i].marca + ','+
-                      resultadosPorInput[i].categoria"
-                      class="form-control bg-dark text-white border-secondary flex-grow-1" />
-                    <!-- Coloca el botón "Eliminar" al lado derecho del resultado en línea -->
-                    <button (click)="eliminarInput(i)" class="btn btn-danger ml-2">Eliminar</button>
-                  </div>
-                </div>
-              </div> <br>
-              <div class="row">
-                <div class="col-md-12 d-flex justify-content-between">
-                  <button *ngIf="condicionBodegaSale" (click)="addInput()"
-                    [disabled]="  dynamicInputs[dynamicInputs.length -1] === '' || anular  "
-                    class="btn btn-success mx-2">Agregar activos fijos</button>
-                  <!-- <button (click)="limpiar()" class="btn btn-secondary">Limpiar Campos</button> -->
-                </div>
-              </div>
-            </div>
 
             <div class="row text-center">
               <div class="col-md-12">
-                <h5 *ngIf="mostrarInfoClienteRetirar">INFORMACION DEL CLIENTE</h5>
+                <h5 *ngIf="mostrarInfoClienteRetirar">INFORMACION DEL CLIENTE A RETIRAR</h5>
               </div>
             </div>
 
-            <div class="row">
+            <ng-container *ngIf="combinedData">
+
+             <div class="row">
               <div class="col-md-6">
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Nombre cliente</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="guardarClienteRetirar.data.nombrestercero.trim()+','+guardarClienteRetirar.data.apellidostercero.trim()" type="text"> <br>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios[0].nombrestercero.trim()+','+combinedData.servicios[0].apellidostercero.trim()" type="text"> <br>
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Numero de servicio</label>
-                <input [(ngModel)]="BodegaSale" name="BodegaSale" class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="guardarClienteRetirar.data.numeroservicio" type="text"> <br>
+                <input name="BodegaSale" class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios[0].numeroservicio" type="text"> <br>
 
-                <label for="" *ngIf="mostrarInfoClienteRetirar">N Caja Nap</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="guardarClienteRetirar.data.ncajanap" type="text"> <br>
+                <label for="" *ngIf="mostrarInfoClienteRetirar">Ciudad</label>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios[0].municipio" type="text"> <br>
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Direccion</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="guardarClienteRetirar.data.descripciondireccion" type="text"> <br>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios[0].descripciondireccion" type="text"> <br>
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Barrio</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="guardarClienteRetirar.data.barrio" type="text"> <br>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios[0].barrio" type="text"> <br>
 
               </div>
 
               <div class="col-md-6">
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Serial ont</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="guardarClienteRetirar.activosFijos[0].serial" type="text"> <br>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.cliente[0].serial" type="text"> <br>
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Mac del activo fijo</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="guardarClienteRetirar.activosFijos[0].MAC" type="text"> <br>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.cliente[0].MAC" type="text"> <br>
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Numero del activo fijo</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="guardarClienteRetirar.activosFijos[0].numeroActivo" type="text"> <br>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.cliente[0].numeroActivo" type="text"> <br>
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Identificacion</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="guardarClienteRetirar.data.identificaciontercero" type="text"> <br>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios[0].identificacion" type="text"> <br>
 
               </div>
             </div>
+          </ng-container>
+
+          <div class="row  text-center">
+            <div class="col-md-12">
+              <h5 class="subirTexto" *ngIf="mostrarInfoClienteInstalar">INFORMACION DEL CLIENTE A INSTALAR</h5>
+            </div>
+          </div>
+
+          <ng-container *ngIf="combinedData">
+
+            <div class="row subirInfoClienteInstalacion">
+             <div class="col-md-6">
+
+               <label for="" *ngIf="mostrarInfoClienteInstalar">Nombre cliente</label>
+               <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios[0].nombrestercero.trim()+','+combinedData.servicios[0].apellidostercero.trim()" type="text"> <br>
+
+               <label for="" *ngIf="mostrarInfoClienteInstalar">Ciudad</label>
+               <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios[0].municipio" type="text"> <br>
+
+               <label for="" *ngIf="mostrarInfoClienteInstalar">Direccion</label>
+               <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios[0].descripciondireccion" type="text"> <br>
+
+               <label for="" *ngIf="mostrarInfoClienteInstalar">Barrio</label>
+               <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios[0].barrio" type="text"> <br>
+
+             </div>
+
+             <div class="col-md-6">
+
+               <label for="" *ngIf="mostrarInfoClienteInstalar">Identificacion</label>
+               <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios[0].identificacion" type="text"> <br>
+
+             </div>
+           </div>
+         </ng-container>
+
+         <div class="container  mt-3">
+            <div class="row ">
+
+              <label *ngIf="infoTextoActivosFijos" class="text-white" for="">ingresa el número de la ont de tu inventario para cargarla a la acta</label>
+
+              <div *ngFor="let input of dynamicInputs; let i = index; trackBy: trackByFn " class="col-md-12 mb-2  ">
+
+              <!-- El siguiente grupo de entrada se renderiza solo si no hay resultados previos para la entrada específica (índice i). permite ingresar datos cuando no hay resultados previos para la entrada específica, evitando duplicaciones de información. -->
+                <div class="input-group" *ngIf="!resultadosPorInput[i]">
+
+                <input type="number" [name]="'dynamicInputs'+i" #valorOnts [id]="'input_' + i" placeholder="Agregar ont número {{i + 1}}" class="form-control bg-dark text-white border-secondary mx-2" autofocus [(ngModel)]="dynamicInputs[i]">
+
+                <div class="input-group-append ">
+                  <button (click)="searchONTs(valorOnts.value, i)" class="btn botonesCrearActaMovimiento  botonesActa text-white mx-1">Buscar ONTS</button>
+                  <button (click)="eliminarInput(i)" class="btn btn-danger">Eliminar</button>
+                </div>
+
+              </div>
+              <!-- Mostrar el resultado específico para este input -->
+              <div *ngIf="resultadosPorInput[i]" class="mt-2 d-flex align-items-center">
+                <input disabled type="text" [value]="resultadosPorInput[i].numeroActivo+ ''+
+                  resultadosPorInput[i].MAC + ',' +
+                  resultadosPorInput[i].serial + ',' +
+                  resultadosPorInput[i].referencia + ','+
+                  resultadosPorInput[i].proveedor +','+
+                  resultadosPorInput[i].marca + ','+
+                  resultadosPorInput[i].categoria"
+                  class="form-control bg-dark text-white border-secondary flex-grow-1" />
+                <!-- Coloca el botón "Eliminar" al lado derecho del resultado en línea -->
+                <button (click)="eliminarInput(i)" class="btn btn-danger ml-2">Eliminar</button>
+              </div>
+            </div>
+            </div> <br>
+            <div class="row">
+              <div  class="col-md-12 d-flex justify-content-between">
+              <button *ngIf="condicionBodegaSale" (click)="addInput()"
+                [disabled]="  dynamicInputs[dynamicInputs.length -1] === '' || anular  "
+                class="btn btn-success mx-2">Agregar activos fijos</button>
+              <!-- <button (click)="limpiar()" class="btn btn-secondary">Limpiar Campos</button> -->
+            </div>
+            </div>
+        </div>
+
 
             <div class="modal-footer mt-3 ">
               <!-- <button type="button" d-flex justify-content-between  (click)="guardarBorrador()"  class="btn btn-warning ">Guardar Borrador</button> -->

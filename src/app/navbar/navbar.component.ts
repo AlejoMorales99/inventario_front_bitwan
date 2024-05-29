@@ -31,7 +31,7 @@ export class NavbarComponent implements OnInit {
 
     this.usuario = this.servicioLogin.getUser();
 
-    if(this.usuario.data.idusuario == "32" || this.usuario.data.idusuario== "165"){
+    if(this.usuario.data.nombres == "KAROL YISETH" || this.usuario.data.nombres == "MARI LUZ" || this.usuario.data.nombres=='MILTON FERLEY'){
       this.operacionesRol = true;
     }else if(this.usuario.data.idusuario == "43"){
       this.operacionValidarActa = false;

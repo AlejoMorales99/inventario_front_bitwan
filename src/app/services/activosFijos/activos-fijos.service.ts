@@ -10,7 +10,7 @@ import { environment } from '../../../../dotenv';
 })
 export class ActivosFijosService {
 
-  urlActivosFijos: String = environment.ip_serber_pruebas_https
+  urlActivosFijos: String = environment.apiUrl
   bodegaExcel:String = "";
 
   constructor(private http: HttpClient, private loginServices: LoginService) {}
@@ -19,10 +19,13 @@ export class ActivosFijosService {
 
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
+    const usuarioCompleto = this.loginServices.getTecnico();
 
-    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ"){
+    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY"){
       usuario.data.nombres = "alcala1";
 
+    }else{
+      usuario.data.nombres = usuarioCompleto;
     }
 
     return this.http.get(`${this.urlActivosFijos}/buscarRegistros/${buscarActivos}/${selectedColumn}/${usuario.data.nombres.trim()}/${usuario.data.idusuario}` , {headers} )
@@ -35,10 +38,10 @@ export class ActivosFijosService {
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
 
-    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ"){
+    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY"){
       usuario.data.nombres = "alcala1";
     }
-
+    console.log(usuario.data.nombres.trim());
     return this.http.get(`${this.urlActivosFijos}/buscarRegistrosPorFechaAndServicio/${servicio}/${columna}/${fechaInicio}/${fechaFin}/${usuario.data.nombres.trim()}/${usuario.data.idusuario}` , {headers} )
 
   }
@@ -178,8 +181,11 @@ buscarActivoFijoMoverTecnicos(buscar:string){
   getBodegas(razon:string){
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
-    if(usuario.data.nombres == 'KAROL YISETH' || usuario.data.nombres == 'MARI LUZ'){
+    const usuarioCompleto = this.loginServices.getTecnico();
+    if(usuario.data.nombres == 'KAROL YISETH' || usuario.data.nombres == 'MARI LUZ' || usuario.data.nombres == 'MILTON FERLEY'){
       usuario.data.nombres = "alcala1"
+    }else{
+      usuario.data.nombres = usuarioCompleto;
     }
 
     return this.http.get(`${this.urlActivosFijos}/Bodegas/${usuario.data.nombres}/${razon}/${usuario.data.numerotercero}`, {headers} );
@@ -301,6 +307,22 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     }
 
     return this.http.post(`${this.urlActivosFijos}/retirarCliente`, data,  {headers} )
+
+  }
+
+
+  obtenerClienteServicios(numServicio:string){
+
+    const token = this.loginServices.getToken();
+    const header = this.loginServices.getAuthHeadersLogin();
+
+    const body = new URLSearchParams();
+
+    body.set('json', JSON.stringify({"claseservicio":[],"status":[],"criteria":["nservicio"],"value":numServicio,"page":0,"limit":10}));
+    body.set('authorization',token)
+
+    return this.http.post("https://www.bitwan.info/api/public/servicios/searchserviciobycriteria", body.toString() , {headers:header})
+
 
   }
 

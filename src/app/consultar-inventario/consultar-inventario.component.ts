@@ -190,8 +190,8 @@ export class ConsultarInventarioComponent implements OnInit {
 
         this.validarTotalOnts = true;
 
-        this.servicioActivosFijos.totalActivosFijosTecnicos(usuario.data.numerotercero).subscribe(total=>{
-          this.totalOnts = total;
+        this.servicioActivosFijos.totalActivosFijosTecnicos(usuario.data.numerotercero).subscribe((total:any)=>{
+          this.totalOnts = total[0].total;
         })
 
         this.operacionesRol = false;

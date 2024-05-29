@@ -62,7 +62,7 @@ export class TecnicosComponent implements OnInit {
       this.rout.navigate(['']);
 
 
-    }else if(usuario.data.nombres!= "KAROL YISETH" && usuario.data.nombres!="MARI LUZ"){
+    }else if(usuario.data.nombres!= "KAROL YISETH" && usuario.data.nombres!="MARI LUZ" && usuario.data.nombres!="MILTON FERLEY"){
       Swal.fire({
         title: 'ERROR',
         text: 'NO TIENE PERMISOS PARA ACCEDER A ESTA RUTA',
@@ -102,8 +102,8 @@ export class TecnicosComponent implements OnInit {
 
     this.validarTotalOnts = true;
 
-    this.activosFijos.totalActivosFijosTecnicos(this.selectedIndex).subscribe(total=>{
-      this.totalOnts = total;
+    this.activosFijos.totalActivosFijosTecnicos(this.selectedIndex).subscribe((total:any)=>{
+      this.totalOnts = total[0].total;
     })
 
 

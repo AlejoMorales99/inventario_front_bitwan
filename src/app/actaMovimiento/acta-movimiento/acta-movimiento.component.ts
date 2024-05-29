@@ -14,7 +14,7 @@ import { environment } from '../../../../dotenv';
 })
 export class ActaMovimientoComponent implements OnInit {
 
-  apiUrlImg = environment.ip_serber_pruebas_https;
+  apiUrlImg = environment.apiUrl;
 
   //en esta variblae tipo Element guardo el id de la ont que se busque en el input del formulario
   @ViewChild('valorOnts') miInput!: ElementRef;
@@ -42,6 +42,7 @@ export class ActaMovimientoComponent implements OnInit {
   razonAnulacion: any = "";
   ServicioDelClienteEspecifico:any = "";
   archivoCapturado: any;
+  combinedData:any;
   //----------------------------------------------------------------------------------//
 
   //variable que sirve para especificar por que columna va a buscar registros el usuario
@@ -68,6 +69,9 @@ export class ActaMovimientoComponent implements OnInit {
   ocultarBotonCrearActa:boolean = true;
   ocultarNombreCompletoTecnico:boolean = false;
   dashabilitarBuscador:boolean = true;
+  ocultarBotonBuscarClienteInstalacion:boolean = false;
+  mostrarInfoClienteInstalar:boolean = false;
+  ocultarBotonBorrarClienteInstalacion:boolean = false;
   //---------------------------------------------------------------------------------------//
 
 
@@ -153,6 +157,7 @@ export class ActaMovimientoComponent implements OnInit {
       if (this.userTecnico == "karol yiseth mosquera alzate"  ||  this.userTecnico == "mari luz pulgarin" || this.userTecnico == "milton ferley renteria florez") {
 
         this.usuario.data.nombres = "alcala1"
+
 
         //funcion que obtiene todas las actas de movimiento existentes
         this.activosFijos.getAllMovimientos().subscribe(movimientos => {
@@ -527,7 +532,6 @@ export class ActaMovimientoComponent implements OnInit {
               }
 
               console.log(`Buscando ONTs para el valor: ${value}`);
-              console.log(this.guardarActivosFijos);
 
             }
 
@@ -622,7 +626,8 @@ export class ActaMovimientoComponent implements OnInit {
                 this.condicionVariosServiciosCliente = false
                 this.infoTextoActivosFijos = false;
                 this.ocultarNombreCompletoTecnico = false;
-
+                this.condicionOcultarBodegaEntra = false;
+                this.condicionRetiro = false;
               }
 
             })
@@ -699,6 +704,10 @@ export class ActaMovimientoComponent implements OnInit {
                     htmlContainer: 'text-white'
                   }
                 });
+                this.mostrarInfoClienteInstalar = false;
+                this.condicionBodegaSale = false;
+                this.condicionEntraBodega = false;
+                this.ocultarBotonBuscarClienteInstalacion = false;
               }
 
             })
@@ -1200,15 +1209,14 @@ export class ActaMovimientoComponent implements OnInit {
     if (this.valorNombreBodega == "Retiro Final" || this.valorNombreBodega == 'Retiro Soporte' || this.valorNombreBodega == 'Retiro Migración' || this.valorNombreBodega == 'Retiro Traslado') {
 
       this.ocultarNombreCompletoTecnico = false
-
+      this.ocultarBotonBuscarCliente = true;
       this.condicionRetiro = true;
       this.condicionOcultarBodegaEntra = true;
-      this.ocultarBotonBuscarCliente = true;
       this.ServicioDelClienteEspecifico = "";
       this.BodegaSale = "";
       this.BodegaEntra = "";
       this.infoTextoActivosFijos = false;
-
+      this.mostrarInfoClienteInstalar = false;
       this.ocultarBotonCrearActa = false;
       this.condicionEntraBodega = false;
       this.condicionBodegaSale = false;
@@ -1216,9 +1224,14 @@ export class ActaMovimientoComponent implements OnInit {
       this.condicionVariosServiciosCliente = false;
       this.ocultarBotonBorrarCliente = false;
      this.desahibilitarBuscarCliente = false;
+     this.ocultarBotonBuscarClienteInstalacion = false;
+     this.ocultarBotonBorrarClienteInstalacion = false;
 
     } else if (this.valorNombreBodega == 'Instalación Inicial' || this.valorNombreBodega == 'Instalación Traslado' || this.valorNombreBodega == 'Instalación Migración' || this.valorNombreBodega == 'Instalación Soporte') {
 
+
+      this.mostrarInfoClienteInstalar = false;
+      this.ocultarBotonBorrarClienteInstalacion = false;
       this.ocultarNombreCompletoTecnico = false
       this.condicionEntraBodega = true;
       this.condicionBodegaSale = true;
@@ -1228,13 +1241,15 @@ export class ActaMovimientoComponent implements OnInit {
       this.infoTextoActivosFijos = false;
       this.BodegaSale = "";
       this.BodegaEntra = "";
-
-
       this.condicionRetiro = false;
       this.condicionOcultarBodegaEntra = false;
       this.ocultarBotonBuscarCliente = false;
+      this.ocultarBotonBuscarClienteInstalacion = true;
       this.ocultarBotonBorrarCliente = false;
       this.desahibilitarBuscarCliente = false;
+
+
+
 
     } else if(this.valorNombreBodega == 'Ajuste Inventario Salida') {
       this.guardarServicioTecnicos = [];
@@ -1246,7 +1261,6 @@ export class ActaMovimientoComponent implements OnInit {
       this.activosFijos.getBodegaAjusteInventario().subscribe( response => {
 
         this.guardarServicioTecnicos = response
-        this.BodegaSale = this.guardarServicioTecnicos[0].ID
 
       });
 
@@ -1273,6 +1287,7 @@ export class ActaMovimientoComponent implements OnInit {
 
     } else if(this.valorNombreBodega == 'Ajuste Inventario Ingreso'){
       this.guardarServicioTecnicos = [];
+      this.guardarServicioTecnicos = "";
       this.BodegaSale = "";
       this.BodegaEntra = "";
       this.ocultarNombreCompletoTecnico = false;
@@ -1283,7 +1298,7 @@ export class ActaMovimientoComponent implements OnInit {
         this.guardarServicioTecnicos = response
 
 
-        this.BodegaSale = this.guardarServicioTecnicos[0].ID
+
 
       });
 
@@ -1300,11 +1315,12 @@ export class ActaMovimientoComponent implements OnInit {
 
 
     }else if(this.valorNombreBodega == 'Reconexion'){
+      this.ocultarBotonBorrarClienteInstalacion = false;
       this.ocultarNombreCompletoTecnico = false;
       this.BodegaSale = "";
       this.BodegaEntra = "";
-
-
+      this.ocultarBotonBuscarClienteInstalacion = true;
+      this.mostrarInfoClienteInstalar = false;
       this.condicionEntraBodega = true;
       this.condicionBodegaSale = true;
       this.mostrarInfoClienteRetirar = false;
@@ -1322,9 +1338,11 @@ export class ActaMovimientoComponent implements OnInit {
       this.desahibilitarBuscarCliente = false;
 
     }else{
+      this.ocultarBotonBorrarClienteInstalacion = false;
+      this.mostrarInfoClienteInstalar = false;
       this.BodegaSale = "";
       this.BodegaEntra = "";
-
+      this.ocultarBotonBuscarClienteInstalacion = false;
       this.condicionOcultarBodegaEntra = true;
       this.condicionBodegaSale = true;
       this.condicionEntraBodega = false;
@@ -1346,8 +1364,6 @@ export class ActaMovimientoComponent implements OnInit {
     this.activosFijos.getBodegas(this.valorNombreBodega).subscribe(Bodegas => {
 
       this.guardarServicio = Bodegas;
-
-
 
     })
 
@@ -1417,16 +1433,14 @@ export class ActaMovimientoComponent implements OnInit {
   }
 
 
+  buscarClienteInstalar() {
 
 
-  //funcion para buscar un cliente por medio de el numero de servicio a la hora de hacer un retiro de un activo fijo
-  buscarCliente() {
-
-    if (this.BodegaSale == "") {
+    if (this.BodegaEntra == "") {
 
       Swal.fire({
         title: 'ERROR',
-        text: 'POR FAVOR INGRESE UN NUMERO DE DOCUMENTO',
+        text: 'POR FAVOR INGRESE UN NUMERO DE SERVICIO',
         icon: 'error',
         customClass: {
           popup: 'bg-dark',
@@ -1437,41 +1451,120 @@ export class ActaMovimientoComponent implements OnInit {
 
 
     }else{
+
+        this.activosFijos.obtenerClienteServicios(this.BodegaEntra).subscribe((res:any)=>{
+
+           this.combinedData = {
+            servicios: res.data
+          };
+
+          if(this.combinedData.servicios.length == 0){
+
+            Swal.fire({
+              title: 'ERROR',
+              text: 'NO EXISTE ACTIVO FIJO PARA RETIRAR A ESTE CLIENTE',
+              icon: 'error',
+              customClass: {
+                popup: 'bg-dark',
+                title: 'text-white',
+                htmlContainer: 'text-white'
+              }
+            });
+
+            this.condicionVariosServiciosCliente = false;
+
+          } else {
+            this.ocultarBotonBuscarClienteInstalacion = false;
+            this.condicionBodegaSale = true;
+            this.ocultarBotonCrearActa = true;
+            this.condicionRetiro = false;
+            this.mostrarInfoClienteInstalar = true;
+            this.desahibilitarBuscarCliente = true;
+
+            this.ocultarBotonBorrarClienteInstalacion = true;
+
+
+          }
+
+
+        })
+
+
+    }
+  }
+
+
+  //funcion para buscar un cliente por medio de el numero de servicio a la hora de hacer un retiro de un activo fijo
+  buscarCliente() {
+
+    if (this.BodegaSale == "") {
+
+      Swal.fire({
+        title: 'ERROR',
+        text: 'POR FAVOR INGRESE UN NUMERO DE SERVICIO',
+        icon: 'error',
+        customClass: {
+          popup: 'bg-dark',
+          title: 'text-white',
+          htmlContainer: 'text-white'
+        }
+      });
+
+
+    }else{
+
       this.activosFijos.buscarCliente(this.BodegaSale).subscribe((cliente:any) => {
 
         this.guardarClienteRetirar = cliente;
 
-        if( this.guardarClienteRetirar.length>1){
+        this.activosFijos.obtenerClienteServicios(this.BodegaSale).subscribe((res:any)=>{
+
+           this.combinedData = {
+            cliente: this.guardarClienteRetirar,
+            servicios: res.data
+          };
+
+          if( this.guardarClienteRetirar.length>1){
 
 
-          this.condicionVariosServiciosCliente = true;
-          this.guardarServiciosClientesEspecificos =  this.guardarClienteRetirar
+            this.condicionVariosServiciosCliente = true;
+            this.guardarServiciosClientesEspecificos =  this.guardarClienteRetirar
 
-        }else if(this.guardarClienteRetirar.error == "Cliente no encontrado" || this.guardarClienteRetirar == ""){
+          }else if(this.guardarClienteRetirar.error == "Cliente no encontrado" || this.guardarClienteRetirar == ""){
 
-          Swal.fire({
-            title: 'ERROR',
-            text: 'NO EXISTE ACTIVO FIJO PARA RETIRAR A ESTE CLIENTE',
-            icon: 'error',
-            customClass: {
-              popup: 'bg-dark',
-              title: 'text-white',
-              htmlContainer: 'text-white'
-            }
-          });
+            Swal.fire({
+              title: 'ERROR',
+              text: 'NO EXISTE ACTIVO FIJO PARA RETIRAR A ESTE CLIENTE',
+              icon: 'error',
+              customClass: {
+                popup: 'bg-dark',
+                title: 'text-white',
+                htmlContainer: 'text-white'
+              }
+            });
 
-          this.condicionVariosServiciosCliente = false;
+            this.condicionVariosServiciosCliente = false;
 
-        } else {
-          this.ocultarBotonCrearActa = true;
-          this.condicionRetiro = false;
-          this.mostrarInfoClienteRetirar = true;
-          this.BodegaSale = this.guardarClienteRetirar.data.numeroservicio
-          this.desahibilitarBuscarCliente = true;
-          this.ocultarBotonBuscarCliente = false;
-          this.ocultarBotonBorrarCliente = true;
+          } else {
+            this.condicionVariosServiciosCliente = false;
+            this.BodegaSale = this.combinedData.servicios[0].numeroservicio
+            this.guardarValorOnts = this.combinedData.cliente[0].numeroActivo
+            this.ocultarBotonCrearActa = true;
+            this.condicionRetiro = false;
+            this.mostrarInfoClienteRetirar = true;
+            this.desahibilitarBuscarCliente = true;
+            this.ocultarBotonBuscarCliente = false;
+            this.ocultarBotonBorrarCliente = true;
 
-        }
+
+
+          }
+
+
+        })
+
+
+
       })
     }
   }
@@ -1482,6 +1575,13 @@ export class ActaMovimientoComponent implements OnInit {
     this.activosFijos.buscarClienteEspecifico(this.ServicioDelClienteEspecifico,this.BodegaSale).subscribe((cliente:any) => {
 
       this.guardarClienteRetirar = cliente;
+
+      this.combinedData = {
+        servicios: this.combinedData.servicios,
+        cliente: this.guardarClienteRetirar
+      }
+
+
 
       if (this.guardarClienteRetirar.error == "Cliente no encontrado" || this.guardarClienteRetirar == "") {
 
@@ -1523,6 +1623,23 @@ export class ActaMovimientoComponent implements OnInit {
     this.guardarServiciosClientesEspecificos = "";
     this.condicionVariosServiciosCliente = false;
     this.ServicioDelClienteEspecifico = "";
+    this.ocultarBotonCrearActa = false;
+  }
+
+  buscarOtroClienteInstalacion(){
+
+    this.mostrarInfoClienteInstalar = false;
+    this.ocultarBotonBorrarCliente = false;
+    this.desahibilitarBuscarCliente = false;
+    this.guardarClienteRetirar = [];
+    this.mostrarInfoClienteRetirar = false;
+    this.guardarServiciosClientesEspecificos = "";
+    this.condicionVariosServiciosCliente = false;
+    this.ServicioDelClienteEspecifico = "";
+    this.ocultarBotonCrearActa = false;
+    this.ocultarBotonBuscarClienteInstalacion = true;
+    this.ocultarBotonBorrarClienteInstalacion = false;
+    this.BodegaEntra = "";
   }
 
   //funcion que sirve para filtrar todo en el buscador
@@ -1631,6 +1748,8 @@ export class ActaMovimientoComponent implements OnInit {
   borrarSeleccion(){
     this.ocultarNombreCompletoTecnico = false
   }
+
+
 
 }
 

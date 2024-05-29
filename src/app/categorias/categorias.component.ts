@@ -63,7 +63,7 @@ export class CategoriasComponent {
 
       this.rout.navigate(['']);
 
-    }else if(usuario.data.nombres!= "KAROL YISETH" && usuario.data.nombres!="MARI LUZ"){
+    }else if(usuario.data.nombres!= "KAROL YISETH" && usuario.data.nombres!="MARI LUZ" && usuario.data.nombres!="MILTON FERLEY"){
       Swal.fire({
         title: 'ERROR',
         text: 'NO TIENE PERMISOS PARA ACCEDER A ESTA RUTA',
