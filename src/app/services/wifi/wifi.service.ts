@@ -8,7 +8,7 @@ import { environment } from '../../../../dotenv';
 })
 export class WifiService {
 
-  urlWifi: String = environment.apiUrl
+  urlWifi: String = environment.ip_serber_pruebas_https
 
   constructor(private http: HttpClient , private loginServices: LoginService) { }
 

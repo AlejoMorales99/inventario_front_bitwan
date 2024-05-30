@@ -9,7 +9,7 @@ import { environment } from '../../../../dotenv';
 export class LoginService {
 
 
-  urlActivosFijos: String = environment.apiUrl
+  urlActivosFijos: String = environment.ip_serber_pruebas_https
   urlLoginActivosFijos: String = environment.url_login_produccion;
 
   url: String = "http://localhost:4001/getBodegas"
@@ -74,7 +74,7 @@ export class LoginService {
     return new HttpHeaders().set('Content-Type', `application/x-www-form-urlencoded`);
   }
 
-  
+
   constructor(private http: HttpClient) { }
 
   //funcion que sirve para iniciar sesion y obtener el usuario

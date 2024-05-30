@@ -11,7 +11,7 @@ export class TipoEquipoService {
   constructor(private http: HttpClient, private loginServices: LoginService) { }
 
 
-  urlActivosFijos: String = environment.apiUrl
+  urlActivosFijos: String = environment.ip_serber_pruebas_https
 
   getTipoDeEquipo(){
     const headers = this.loginServices.getAuthHeaders();

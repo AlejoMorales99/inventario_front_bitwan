@@ -10,7 +10,7 @@ import { environment } from '../../../../dotenv';
 })
 export class ActivosFijosService {
 
-  urlActivosFijos: String = environment.apiUrl
+  urlActivosFijos: String = environment.ip_serber_pruebas_https
   bodegaExcel:String = "";
 
   constructor(private http: HttpClient, private loginServices: LoginService) {}
