@@ -708,6 +708,7 @@ export class ActaMovimientoComponent implements OnInit {
                 this.condicionBodegaSale = false;
                 this.condicionEntraBodega = false;
                 this.ocultarBotonBuscarClienteInstalacion = false;
+                this.ocultarBotonBorrarClienteInstalacion = false;
               }
 
             })
@@ -1546,15 +1547,18 @@ export class ActaMovimientoComponent implements OnInit {
             this.condicionVariosServiciosCliente = false;
 
           } else {
+
+            this.ocultarBotonBorrarCliente = true;
+
+            this.ocultarBotonBuscarCliente = false;
+
             this.condicionVariosServiciosCliente = false;
             this.BodegaSale = this.combinedData.servicios[0].numeroservicio
             this.guardarValorOnts = this.combinedData.cliente[0].numeroActivo
             this.ocultarBotonCrearActa = true;
-            this.condicionRetiro = false;
             this.mostrarInfoClienteRetirar = true;
             this.desahibilitarBuscarCliente = true;
-            this.ocultarBotonBuscarCliente = false;
-            this.ocultarBotonBorrarCliente = true;
+
 
 
 
