@@ -97,6 +97,7 @@ export class TecnicosComponent implements OnInit {
     this.activosFijos.getActivosFijosTecnicosInventario(this.selectedIndex).subscribe(inventarioTecnico=>{
 
       this.activosFijosTecnicos = inventarioTecnico;
+      console.log( this.activosFijosTecnicos);
 
     })
 

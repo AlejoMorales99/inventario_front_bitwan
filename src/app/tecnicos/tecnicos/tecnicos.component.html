@@ -49,8 +49,8 @@
                 <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('MAC')"[ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'MAC' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'MAC' && config.sortOrder === 'desc'}" >SERIAL</th>
                 <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('macSerial')"[ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'macSerial' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'macSerial' && config.sortOrder === 'desc'}" >MAC</th>
                 <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('categoria')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'categoria' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'categoria' && config.sortOrder === 'desc'}" >CATEGORÍA</th>
-                <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('estado')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'estado' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'estado' && config.sortOrder === 'desc'}" >ESTADO</th>
-                <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('proveedor')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'proveedor' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'proveedor' && config.sortOrder === 'desc'}" >PROVEEDOR</th>
+                <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('REFERENCIA')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'REFERENCIA' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'estado' && config.sortOrder === 'desc'}" >REFERENCIA</th>
+                <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('TIPO DE EQUIPO')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'TIPO DE EQUIPO' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'TIPO DE EQUIPO' && config.sortOrder === 'desc'}" >TIPO DE EQUIPO</th>
 
 
               </tr>
@@ -63,8 +63,8 @@
                 <td>{{activosFijosTecnicos.serial}}</td>
                 <td>{{activosFijosTecnicos.MAC}}</td>
                 <td>{{activosFijosTecnicos.categoria}}</td>
-                <td>{{activosFijosTecnicos.estado}}</td>
-                <td>{{activosFijosTecnicos.proveedor}}</td>
+                <td>{{activosFijosTecnicos.referencia_ont}}</td>
+                <td>{{activosFijosTecnicos.tipoEquipo}}</td>
               </tr>
 
             </tbody>

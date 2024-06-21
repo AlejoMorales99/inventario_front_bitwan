@@ -103,7 +103,7 @@
                 <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('MAC')"[ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'MAC' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'MAC' && config.sortOrder === 'desc'}" >SERIAL</th>
                 <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('macSerial')"[ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'macSerial' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'macSerial' && config.sortOrder === 'desc'}" >MAC</th>
                 <th *ngIf="colTecnicosMostrar" scope="col" class="tamañoTitulos"(click)="cambiarOrden('referencia')"[ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'referencia' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'referencia' && config.sortOrder === 'desc'}" >referencia</th>
-                <th *ngIf="colTecnicosMostrar" scope="col" class="tamañoTitulos"(click)="cambiarOrden('marca')"[ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'marca' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'marca' && config.sortOrder === 'desc'}" >marca</th>
+                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos"(click)="cambiarOrden('marca')"[ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'marca' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'marca' && config.sortOrder === 'desc'}" >marca</th>
                 <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('descripcion')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'descripcion' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'descripcion' && config.sortOrder === 'desc'}"  >DESCRIPCIÓN</th>
                 <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos"(click)="cambiarOrden('fechaIngreso')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'fechaIngreso' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'fechaIngreso' && config.sortOrder === 'desc'}" >FECHA_INGRESO</th>
                 <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos"(click)="cambiarOrden('fechaModificacion')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'fechaModificacion' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'fechaModificacion' && config.sortOrder === 'desc'}" >FECHA_MODIFICACIÓN</th>
@@ -125,7 +125,7 @@
                 <td>{{activosFijos.serial}}</td>
                 <td>{{activosFijos.MAC}}</td>
                 <td *ngIf="colTecnicosMostrar">{{activosFijos.referencia_ont}}</td>
-                <td *ngIf="colTecnicosMostrar">{{activosFijos.marcacol}}</td>
+                <td *ngIf="operacionesRol">{{activosFijos.marcacol}}</td>
                 <td>{{activosFijos.descripcion}}</td>
                 <td *ngIf="operacionesRol">{{activosFijos.fechaIngreso}}</td>
                 <td *ngIf="operacionesRol">{{activosFijos.fechaModificacion}}</td>

@@ -693,7 +693,7 @@
               </div>
               <!-- Mostrar el resultado específico para este input -->
               <div *ngIf="resultadosPorInput[i]" class="mt-2 d-flex align-items-center">
-                <input disabled type="text" [value]="resultadosPorInput[i].numeroActivo+ ''+
+                <input disabled type="text" [value]="resultadosPorInput[i].numeroActivo+ ','+
                   resultadosPorInput[i].MAC + ',' +
                   resultadosPorInput[i].serial + ',' +
                   resultadosPorInput[i].referencia + ','+
