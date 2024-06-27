@@ -226,7 +226,7 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
     const tecnico = this.loginServices.getTecnico();
-    console.log(tecnico);
+
     const form = new FormData();
 
     form.append('RazonMovimiento', RazonMovimiento);

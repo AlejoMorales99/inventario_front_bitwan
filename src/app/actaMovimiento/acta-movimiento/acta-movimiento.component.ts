@@ -398,14 +398,13 @@ export class ActaMovimientoComponent implements OnInit {
 
       if (this.usuario.data.nombres == "alcala1") {
 
-        this.activosFijos.buscarActivoFijoMover(value,this.RazonMovimiento,this.BodegaSale).subscribe(acta => {
+        if(this.RazonMovimiento == '15'){
 
-          if (acta == "") {
+          if(this.BodegaSale == "" || this.BodegaSale == null ){
 
-            this.miInput.nativeElement.focus();
             Swal.fire({
               title: 'ERROR',
-              text: `No existen registros con el numero ${value}`,
+              text: `Por favor llene todos los campos primero antes de buscar un activo fijo`,
               icon: 'error',
               customClass: {
                 popup: 'bg-dark',
@@ -414,39 +413,16 @@ export class ActaMovimientoComponent implements OnInit {
               }
             });
 
-            this.dynamicInputs[index] = "";
+          }else{
 
+            this.activosFijos.buscarActivoFijoMover(value,this.RazonMovimiento,this.BodegaSale).subscribe(acta => {
 
-          } else {
+              if (acta == "") {
 
-
-
-            this.guardarActivosFijos = acta;
-
-            if (this.guardarActivosFijos[0].estadoM == 1) {
-              this.miInput.nativeElement.focus();
-
-              Swal.fire({
-                title: 'ERROR',
-                text: `Este activo fijo ya se encuentra actualmente en un movimiento`,
-                icon: 'error',
-                customClass: {
-                  popup: 'bg-dark',
-                  title: 'text-white',
-                  htmlContainer: 'text-white'
-                }
-              });
-
-              this.dynamicInputs[index] = "";
-
-
-            } else {
-
-              if (this.guardarValorOnts.includes(this.guardarActivosFijos[0].idactivoFijo)) {
-
+                this.miInput.nativeElement.focus();
                 Swal.fire({
                   title: 'ERROR',
-                  text: `El valor ya ha sido ingresado en otro campo.`,
+                  text: `No existen registros con el numero ${value}`,
                   icon: 'error',
                   customClass: {
                     popup: 'bg-dark',
@@ -454,21 +430,157 @@ export class ActaMovimientoComponent implements OnInit {
                     htmlContainer: 'text-white'
                   }
                 });
-              } else {
-                this.guardarValorOnts[index] = this.guardarActivosFijos[0].idactivoFijo;
-                this.resultadosPorInput[index] = this.guardarActivosFijos[0];
 
+                this.dynamicInputs[index] = "";
+
+
+              } else {
+
+
+
+                this.guardarActivosFijos = acta;
+
+                if (this.guardarActivosFijos[0].estadoM == 1) {
+                  this.miInput.nativeElement.focus();
+
+                  Swal.fire({
+                    title: 'ERROR',
+                    text: `Este activo fijo ya se encuentra actualmente en un movimiento`,
+                    icon: 'error',
+                    customClass: {
+                      popup: 'bg-dark',
+                      title: 'text-white',
+                      htmlContainer: 'text-white'
+                    }
+                  });
+
+                  this.dynamicInputs[index] = "";
+
+
+                } else {
+
+                  if (this.guardarValorOnts.includes(this.guardarActivosFijos[0].idactivoFijo)) {
+
+                    Swal.fire({
+                      title: 'ERROR',
+                      text: `El valor ya ha sido ingresado en otro campo.`,
+                      icon: 'error',
+                      customClass: {
+                        popup: 'bg-dark',
+                        title: 'text-white',
+                        htmlContainer: 'text-white'
+                      }
+                    });
+                  } else {
+                    this.guardarValorOnts[index] = this.guardarActivosFijos[0].idactivoFijo;
+                    this.resultadosPorInput[index] = this.guardarActivosFijos[0];
+
+
+                  }
+
+
+
+                }
 
               }
 
 
-
-            }
+            })
 
           }
 
+        }else{
 
-        })
+          if(this.BodegaEntra == "" || this.BodegaSale == ""){
+            Swal.fire({
+              title: 'ERROR',
+              text: `Por favor llene todos los campos primero antes de buscar un activo fijo`,
+              icon: 'error',
+              customClass: {
+                popup: 'bg-dark',
+                title: 'text-white',
+                htmlContainer: 'text-white'
+              }
+            });
+          }else{
+            this.activosFijos.buscarActivoFijoMover(value,this.RazonMovimiento,this.BodegaSale).subscribe(acta => {
+
+              if (acta == "") {
+
+                this.miInput.nativeElement.focus();
+                Swal.fire({
+                  title: 'ERROR',
+                  text: `No existen registros con el numero ${value}`,
+                  icon: 'error',
+                  customClass: {
+                    popup: 'bg-dark',
+                    title: 'text-white',
+                    htmlContainer: 'text-white'
+                  }
+                });
+
+                this.dynamicInputs[index] = "";
+
+
+              } else {
+
+
+
+                this.guardarActivosFijos = acta;
+
+                if (this.guardarActivosFijos[0].estadoM == 1) {
+                  this.miInput.nativeElement.focus();
+
+                  Swal.fire({
+                    title: 'ERROR',
+                    text: `Este activo fijo ya se encuentra actualmente en un movimiento`,
+                    icon: 'error',
+                    customClass: {
+                      popup: 'bg-dark',
+                      title: 'text-white',
+                      htmlContainer: 'text-white'
+                    }
+                  });
+
+                  this.dynamicInputs[index] = "";
+
+
+                } else {
+
+                  if (this.guardarValorOnts.includes(this.guardarActivosFijos[0].idactivoFijo)) {
+
+                    Swal.fire({
+                      title: 'ERROR',
+                      text: `El valor ya ha sido ingresado en otro campo.`,
+                      icon: 'error',
+                      customClass: {
+                        popup: 'bg-dark',
+                        title: 'text-white',
+                        htmlContainer: 'text-white'
+                      }
+                    });
+                  } else {
+                    this.guardarValorOnts[index] = this.guardarActivosFijos[0].idactivoFijo;
+                    this.resultadosPorInput[index] = this.guardarActivosFijos[0];
+
+
+                  }
+
+
+
+                }
+
+              }
+
+
+            })
+          }
+
+        }
+
+
+
+
 
       } else {
 
@@ -556,7 +668,7 @@ export class ActaMovimientoComponent implements OnInit {
 
     if (this.RazonMovimiento == '5' || this.RazonMovimiento == '6' || this.RazonMovimiento == '7' || this.RazonMovimiento == '8') {
 
-      if (this.BodegaEntra == "" || this.BodegaSale == ""  ) {
+      if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == ""  || this.BodegaSale == null ) {
         Swal.fire({
           title: 'ERROR',
           text: 'POR FAVOR LLENE LOS CAMPOS',
@@ -643,10 +755,10 @@ export class ActaMovimientoComponent implements OnInit {
 
 
 
-      if (this.BodegaEntra == "" || this.BodegaSale == "" || this.guardarValorOnts.length == 0) {
+      if (this.BodegaEntra == "" || this.BodegaEntra == null  || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
         Swal.fire({
           title: 'ERROR',
-          text: 'POR FAVOR LLENE LOS CAMPOSs',
+          text: 'POR FAVOR LLENE LOS CAMPOS',
           icon: 'error',
           customClass: {
             popup: 'bg-dark',
@@ -720,14 +832,14 @@ export class ActaMovimientoComponent implements OnInit {
 
     } else if (this.RazonMovimiento == '9' || this.RazonMovimiento == '10' ||  this.RazonMovimiento == '20') {
 
-      if (this.BodegaEntra == "" || this.BodegaSale == "" || this.guardarValorOnts.length == 0) {
+      if (this.BodegaEntra == ""  || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
 
 
 
 
         Swal.fire({
           title: 'ERROR',
-          text: 'POR FAVOR LLENE LOS CAMPOSs',
+          text: 'POR FAVOR LLENE LOS CAMPOS',
           icon: 'error',
           customClass: {
             popup: 'bg-dark',
@@ -739,7 +851,7 @@ export class ActaMovimientoComponent implements OnInit {
 
       } else if (this.TipoEntrega == '2') {
 
-        if (this.GuiaTrasportadora == "" || this.BodegaEntra == "" || this.BodegaSale == "" || this.guardarValorOnts.length == 0) {
+        if (this.GuiaTrasportadora == "" || this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
 
           Swal.fire({
             title: 'ERROR',
@@ -768,6 +880,7 @@ export class ActaMovimientoComponent implements OnInit {
         } else {
 
           Swal.fire({
+
             title: '¿Estás seguro?',
             text: 'Por favor Verifique que la informacion este correcta, ya que no podra modificar la informacion despues de crear el acta!',
             icon: 'warning',
@@ -826,6 +939,8 @@ export class ActaMovimientoComponent implements OnInit {
         }
 
       } else {
+
+        console.log(this.BodegaEntra);
 
         Swal.fire({
           title: '¿Estás seguro?',
@@ -889,10 +1004,10 @@ export class ActaMovimientoComponent implements OnInit {
 
     }else if (this.RazonMovimiento == '14' || this.RazonMovimiento == '18' || this.RazonMovimiento == '17'){
 
-      if (this.BodegaEntra == "" || this.BodegaSale == "" || this.guardarValorOnts.length == 0) {
+      if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
         Swal.fire({
           title: 'ERROR',
-          text: 'POR FAVOR LLENE LOS CAMPOSs',
+          text: 'POR FAVOR LLENE LOS CAMPOS',
           icon: 'error',
           customClass: {
             popup: 'bg-dark',
@@ -965,10 +1080,10 @@ export class ActaMovimientoComponent implements OnInit {
 
     }else if(this.RazonMovimiento == '15'){
 
-      if ( this.BodegaSale == "" || this.guardarValorOnts.length == 0) {
+      if ( this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
         Swal.fire({
           title: 'ERROR',
-          text: 'POR FAVOR LLENE LOS CAMPOSs',
+          text: 'POR FAVOR LLENE LOS CAMPOS',
           icon: 'error',
           customClass: {
             popup: 'bg-dark',
