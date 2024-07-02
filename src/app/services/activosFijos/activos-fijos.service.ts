@@ -313,15 +313,9 @@ buscarActivoFijoMoverTecnicos(buscar:string){
 
   obtenerClienteServicios(numServicio:string){
 
-    const token = this.loginServices.getToken();
-    const header = this.loginServices.getAuthHeadersLogin();
+    const headers = this.loginServices.getAuthHeaders();
 
-    const body = new URLSearchParams();
-
-    body.set('json', JSON.stringify({"claseservicio":[],"status":[],"criteria":["nservicio"],"value":numServicio,"page":0,"limit":10}));
-    body.set('authorization',token)
-
-    return this.http.post("https://www.bitwan.info/api/public/servicios/searchserviciobycriteria", body.toString() , {headers:header})
+    return this.http.get(`https://www.bitwan.info/api/public/servicios/getbasicserviciobynumero/${numServicio}` ,  {headers})
 
 
   }

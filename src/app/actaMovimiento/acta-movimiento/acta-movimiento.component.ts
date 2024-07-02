@@ -43,6 +43,7 @@ export class ActaMovimientoComponent implements OnInit {
   ServicioDelClienteEspecifico:any = "";
   archivoCapturado: any;
   combinedData:any;
+  clickedActivos: number[] = [];
   //----------------------------------------------------------------------------------//
 
   //variable que sirve para especificar por que columna va a buscar registros el usuario
@@ -91,6 +92,7 @@ export class ActaMovimientoComponent implements OnInit {
   guardarAllMovimientos: any;
   nombreTecnicoCompleto:any;
   public buscarActivos: any;
+  public buscarActivosActaVer: any;
   //------------------------------------------------------
 
 
@@ -1480,6 +1482,7 @@ export class ActaMovimientoComponent implements OnInit {
     this.activosFijos.getBodegas(this.valorNombreBodega).subscribe(Bodegas => {
 
       this.guardarServicio = Bodegas;
+      console.log(this.guardarServicio);
 
     })
 
@@ -1633,12 +1636,19 @@ export class ActaMovimientoComponent implements OnInit {
 
         this.guardarClienteRetirar = cliente;
 
+        console.log( this.guardarClienteRetirar);
+
         this.activosFijos.obtenerClienteServicios(this.BodegaSale).subscribe((res:any)=>{
+
+          console.log(res);
 
            this.combinedData = {
             cliente: this.guardarClienteRetirar,
             servicios: res.data
           };
+
+          console.log(this.combinedData);
+
 
           if( this.guardarClienteRetirar.length>1){
 
@@ -1668,7 +1678,7 @@ export class ActaMovimientoComponent implements OnInit {
             this.ocultarBotonBuscarCliente = false;
 
             this.condicionVariosServiciosCliente = false;
-            this.BodegaSale = this.combinedData.servicios[0].numeroservicio
+            this.BodegaSale = this.combinedData.servicios.numeroservicio
             this.guardarValorOnts = this.combinedData.cliente[0].numeroActivo
             this.ocultarBotonCrearActa = true;
             this.mostrarInfoClienteRetirar = true;
@@ -1868,7 +1878,16 @@ export class ActaMovimientoComponent implements OnInit {
     this.ocultarNombreCompletoTecnico = false
   }
 
-
+  confirmarActivoFijo(numeroActivo: number): void {
+    const index = this.clickedActivos.indexOf(numeroActivo);
+    if (index > -1) {
+      // Si el elemento ya está en la lista, quítalo
+      this.clickedActivos.splice(index, 1);
+    } else {
+      // Si el elemento no está en la lista, agrégalo
+      this.clickedActivos.push(numeroActivo);
+    }
+  }
 
 }
 

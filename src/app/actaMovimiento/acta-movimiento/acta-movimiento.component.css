@@ -132,3 +132,7 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-left: -20px;
 }
 
+
+.green-highlight {
+  color: green;
+}
