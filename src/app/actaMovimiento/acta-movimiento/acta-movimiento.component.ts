@@ -44,6 +44,8 @@ export class ActaMovimientoComponent implements OnInit {
   archivoCapturado: any;
   combinedData:any;
   clickedActivos: number[] = [];
+  botonesPresionados: { [id: string]: boolean } = {};
+  idActaActualBotonVer: string | null = null;
   //----------------------------------------------------------------------------------//
 
   //variable que sirve para especificar por que columna va a buscar registros el usuario
@@ -73,6 +75,7 @@ export class ActaMovimientoComponent implements OnInit {
   ocultarBotonBuscarClienteInstalacion:boolean = false;
   mostrarInfoClienteInstalar:boolean = false;
   ocultarBotonBorrarClienteInstalacion:boolean = false;
+
   //---------------------------------------------------------------------------------------//
 
 
@@ -1538,6 +1541,9 @@ export class ActaMovimientoComponent implements OnInit {
   //funcion que sirve para visualizar en una ventana modal las ont que estan vinculas a una acta de movimiento ya sea en estado acetada pendiente o rechazada
   verOntsDeLasActas(idActa: string) {
 
+    this.botonesPresionados[idActa] = true;
+    this.idActaActualBotonVer = idActa;
+
     this.activosFijos.getAllActas(idActa).subscribe(guardarActa => {
       this.guardarActa = guardarActa;
 
@@ -1887,6 +1893,17 @@ export class ActaMovimientoComponent implements OnInit {
       // Si el elemento no está en la lista, agrégalo
       this.clickedActivos.push(numeroActivo);
     }
+  }
+
+
+  cambiarColorPredeterminadoBotonVer(){
+
+    if (this.idActaActualBotonVer) {
+      this.botonesPresionados[this.idActaActualBotonVer] = false;
+      this.idActaActualBotonVer = null;
+    }
+
+
   }
 
 }

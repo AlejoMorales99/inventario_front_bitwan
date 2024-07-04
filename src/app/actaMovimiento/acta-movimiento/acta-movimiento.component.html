@@ -182,7 +182,7 @@
 
                <td>
 
-                <button (click)="verOntsDeLasActas(guardarAllMovimientos.idactaMovimiento)" type="button" class="btn botonVer text-white " data-bs-toggle="modal" data-bs-target="#nuevoModal">
+                <button (click)="verOntsDeLasActas(guardarAllMovimientos.idactaMovimiento)" type="button" class="btn botonVer text-white " [ngClass]="{'verde': botonesPresionados[guardarAllMovimientos.idactaMovimiento]}" data-bs-toggle="modal" data-bs-target="#nuevoModal">
 
                   Ver
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
@@ -804,7 +804,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button (click)="cambiarColorPredeterminadoBotonVer()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         </div>
       </div>
     </div>
