@@ -29,6 +29,7 @@
               <option value="Numero activo fijo">Numero activo fijo</option>
               <option value="Serial">Serial</option>
               <option value="MAC">MAC</option>
+              <option *ngIf="operacionesRol" value="Descripcion">Descripcion</option>
               <option *ngIf="operacionesRol" value="fecha">fecha</option>
               <option *ngIf="operacionesRol" value="categoria">categoria</option>
               <option *ngIf="operacionesRol" value="estado">estado</option>
@@ -125,7 +126,7 @@
                 <td>{{activosFijos.serial}}</td>
                 <td>{{activosFijos.MAC}}</td>
                 <td *ngIf="colTecnicosMostrar">{{activosFijos.referencia_ont}}</td>
-              
+
                 <td>{{activosFijos.descripcion}}</td>
                 <td *ngIf="operacionesRol">{{activosFijos.fechaIngreso}}</td>
                 <td *ngIf="operacionesRol">{{activosFijos.fechaModificacion}}</td>
