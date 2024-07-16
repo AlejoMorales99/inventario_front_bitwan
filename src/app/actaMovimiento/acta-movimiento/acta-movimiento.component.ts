@@ -1210,6 +1210,20 @@ export class ActaMovimientoComponent implements OnInit {
       this.config.sortOrder = 'asc';
       this.config.sortReverse = false;
     }
+
+    // Aplica el filtro según el estado de la columna seleccionada
+    if (columna === 'estadoActaMovimiento') {
+      // Aquí podrías ajustar según los estados que quieres mostrar
+      this.filtrarPorEstado(['Aceptada', 'Pendiente Aceptacion']);
+    } else {
+      // Otros casos de ordenamiento por diferentes columnas
+      // ...
+    }
+  }
+
+  filtrarPorEstado(estados: string[]) {
+    // Filtrar los movimientos por los estados indicados
+    this.guardarAllMovimientos = this.guardarAllMovimientos.filter((movimiento:any) => estados.includes(movimiento.estadoActaMovimiento));
   }
   //------------------------------------------------//
 
