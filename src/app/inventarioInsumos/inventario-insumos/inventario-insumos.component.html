@@ -1,0 +1,239 @@
+<app-navbar></app-navbar>
+
+<div class="container-fluid slide-in mt-5 p-5 ">
+
+
+
+  <div class="row borderTable ">
+
+
+
+    <div class="fondoTable  text-white text-center p-3 ">
+      INVENTARIO INSUMOS
+    </div>
+
+
+    <div class="col-md-12">
+
+      <div class="row  rounded table-responsive">
+
+        <div class="mb-3 d-md-flex flex-md-row flex-md-nowrap align-items-center mt-4">
+
+          <input class="form-control mx-2 mb-2 mb-md-0 bg-dark border-secondary text-white w-auto w-md-25" placeholder="BUSCAR INSUMO"
+            type="search" name="search" [(ngModel)]="buscarInsumo" autocomplete="on">
+          <button *ngIf="operacionesRol" (click)="aumentarInsumos()" type="button" class="btn btn-primary mx-5"
+            data-bs-toggle="modal" data-bs-target="#modalinsumos">Aumentar insumos</button>
+
+            <button *ngIf="operacionesRol"  type="button" class="btn btn-info text-white mx-5"
+            data-bs-toggle="modal" data-bs-target="#modalinsumosHistorial">Ver historial de compras</button>
+
+        </div>
+
+
+
+        <table class="table insumos-table  text-white hover text-center">
+          <thead>
+            <tr>
+              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('nombreInsumo')"
+                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'nombreInsumo' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'nombreInsumo' && config.sortOrder === 'desc'}">
+                NOMBRE INSUMO</th>
+              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('totalEntradaInsumos')"
+                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'totalEntradaInsumos' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'totalEntradaInsumos' && config.sortOrder === 'desc'}">
+                TOTAL ENTRADA INSUMOS</th>
+
+                <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('totalSalidaInsumos')"
+                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'totalSalidaInsumos' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'totalSalidaInsumos' && config.sortOrder === 'desc'}">
+                TOTAL SALIDA INSUMOS</th>
+
+                <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('totalInsumosExistentes')"
+                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'totalInsumosExistentes' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'totalInsumosExistentes' && config.sortOrder === 'desc'}">
+                TOTAL EXISTENTE</th>
+
+                <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('stockMinimo')"
+                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'stockMinimo' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'stockMinimo' && config.sortOrder === 'desc'}">
+                STOCK MINIMO</th>
+
+                <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('stockOptimo')"
+                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'stockOptimo' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'stockOptimo' && config.sortOrder === 'desc'}">
+                STOCK OPTIMO</th>
+
+                <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('estadoStock')"
+                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'estadoStock' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'estadoStock' && config.sortOrder === 'desc'}">
+                ESTADO</th>
+
+
+
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr  *ngFor="let insumosAll of insumosAll | filter:buscarInsumo | orderBy:config.sortKey:config.sortReverse | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"[ngClass]="{'bajo': insumosAll.estadoStock === 'bajo', 'optimo': insumosAll.estadoStock === 'optimo'}">
+
+              <td>{{insumosAll.nombreInsumo}}</td>
+              <td>{{insumosAll.totalEntradaInsumos | number:'1.0-0'}}</td>
+              <td>{{insumosAll.totalSalidaInsumos | number:'1.0-0'}}</td>
+              <td>{{ insumosAll.totalInsumosExistentes | number:'1.0-0' }}</td>
+              <td>{{insumosAll.stockMinimo | number:'1.0-0'}}</td>
+              <td>{{insumosAll.stockOptimo | number:'1.0-0'}}</td>
+              <td>{{insumosAll.estadoStock}}</td>
+            </tr>
+
+
+          </tbody>
+        </table>
+        <div class="d-flex  justify-content-center mt-3 flex-wrap">
+
+
+          <label class="text-white" for="itemsPerPage">Registros por página:</label>
+          <div class="mx-2" >
+            <select class="form-select w-100 bg-dark text-white border-secondary mx-2" id="itemsPerPage" [(ngModel)]="itemsPerPage" (change)="actualizarPaginacion()">
+              <option value="15">15</option>
+              <option value="20">20</option>
+              <option value="25">25</option>
+              <option value="30">30</option>
+              <!-- Agrega más opciones según tus necesidades -->
+            </select>
+          </div>
+
+        <pagination-controls (pageChange)="page = $event" class="custom-pagination text-white " previousLabel="Anterior"
+        nextLabel="Siguiente"></pagination-controls>
+      </div>
+
+
+      </div>
+
+    </div>
+
+
+
+  </div> <br> <br><br>
+
+
+
+  <!--MODAL PARA REGISTRAR O AUMENTAR INSUMOS-->
+  <div class="modal fade  " id="modalinsumos" tabindex="-1" aria-labelledby="modalinsumos" aria-hidden="true">
+    <div class="modal-dialog  ">
+      <div class="modal-content bg-dark text-white ">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{contextoOperacion}}</h5>
+          <button *ngIf="habilitarInputSelectInsumos" class="btn btn-primary mx-5" (click)="func_nuevoInsumo()"  >NUEVO INSUMO</button>
+          <button *ngIf="habilitarInputNuevoInsumos" class="btn btn-danger mx-5" (click)="func_viejoInsumo()"  >deshacer cambio</button>
+          <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+
+          <form>
+
+            <div class="row">
+
+              <div class="col-md-12">
+
+                <div *ngIf="habilitarInputSelectInsumos">
+                  <label class="form-label">Selecione el Insumo a Aumentar</label>
+                  <select name="nuevoInsumo" [(ngModel)]="nuevoInsumo" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
+                    <option *ngFor="let insumosAll of insumosAll" selected value="{{insumosAll.nombreInsumo}}">{{insumosAll.nombreInsumo}}</option>
+                  </select>
+                </div>
+
+                <div *ngIf="habilitarInputNuevoInsumos" class="mb-3">
+                  <label class="form-label">Nombre Insumo Nuevo</label>
+                  <input type="text"  name="nuevoInsumo"  placeholder="Ingresa el nuevo insumo" [(ngModel)]="nuevoInsumo"  class="form-control bg-dark border-secondary text-white">
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Cantidad a Registrar</label>
+                  <input type="text"  name="cantidadNuevoInsumos"  placeholder="Ingresa la cantidad del insumo" [(ngModel)]="cantidadNuevoInsumos"  class="form-control bg-dark border-secondary text-white" (input)="onInput($event)">
+                </div>
+
+                <div *ngIf="habilitarInputNuevoInsumos" class="mb-3">
+                  <label class="form-label">Stock minimo del nuevo insumo</label>
+                  <input type="text"  name="stockMinimoInsumo"  placeholder="Ingresa el stock minimo que desea para el nuevo insumo" [(ngModel)]="stockMinimoInsumo"  class="form-control bg-dark border-secondary text-white">
+                </div>
+
+
+
+                <label class="form-label">Proveedor</label>
+                <select  name="proveedor" [(ngModel)]="proveedor" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
+                  <option *ngFor="let proveedor of prooveedorInventario"  value="{{proveedor.idproveedorInven}}"  >{{proveedor.nombre}}</option>
+                </select>
+
+                <label class="form-label">Marca</label>
+                <select name="marcaText" [(ngModel)]="marcaText"  class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
+                  <option *ngFor="let marca of marcas" value="{{marca.idmarca}}" >{{marca.marcacol}}</option>
+                </select>
+
+
+              </div>
+
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button (click)="postInsumos()" type="button" class="btn btn-primary">{{contextoOperacionBoton}}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!--MODAL PARA VER EL HISTORIAL DE COMPRAS DE INSUMOS-->
+  <div class="modal fade  " id="modalinsumosHistorial" tabindex="-1" aria-labelledby="modalinsumosHistorial" aria-hidden="true">
+    <div class="modal-dialog modal-lg ">
+      <div class="modal-content bg-dark text-white ">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Historial Compras Insumos</h5>
+
+          <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <table class="table">
+
+            <thead>
+              <tr>
+                <th scope="col" class="tamañoTitulos text-white">NOMBRE INSUMO</th>
+                <th scope="col" class="tamañoTitulos text-white">CANTIDAD COMPRA</th>
+                <th scope="col" class="tamañoTitulos text-white">USUARIO REGISTRO</th>
+                <th scope="col" class="tamañoTitulos text-white">FECHA REGISTRO</th>
+                <th scope="col" class="tamañoTitulos text-white">MARCA COMPRA</th>
+                <th scope="col" class="tamañoTitulos text-white">PROVEEDOR COMPRA</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <!-- <tr  *ngFor="let insumosAll of insumosAll | filter:buscarInsumo | orderBy:config.sortKey:config.sortReverse | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"[ngClass]="{'bajo': insumosAll.estadoStock === 'bajo', 'optimo': insumosAll.estadoStock === 'optimo'}">
+
+                <td>{{insumosAll.nombreInsumo}}</td>
+                <td>{{insumosAll.totalEntradaInsumos | number:'1.0-0'}}</td>
+                <td>{{insumosAll.totalSalidaInsumos | number:'1.0-0'}}</td>
+                <td>{{ insumosAll.totalInsumosExistentes | number:'1.0-0' }}</td>
+                <td>{{insumosAll.stockMinimo | number:'1.0-0'}}</td>
+                <td>{{insumosAll.stockOptimo | number:'1.0-0'}}</td>
+                <td>{{insumosAll.estadoStock}}</td>
+              </tr> -->
+
+
+            </tbody>
+
+          </table>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button  type="button" class="btn btn-success">Generar Reporte Excel</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <ng-progress></ng-progress>

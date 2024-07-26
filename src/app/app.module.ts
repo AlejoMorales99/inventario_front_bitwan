@@ -43,6 +43,8 @@ import { EditarCategoriaComponent } from './categorias/editarCategoria/editar-ca
 import { EditarEstadoComponent } from './estados/editarEstado/editar-estado/editar-estado.component';
 import { EditarProveedorComponent } from './proveedores/editarProveedor/editar-proveedor/editar-proveedor.component';
 import { EditarTipoDeEquipoComponent } from './tipoEquipo/editarTipoDeEquipo/editar-tipo-de-equipo/editar-tipo-de-equipo.component';
+import { InventarioInsumosComponent } from './inventarioInsumos/inventario-insumos/inventario-insumos.component';
+
 
 
 
@@ -56,6 +58,9 @@ const appRoutes: Routes = [
 
   //ruta donde se muestra la vista de los activos fijos de la base de datos de mysql
   { path: 'inventarioActivosFijos' , component: ConsultarInventarioComponent},
+
+  //ruta para acceder al inventario de insumos
+  { path: 'inventarioInsumos' , component: InventarioInsumosComponent},
 
   //referencias
   { path: 'referenciasActivosFijos' , component: ReferenciasComponent},
@@ -144,6 +149,7 @@ const appRoutes: Routes = [
     EditarEstadoComponent,
     EditarProveedorComponent,
     EditarTipoDeEquipoComponent,
+    InventarioInsumosComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

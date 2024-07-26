@@ -153,8 +153,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
     } else {
 
-      this.categoriasInventario = [];
-      this.prooveedorInventario = [];
+   
 
 
       if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ' || usuario.data.nombres=='MILTON FERLEY') {
@@ -162,16 +161,14 @@ export class ConsultarInventarioComponent implements OnInit {
         this.servicioActivosFijos.getActivosFijos().subscribe(activosFijos => {
           this.activosFijosInventario = activosFijos;
 
-          if(this.activosFijosInventario.length>0){
+         /*  if(this.activosFijosInventario.length>0){
             this.originalActivosFijos = [...this.activosFijosInventario];
           }else{
             this.originalActivosFijos = "";
-          }
+          } */
 
 
         });
-
-
 
         this.operacionesRol = true;
       } else {
@@ -180,12 +177,12 @@ export class ConsultarInventarioComponent implements OnInit {
         this.servicioActivosFijos.getActivosFijosTecnicos().subscribe(activosFijos => {
           this.activosFijosInventario = activosFijos;
 
-          if(this.activosFijosInventario.length>0){
+         /*  if(this.activosFijosInventario.length>0){
             this.originalActivosFijos = [...this.activosFijosInventario];
           }else{
             this.originalActivosFijos = "";
 
-          }
+          } */
         });
 
         this.validarTotalOnts = true;
@@ -197,44 +194,6 @@ export class ConsultarInventarioComponent implements OnInit {
         this.operacionesRol = false;
       }
 
-
-
-
-      //funcion que trae todas las categorias de la empresa por medio de una api en node.js
-      this.categoriaServices.getCategorias().subscribe(categorias => {
-        this.categoriasInventario = categorias;
-
-      })
-
-      //funcion que trae todos los wifis de la empresa por medio de una api en node.js
-      this.wifiService.getWifi().subscribe(wifi => {
-        this.wifiInventario = wifi;
-
-      })
-
-      //funcion que trae las marcas de las onts de la empresa por medio de una api en node.js
-      this.marcaServices.getMarca().subscribe(marca => {
-        this.marcaInventario = marca;
-
-      })
-
-
-      //funcion que trae todos los tipos de nodos de la empresa por medio de una api en node.js
-      this.nodoServices.getNodo().subscribe(nodo => {
-        this.nodoInventario = nodo;
-
-      })
-
-      //funcion que trae todos los proveedores de la empresa por medio de una api en node.js
-      this.proveedorServices.getProveedor().subscribe(proveedor => {
-        this.prooveedorInventario = proveedor;
-
-      })
-
-      this.referenciasServices.getReferencias().subscribe(referencia => {
-        this.referenciaInventario = referencia;
-
-      })
     }
   }
 
@@ -398,7 +357,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
   }
 
-  filterData(): void {
+  /* filterData(): void {
     if (!this.searchValue || this.searchValue.trim() === '') {
       // Si el input está vacío, restablecemos los datos originales sin aplicar filtro
       this.activosFijosInventario = [...this.originalActivosFijos]; // Restaurar datos originales
@@ -416,7 +375,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
       this.activosFijosInventario = filteredData;
     }
-  }
+  } */
 
 
 
@@ -654,7 +613,50 @@ export class ConsultarInventarioComponent implements OnInit {
   }
 
   focusSerialInicio(){
+
     this.miInput.nativeElement.focus();
+
+
+
+
+      //funcion que trae todas las categorias de la empresa por medio de una api en node.js
+      this.categoriaServices.getCategorias().subscribe(categorias => {
+        this.categoriasInventario = categorias;
+
+      })
+
+      //funcion que trae todos los wifis de la empresa por medio de una api en node.js
+      this.wifiService.getWifi().subscribe(wifi => {
+        this.wifiInventario = wifi;
+
+      })
+
+      //funcion que trae las marcas de las onts de la empresa por medio de una api en node.js
+      this.marcaServices.getMarca().subscribe(marca => {
+        this.marcaInventario = marca;
+
+      })
+
+
+      //funcion que trae todos los tipos de nodos de la empresa por medio de una api en node.js
+      this.nodoServices.getNodo().subscribe(nodo => {
+        this.nodoInventario = nodo;
+
+      })
+
+      //funcion que trae todos los proveedores de la empresa por medio de una api en node.js
+      this.proveedorServices.getProveedor().subscribe(proveedor => {
+        this.prooveedorInventario = proveedor;
+
+      })
+
+      this.referenciasServices.getReferencias().subscribe(referencia => {
+        this.referenciaInventario = referencia;
+
+      })
+
+
+
   }
 
   vaciar() {

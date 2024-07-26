@@ -1,0 +1,52 @@
+.fondoTable{
+  background-color: #0099ef;
+}
+
+::-webkit-scrollbar {
+  width: 10px; /* Ancho del scroll */
+}
+
+::-webkit-scrollbar-track {
+  background: #24292E; /* Color de fondo del track (fondo detrás del scroll) */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Color del thumb (la parte arrastrable del scroll) */
+}
+
+td  {
+  border-color: gray;
+}
+
+th{
+  border-color: gray;
+}
+
+.borderTable{
+  border: solid 1px #0099ef;
+  border-radius: 4px;
+  box-shadow: 5px 5px 10px 0px rgba(0,0,0,0.75);
+}
+
+.tamañoTitulos{
+  font-size: 12px;
+}
+
+/* Define la animación de parpadeo */
+@keyframes parpadeo {
+  0% { background-color: #f07272; } /* Rojo claro, más intenso */
+  25% { background-color: #ee5a5a; } /* Rojo más intenso */
+  50% { background-color: #f84b4b; } /* Rojo aún más intenso */
+  75% { background-color: #ff0202; } /* Rojo intenso */
+  100% { background-color: #fa0707; } /* Regresa al rojo claro */
+}
+
+
+.bajo {
+
+  animation: parpadeo 1s infinite; /* Duración de 1 segundo y repetición infinita */
+}
+
+.optimo {
+  background-color: #1a662d; /* Slightly more intense light green */
+}

@@ -79,7 +79,7 @@
 
             </button>
 
-            <button *ngIf="operacionesRol" type="button" class="btn botonesActa fondoTable text-white mx-2 w-50 mb-3 mx-md-5"data-bs-toggle="modal" data-bs-target="#modalSegundo">
+            <button *ngIf="operacionesRol" type="button" class="btn botonesActa fondoTable text-white mx-2 w-50 mb-3 mx-md-5"data-bs-toggle="modal" (click)="focusSerialInicio()" data-bs-target="#modalSegundo">
 
 
               Registrar activo fijo manual
