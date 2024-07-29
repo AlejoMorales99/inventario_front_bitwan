@@ -121,7 +121,7 @@
             </thead>
             <tbody>
 
-               <tr class="animacion" *ngFor="let activosFijos of activosFijosInventario  | orderBy:config.sortKey:config.sortReverse   | paginate: { itemsPerPage: itemsPerPage, currentPage:  page } " >
+               <tr class="animacion" *ngFor="let activosFijos of activosFijosInventario  | orderBy:config.sortKey:config.sortReverse  " >
                 <td>{{activosFijos.numeroActivo}} </td>
                 <td>{{activosFijos.serial}}</td>
                 <td>{{activosFijos.MAC}}</td>
@@ -157,26 +157,27 @@
 
             </tbody>
           </table>
-          <div class="d-flex  justify-content-center mt-3 flex-wrap">
+          <div class="d-flex justify-content-center mt-3 flex-wrap">
+            <label class="text-white" for="itemsPerPage">Registros por página:</label>
+            <div class="mx-2">
+              <select class="form-select w-100 bg-dark text-white border-secondary mx-2" id="itemsPerPage" [(ngModel)]="itemsPerPage" (change)="itemsPerPageChange()">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="40">40</option>
+                <option value="80">80</option>
+                <option value="160">160</option>
+                <option value="320">320</option>
+              </select>
+            </div>
 
-
-              <label class="text-white" for="itemsPerPage">Registros por página:</label>
-              <div class="mx-2" >
-                <select class="form-select w-100 bg-dark text-white border-secondary mx-2" id="itemsPerPage" [(ngModel)]="itemsPerPage" (change)="actualizarPaginacion()">
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="40">40</option>
-                  <option value="80">80</option>
-                  <option value="160">160</option>
-                  <option value="320">320</option>
-                  <!-- Agrega más opciones según tus necesidades -->
-                </select>
-              </div>
-
-            <pagination-controls (pageChange)="page = $event" class="custom-pagination text-white" previousLabel="Anterior"
-            nextLabel="Siguiente"></pagination-controls>
+            <div class="pagination-controls mx-3 custom-pagination  border-secondary text-white subirPaginacion">
+              <button class="pagination-btn" (click)="pageChange(page - 1)" [disabled]="page === 1">Anterior</button>
+              <ng-container *ngFor="let p of pageRange">
+                <button class="pagination-btn" (click)="pageChange(p)" [class.active]="p === page">{{p}}</button>
+              </ng-container>
+              <button class="pagination-btn" (click)="pageChange(page + 1)" [disabled]="page === totalPages">Siguiente</button>
+            </div>
           </div>
-
 
         </div>
 

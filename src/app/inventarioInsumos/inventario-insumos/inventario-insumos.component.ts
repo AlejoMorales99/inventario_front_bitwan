@@ -32,14 +32,23 @@ export class InventarioInsumosComponent {
   marcaText: string = "";
 
 
+  columnaFiltroPersonalizado:any;
+
 
   insumosAll: any;
+  historialInsumosAll:any
   prooveedorInventario: any;
   marcas: any;
 
 
+  fechaInicio:any;
+  fechaFin:any;
+
   habilitarInputNuevoInsumos: boolean = false;
   habilitarInputSelectInsumos: boolean = true;
+  habilitarInputsFiltrosPersonalizados: boolean = false;
+  desahabilitarBuscadorDinamico:boolean = true;
+  ActivarFechaInicio:boolean = false;
   condicionNuevoInsumos: number = 0;
 
   //variable para que el registro en la tabla lo muestre desde la pagina 1
@@ -48,11 +57,13 @@ export class InventarioInsumosComponent {
 
   //variable para hacer posible la busqyeda de los registros
   public buscarInsumo: any;
+  public buscarHistorialInsumo: any;
   //------------------------------------------------------
 
 
   //variable para cambiar la cantidad de registros a mostrar
   itemsPerPage: number = 15; // Valor predeterminado
+
   //---------------------------------------------------------------//
 
 
@@ -107,6 +118,19 @@ export class InventarioInsumosComponent {
 
 
     }
+
+
+  }
+
+  getAllHistorialInsumos(){
+
+    this.servicesInsumos.getAllHistorialInsumos().subscribe(res=>{
+
+
+      this.historialInsumosAll = res;
+
+
+    })
 
 
   }
@@ -327,6 +351,23 @@ export class InventarioInsumosComponent {
   }
 
 
+  BuscarRegistrosFiltroPersonalizado(){
+
+    console.log(this.fechaFin,this.fechaInicio);
+
+  }
+
+  funt_FiltroPersonalizado(event:any){
+
+    if(event.target.value == "fechaInicioFin"){
+      this.ActivarFechaInicio = true;
+    }else{
+      this.ActivarFechaInicio = false;
+    }
+
+ 
+
+  }
 
 
   func_nuevoInsumo() {
@@ -361,6 +402,15 @@ export class InventarioInsumosComponent {
     this.contextoOperacionBoton = "Aumentar insumo";
   }
 
+  filtroPersonalizado(){
+  this.habilitarInputsFiltrosPersonalizados = true;
+  this.desahabilitarBuscadorDinamico = false;
+  }
+  
+  activarFiltroDinamico(){
+    this.habilitarInputsFiltrosPersonalizados = false;
+    this.desahabilitarBuscadorDinamico = true;
+  }
 
   onInput(event: any): void {
     const value = event.target.value.replace(/\D/g, ''); // Remove all non-digit characters
@@ -374,6 +424,8 @@ export class InventarioInsumosComponent {
     }
     return parseFloat(value).toLocaleString('de-DE'); // Formats the number with dots
   }
+
+
 
 
 

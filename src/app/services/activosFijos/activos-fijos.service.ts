@@ -4,6 +4,7 @@ import { LoginService } from '../login/login.service';
 
 
 import { environment } from '../../../../dotenv';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -46,11 +47,11 @@ export class ActivosFijosService {
 
   }
 
-  getActivosFijos(){
+  getActivosFijos(page: number, itemsPerPage: number): Observable<any>{
 
     const headers = this.loginServices.getAuthHeaders();
 
-    return this.http.get(`${this.urlActivosFijos}/getActivosFijos` , {headers} )
+    return this.http.get(`${this.urlActivosFijos}/getActivosFijos/${page}/${itemsPerPage}` , {headers} )
   }
 
   getActivosFijosTecnicos(){

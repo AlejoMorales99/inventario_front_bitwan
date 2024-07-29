@@ -50,3 +50,12 @@ th{
 .optimo {
   background-color: #1a662d; /* Slightly more intense light green */
 }
+
+.bajarTamañoSelectBuscadorInsumos{
+  width: 160px;
+}
+
+
+.custom-modal .modal-dialog {
+  max-width: 70%; /* Ajusta el porcentaje según lo necesites */
+}

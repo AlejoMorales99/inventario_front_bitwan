@@ -38,9 +38,6 @@ export class ConsultarInventarioComponent implements OnInit {
 
   colTecnicosMostrar:boolean = false;
 
-  //variable para que el registro en la tabla lo muestre desde la pagina 1
-  page: number = 1;
-  //---------------------------------------------------------------------
 
   //variable para hacer posible la busqyeda de los registros
   filtroSerialMAC: string = '';
@@ -76,6 +73,10 @@ export class ConsultarInventarioComponent implements OnInit {
 
   //variable para cambiar la cantidad de registros a mostrar
   itemsPerPage: number = 10; // Valor predeterminado
+  page: number = 1;
+  totalItems: number = 0; // Total de registros
+  totalPages: number = 0; // Total de páginas
+  pageRange: number[] = [];
   //---------------------------------------------------------------//
 
 
@@ -153,22 +154,12 @@ export class ConsultarInventarioComponent implements OnInit {
 
     } else {
 
-   
+
 
 
       if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ' || usuario.data.nombres=='MILTON FERLEY') {
 
-        this.servicioActivosFijos.getActivosFijos().subscribe(activosFijos => {
-          this.activosFijosInventario = activosFijos;
-
-         /*  if(this.activosFijosInventario.length>0){
-            this.originalActivosFijos = [...this.activosFijosInventario];
-          }else{
-            this.originalActivosFijos = "";
-          } */
-
-
-        });
+        this.loadPage(this.page);
 
         this.operacionesRol = true;
       } else {
@@ -378,7 +369,24 @@ export class ConsultarInventarioComponent implements OnInit {
   } */
 
 
+    loadPage(page: number):void {
+      this.page = page;
+      this.servicioActivosFijos.getActivosFijos(this.page, this.itemsPerPage).subscribe(activosFijos => {
 
+        this.activosFijosInventario = activosFijos.data;
+        this.totalItems = activosFijos.total
+        this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+        this.updatePageRange();
+
+       /*  if(this.activosFijosInventario.length>0){
+          this.originalActivosFijos = [...this.activosFijosInventario];
+        }else{
+          this.originalActivosFijos = "";
+        } */
+
+
+      });
+    }
 
   //funcion para implementar el short en la tabla
   cambiarOrden(columna: string) {
@@ -393,11 +401,35 @@ export class ConsultarInventarioComponent implements OnInit {
   }
   //------------------------------------------------//
 
-  actualizarPaginacion() {
-    // Reiniciar la paginación a la primera página cuando se cambie la cantidad de registros por página
-    this.page = 1;
+  pageChange(newPage: number): void {
+    if (newPage > 0 && newPage <= this.totalPages) {
+      this.loadPage(newPage);
+    }
   }
 
+  itemsPerPageChange() {
+    this.page = 1; // Reinicia a la primera página
+    this.ngOnInit();
+  }
+
+  getPageRange() {
+    const pages = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  updatePageRange(): void {
+    const range = 5; // Número de páginas a mostrar
+    const startPage = Math.max(1, this.page - Math.floor(range / 2));
+    const endPage = Math.min(this.totalPages, startPage + range - 1);
+
+    this.pageRange = [];
+    for (let i = startPage; i <= endPage; i++) {
+      this.pageRange.push(i);
+    }
+  }
 
   onSelectChange(event: any) {
     this.textoDelSelectExcel = event.target.options[event.target.selectedIndex].text;

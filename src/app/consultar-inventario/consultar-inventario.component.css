@@ -53,6 +53,11 @@ th{
 
 .hidden-scanner {
   display: none;
+  
+}
+
+.subirPaginacion{
+  margin-top:-1px !important;
 }
 
 ::ng-deep .ng-dropdown-panel {
@@ -75,5 +80,53 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1); /* Invertir el color del icono a blanco */
   cursor: pointer;
   background-color: white;
+}
+
+
+/* Estilos para el contenedor de paginación */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+/* Estilo general para los botones de paginación */
+.pagination-btn {
+  background-color: #007bff;
+  border: 1px solid #007bff;
+  color: #fff;
+  padding: 8px 12px;
+  margin: 0 4px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Estilo para los botones de paginación al pasar el ratón */
+.pagination-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Estilo para los botones de paginación deshabilitados */
+.pagination-btn:disabled {
+  background-color: #ccc;
+  border: 1px solid #ccc;
+  cursor: not-allowed;
+}
+
+/* Estilo para el botón activo de la página */
+.pagination-btn.active {
+  background-color: #0056b3;
+  border-color: #0056b3;
+  font-weight: bold;
+}
+
+/* Estilo para el enfoque de los botones de paginación */
+.pagination-btn:not(:disabled):focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
 }
 

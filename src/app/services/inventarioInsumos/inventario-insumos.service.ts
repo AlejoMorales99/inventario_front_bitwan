@@ -24,6 +24,14 @@ export class InventarioInsumosService {
   }
 
 
+  getAllHistorialInsumos(){
+
+    const headers = this.loginServices.getAuthHeaders();
+
+
+    return this.http.get(`${this.urlActivosFijos}/getAllHistorialInsumos` , {headers})
+  }
+
 
   //endPoint para aumentar insumos ya existentes
   postInsumosExistentes(nuevoInsumos:string,cantidadNuevoInsumos:number,proveedor:string,marcaText:string){
