@@ -35,13 +35,15 @@ export class ConsultarInventarioComponent implements OnInit {
   validacionSerial: boolean = true;
   validarMac: boolean = true;
   validarTotalOnts:boolean = false;
-
+  enabledFiltroAdmin:boolean = true;
+  enabledFiltroTecnico:boolean = false;
   colTecnicosMostrar:boolean = false;
 
 
   //variable para hacer posible la busqyeda de los registros
   filtroSerialMAC: string = '';
   public buscarActivos: any = "";
+  public buscarActivoosTecnic: any = "";
   //------------------------------------------------------
 
   //variables para insertar un usuario
@@ -75,8 +77,7 @@ export class ConsultarInventarioComponent implements OnInit {
   itemsPerPage: number = 10; // Valor predeterminado
   page: number = 1;
   totalItems: number = 0; // Total de registros
-  totalPages: number = 0; // Total de páginas
-  pageRange: number[] = [];
+
   //---------------------------------------------------------------//
 
 
@@ -115,6 +116,7 @@ export class ConsultarInventarioComponent implements OnInit {
   public buscadorCondicion:boolean = true;
 
   action:any;
+  condicionBusqueda: number = 0;
 
 
   //aqui hago todas las instancias que necesito
@@ -127,7 +129,6 @@ export class ConsultarInventarioComponent implements OnInit {
     private rout: Router,
     private loginServices: LoginService,
     private servicioActivosFijos: ActivosFijosService,
-    private servicioArticulos: ArticulosInventarioService,
     private referenciasServices: ReferenciasService) { }
 
   //funcion que se ejecuta apenas empieze se inicie la pagina
@@ -159,11 +160,16 @@ export class ConsultarInventarioComponent implements OnInit {
 
       if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ' || usuario.data.nombres=='MILTON FERLEY') {
 
-        this.loadPage(this.page);
+        this.servicioActivosFijos.getActivosFijos(this.page, this.itemsPerPage).subscribe(response => {
+        this.activosFijosInventario = response.data;
+        this.totalItems = response.total;
+
+    });
 
         this.operacionesRol = true;
       } else {
-
+        this.enabledFiltroAdmin = false;
+        this.enabledFiltroTecnico = true;
         this.colTecnicosMostrar = true;
         this.servicioActivosFijos.getActivosFijosTecnicos().subscribe(activosFijos => {
           this.activosFijosInventario = activosFijos;
@@ -189,7 +195,7 @@ export class ConsultarInventarioComponent implements OnInit {
   }
 
   buscarRegistro(){
-
+    this.condicionBusqueda = 1;
     if(this.buscarActivos!= "" && this.selectedColumn== "mostrarTodo" ){
 
       Swal.fire({
@@ -218,9 +224,9 @@ export class ConsultarInventarioComponent implements OnInit {
           }
         });
       }else{
-        this.servicioActivosFijos.buscarRegistrosPorFechaAndServicio(this.buscarActivos,this.selectedColumn,this.fechaInicio,this.fechaFin).subscribe(registros=>{
+        this.servicioActivosFijos.buscarRegistrosPorFechaAndServicio(this.buscarActivos,this.selectedColumn,this.fechaInicio,this.fechaFin,this.page, this.itemsPerPage).subscribe(registros=>{
 
-          if(registros == ""){
+          if(registros.data == ""){
             Swal.fire({
               title: 'ERROR',
               text: `NO SE ENCONTRO EL REGISTRO ${this.buscarActivos} de la columna ${this.selectedColumn}`,
@@ -232,9 +238,9 @@ export class ConsultarInventarioComponent implements OnInit {
               }
             });
           }else{
-            this.page = 1
-            this.buscarActivos = ""
-            this.activosFijosInventario = registros
+
+            this.activosFijosInventario = registros.data
+              this.totalItems = registros.total[0].total
           }
 
         })
@@ -267,8 +273,8 @@ export class ConsultarInventarioComponent implements OnInit {
             }
           });
         } else {
-          this.servicioActivosFijos.buscarRegistros(this.buscarActivos, this.selectedColumn).subscribe(registros => {
-            if (registros == "") {
+          this.servicioActivosFijos.buscarRegistros(this.buscarActivos, this.selectedColumn,this.page, this.itemsPerPage).subscribe(registros => {
+            if (registros.data == "") {
               Swal.fire({
                 title: 'ERROR',
                 text: `NO SE ENCONTRÓ EL REGISTRO ${this.buscarActivos} de la columna ${this.selectedColumn}`,
@@ -280,9 +286,11 @@ export class ConsultarInventarioComponent implements OnInit {
                 }
               });
             } else {
-              this.page = 1
-              this.buscarActivos = "";
-              this.activosFijosInventario = registros;
+
+
+              this.activosFijosInventario = registros.data
+              this.totalItems = registros.total[0].total
+
             }
           });
         }
@@ -302,9 +310,9 @@ export class ConsultarInventarioComponent implements OnInit {
           });
 
         }else{
-          this.servicioActivosFijos.buscarRegistrosPorFechaAndServicio(this.buscarActivos,this.selectedColumn,this.fechaInicio,this.fechaFin).subscribe(registros=>{
+          this.servicioActivosFijos.buscarRegistrosPorFechaAndServicio(this.buscarActivos,this.selectedColumn,this.fechaInicio,this.fechaFin,this.page, this.itemsPerPage).subscribe(registros=>{
 
-            if(registros == ""){
+            if(registros.data == ""){
               Swal.fire({
                 title: 'ERROR',
                 text: `NO SE ENCONTRO EL REGISTRO ${this.buscarActivos} de la columna ${this.selectedColumn}`,
@@ -316,17 +324,19 @@ export class ConsultarInventarioComponent implements OnInit {
                 }
               });
             }else{
-              this.page = 1
-              this.activosFijosInventario = registros
+
+              this.activosFijosInventario = registros.data
+              this.totalItems = registros.total[0].total
+
             }
 
           })
         }
 
       }else{
-        this.servicioActivosFijos.buscarRegistros(this.buscarActivos,this.selectedColumn).subscribe(registros=>{
-
-          if(registros == ""){
+        this.servicioActivosFijos.buscarRegistros(this.buscarActivos,this.selectedColumn,this.page, this.itemsPerPage).subscribe(registros=>{
+          console.log(registros);
+          if(registros.data == ""){
             Swal.fire({
               title: 'ERROR',
               text: `NO SE ENCONTRO EL REGISTRO ${this.buscarActivos} de la columna ${this.selectedColumn}`,
@@ -338,8 +348,10 @@ export class ConsultarInventarioComponent implements OnInit {
               }
             });
           }else{
-            this.page = 1
-            this.activosFijosInventario = registros
+
+            this.activosFijosInventario = registros.data
+            this.totalItems = registros.total[0].total
+
           }
 
         })
@@ -369,25 +381,6 @@ export class ConsultarInventarioComponent implements OnInit {
   } */
 
 
-    loadPage(page: number):void {
-      this.page = page;
-      this.servicioActivosFijos.getActivosFijos(this.page, this.itemsPerPage).subscribe(activosFijos => {
-
-        this.activosFijosInventario = activosFijos.data;
-        this.totalItems = activosFijos.total
-        this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-        this.updatePageRange();
-
-       /*  if(this.activosFijosInventario.length>0){
-          this.originalActivosFijos = [...this.activosFijosInventario];
-        }else{
-          this.originalActivosFijos = "";
-        } */
-
-
-      });
-    }
-
   //funcion para implementar el short en la tabla
   cambiarOrden(columna: string) {
     if (this.config.sortKey === columna) {
@@ -401,35 +394,17 @@ export class ConsultarInventarioComponent implements OnInit {
   }
   //------------------------------------------------//
 
-  pageChange(newPage: number): void {
-    if (newPage > 0 && newPage <= this.totalPages) {
-      this.loadPage(newPage);
+  actualizarPaginacion() {
+
+    if(this.condicionBusqueda == 1){
+      this.buscarRegistro();
+    }else{
+      this.ngOnInit();
     }
+    // Reiniciar la paginación a la primera página cuando se cambie la cantidad de registros por página
+
   }
 
-  itemsPerPageChange() {
-    this.page = 1; // Reinicia a la primera página
-    this.ngOnInit();
-  }
-
-  getPageRange() {
-    const pages = [];
-    for (let i = 1; i <= this.totalPages; i++) {
-      pages.push(i);
-    }
-    return pages;
-  }
-
-  updatePageRange(): void {
-    const range = 5; // Número de páginas a mostrar
-    const startPage = Math.max(1, this.page - Math.floor(range / 2));
-    const endPage = Math.min(this.totalPages, startPage + range - 1);
-
-    this.pageRange = [];
-    for (let i = startPage; i <= endPage; i++) {
-      this.pageRange.push(i);
-    }
-  }
 
   onSelectChange(event: any) {
     this.textoDelSelectExcel = event.target.options[event.target.selectedIndex].text;
@@ -706,7 +681,7 @@ export class ConsultarInventarioComponent implements OnInit {
     const selectedIndex = evento.options[evento.selectedIndex].text;
 
     if(selectedIndex == "Filtrar todo"){
-
+      this.condicionBusqueda = 0;
       this.ngOnInit();
 
       this.buscarActivos = ""

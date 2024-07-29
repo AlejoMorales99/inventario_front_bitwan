@@ -288,7 +288,7 @@ export class ActaMovimientoComponent implements OnInit {
             }
           });
         } else {
-          this.activosFijos.buscarRegistros(this.buscarActivos, this.selectedColumn).subscribe(registros => {
+          this.activosFijos.buscarRegistros(this.buscarActivos, this.selectedColumn,this.page, this.itemsPerPage).subscribe(registros => {
             if (registros == "") {
               Swal.fire({
                 title: 'ERROR',
@@ -306,7 +306,7 @@ export class ActaMovimientoComponent implements OnInit {
           });
         }
       }else{
-        this.activosFijos.buscarRegistros(this.buscarActivos,this.selectedColumn).subscribe(registros=>{
+        this.activosFijos.buscarRegistros(this.buscarActivos,this.selectedColumn,this.page, this.itemsPerPage).subscribe(registros=>{
 
           if(registros == ""){
             Swal.fire({

@@ -24,7 +24,7 @@
           <div class="mb-3 d-md-flex flex-md-row flex-md-nowrap align-items-center mt-4">
 
 
-            <select   class="form-select botonesActa mx-2  mb-3 w-auto bg-dark text-white border-secondary" (change)="filtroLimpiar($event.target)" [(ngModel)]="selectedColumn">
+            <select *ngIf="enabledFiltroAdmin"  class="form-select botonesActa mx-2  mb-3 w-auto bg-dark text-white border-secondary" (change)="filtroLimpiar($event.target)" [(ngModel)]="selectedColumn">
               <option value="mostrarTodo">Filtrar todo</option>
               <option value="Numero activo fijo">Numero activo fijo</option>
               <option value="Serial">Serial</option>
@@ -38,7 +38,10 @@
               <option *ngIf="operacionesRol" value="fechabodega">fecha/bodega</option>
             </select>
 
-            <input disabled="{{buscadorCondicion}}" (keyup.enter)="buscarRegistro()" class="form-control botonesActa mb-3 w-50 bg-dark border-secondary text-white  " placeholder="BUSCADOR" name="search" [(ngModel)]="buscarActivos" autocomplete="on">
+            <input *ngIf="enabledFiltroTecnico" class="form-control mx-2 mb-2 mb-md-0 bg-dark border-secondary text-white w-auto w-md-25" placeholder="Buscador"
+            type="search" name="search" [(ngModel)]="buscarActivoosTecnic" autocomplete="on">
+
+            <input *ngIf="enabledFiltroAdmin" disabled="{{buscadorCondicion}}" (keyup.enter)="buscarRegistro()" class="form-control botonesActa mb-3 w-50 bg-dark border-secondary text-white  " placeholder="BUSCADOR" name="search" [(ngModel)]="buscarActivos" autocomplete="on">
 
 
 
@@ -53,7 +56,7 @@
               <input *ngIf="fechaReporte" class="form-control bg-dark text-white " type="date" id="fechaFin" [(ngModel)]="fechaFin">
             </div>
 
-            <button style="border: none;" [disabled]="buscadorCondicion" type="button" class="btn botonesActa fondoTable text-white mx-2 w-25 mb-3  mx-md-5" (click)="buscarRegistro()" >
+            <button  *ngIf="enabledFiltroAdmin" style="border: none;" [disabled]="buscadorCondicion" type="button" class="btn botonesActa fondoTable text-white mx-2 w-25 mb-3  mx-md-5" (click)="buscarRegistro()" >
 
 
 
@@ -121,7 +124,7 @@
             </thead>
             <tbody>
 
-               <tr class="animacion" *ngFor="let activosFijos of activosFijosInventario  | orderBy:config.sortKey:config.sortReverse  " >
+               <tr class="animacion" *ngFor="let activosFijos of activosFijosInventario  | filter:buscarActivoosTecnic | orderBy:config.sortKey:config.sortReverse | paginate: { itemsPerPage: itemsPerPage, currentPage:  page,  totalItems: totalItems }  " >
                 <td>{{activosFijos.numeroActivo}} </td>
                 <td>{{activosFijos.serial}}</td>
                 <td>{{activosFijos.MAC}}</td>
@@ -160,25 +163,23 @@
           <div class="d-flex justify-content-center mt-3 flex-wrap">
             <label class="text-white" for="itemsPerPage">Registros por página:</label>
             <div class="mx-2">
-              <select class="form-select w-100 bg-dark text-white border-secondary mx-2" id="itemsPerPage" [(ngModel)]="itemsPerPage" (change)="itemsPerPageChange()">
+              <select class="form-select bg-dark text-white border-secondary w-100 mx-2" id="itemsPerPage"
+                [(ngModel)]="itemsPerPage" (change)="actualizarPaginacion()">
                 <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="40">40</option>
-                <option value="80">80</option>
-                <option value="160">160</option>
-                <option value="320">320</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="500">500</option>
+                <option value="1000">1000</option>
+                <option value="{{totalItems}}">{{totalItems}}</option>
+                <!-- Agrega más opciones según tus necesidades -->
               </select>
             </div>
 
-            <div class="pagination-controls mx-3 custom-pagination  border-secondary text-white subirPaginacion">
-              <button class="pagination-btn" (click)="pageChange(page - 1)" [disabled]="page === 1">Anterior</button>
-              <ng-container *ngFor="let p of pageRange">
-                <button class="pagination-btn" (click)="pageChange(p)" [class.active]="p === page">{{p}}</button>
-              </ng-container>
-              <button class="pagination-btn" (click)="pageChange(page + 1)" [disabled]="page === totalPages">Siguiente</button>
-            </div>
+            <pagination-controls (pageChange)="page = $event; actualizarPaginacion()"
+              class="custom-pagination border-secondary text-white" previousLabel="Anterior" nextLabel="Siguiente">
+            </pagination-controls>
           </div>
-
         </div>
 
     </div>

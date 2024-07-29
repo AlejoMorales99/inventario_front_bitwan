@@ -16,7 +16,7 @@ export class ActivosFijosService {
 
   constructor(private http: HttpClient, private loginServices: LoginService) {}
 
-  buscarRegistros(buscarActivos:string,selectedColumn:string){
+  buscarRegistros(buscarActivos:string,selectedColumn:string, page: number, itemsPerPage: number): Observable<any>{
 
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
@@ -29,10 +29,10 @@ export class ActivosFijosService {
       usuario.data.nombres = usuarioCompleto;
     }
 
-    return this.http.get(`${this.urlActivosFijos}/buscarRegistros/${buscarActivos}/${selectedColumn}/${usuario.data.nombres.trim()}/${usuario.data.idusuario}` , {headers} )
+    return this.http.get(`${this.urlActivosFijos}/buscarRegistros/${buscarActivos}/${selectedColumn}/${usuario.data.nombres.trim()}/${usuario.data.idusuario}/${page}/${itemsPerPage}` , {headers} )
   }
 
-  buscarRegistrosPorFechaAndServicio(servicio:string,columna:string,fechaInicio:string,fechaFin:string){
+  buscarRegistrosPorFechaAndServicio(servicio:string,columna:string,fechaInicio:string,fechaFin:string,page: number, itemsPerPage: number): Observable<any>{
     if(servicio== "" || servicio == undefined){
       servicio = "vacio"
     }
@@ -43,7 +43,7 @@ export class ActivosFijosService {
       usuario.data.nombres = "alcala1";
     }
     console.log(usuario.data.nombres.trim());
-    return this.http.get(`${this.urlActivosFijos}/buscarRegistrosPorFechaAndServicio/${servicio}/${columna}/${fechaInicio}/${fechaFin}/${usuario.data.nombres.trim()}/${usuario.data.idusuario}` , {headers} )
+    return this.http.get(`${this.urlActivosFijos}/buscarRegistrosPorFechaAndServicio/${servicio}/${columna}/${fechaInicio}/${fechaFin}/${usuario.data.nombres.trim()}/${usuario.data.idusuario}/${page}/${itemsPerPage}` , {headers} )
 
   }
 

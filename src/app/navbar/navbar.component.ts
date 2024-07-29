@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+  insumosAdmin: boolean = false;
 
 
 
@@ -32,6 +33,7 @@ export class NavbarComponent implements OnInit {
     this.usuario = this.servicioLogin.getUser();
 
     if(this.usuario.data.nombres == "KAROL YISETH" || this.usuario.data.nombres == "MARI LUZ" || this.usuario.data.nombres=='MILTON FERLEY'){
+      this.insumosAdmin = true;
       this.operacionesRol = true;
     }else if(this.usuario.data.idusuario == "43"){
       this.operacionValidarActa = false;
