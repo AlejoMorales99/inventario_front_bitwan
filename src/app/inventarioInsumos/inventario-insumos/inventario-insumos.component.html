@@ -137,7 +137,7 @@
 
                 <div *ngIf="habilitarInputSelectInsumos">
                   <label class="form-label">Selecione el Insumo a Aumentar</label>
-                  <select name="nuevoInsumo" [(ngModel)]="nuevoInsumo"
+                  <select name="nuevoInsumo" [(ngModel)]="aumentarInsumoOregistrarNuevo"
                     class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
                     <option *ngFor="let insumosAll of insumosAll" selected value="{{insumosAll.nombreInsumo}}">
                       {{insumosAll.nombreInsumo}}</option>
@@ -221,7 +221,7 @@
             class="form-select bajarTamañoSelectBuscadorInsumos mx-4 bg-dark border-secondary text-white">
             <option selected value="mostrarTodo">mostrarTodo</option>
             <option value="fechaInicioFin">Fecha inicio-fin</option>
-            
+
           </select>
 
           <div *ngIf="ActivarFechaInicio" class="mb-3 mt-3 mx-3 ">
@@ -244,7 +244,7 @@
           <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body table-responsive">
-          <table class="table    text-white  hover text-center ">
+          <table id="myTable" class="table    text-white  hover text-center ">
             <thead>
               <tr>
                 <th scope="col" class="tamañoTitulos text-white">NOMBRE INSUMO</th>
@@ -285,7 +285,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn btn-success">Generar Reporte Excel</button>
+          <button type="button" (click)="generateExcelReport()" class="btn btn-success">Generar Reporte Excel</button>
         </div>
       </div>
     </div>

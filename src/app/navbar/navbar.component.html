@@ -163,17 +163,49 @@
           </ul>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link  text-white  " href="/actasDeMovimiento" id="navbarDropdown" role="button" aria-expanded="false">
-
-
+        <li class="nav-item dropdown  ">
+          <a *ngIf="operacionValidarActa" class="nav-link dropdown-toggle text-white  " href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
             ACTAS DE MOVIMIENTO
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
-              <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
-            </svg>
-          </a>
 
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-data-fill" viewBox="0 0 16 16">
+              <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5Z"/>
+              <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM10 7a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7Zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1Zm4-3a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1Z"/>
+            </svg>
+
+
+          </a>
+          <ul class="dropdown-menu slide-in" aria-labelledby="navbarDropdown">
+
+            <li>
+              <a class="dropdown-item text-white " href="/actasDeMovimiento "  >
+
+
+
+                ACTAS DE MOVIMIENTO ACTIVOS FIJOS
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-data-fill" viewBox="0 0 16 16">
+                  <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5Z"/>
+                  <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585c.055.156.085.325.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5c0-.175.03-.344.085-.5ZM10 7a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7Zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1Zm4-3a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1Z"/>
+                </svg>
+              </a>
+            </li>
+
+             <li  >
+              <a *ngIf="insumosAdmin" class="dropdown-item text-white " href="/actasDeMovimientoInsumos "  >
+
+
+                ACTAS DE MOVIMIENTO INSUMOS
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
+                  <path d="M11 11.5a.5.5 0 0 0 .5-.5V5a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v6.5a.5.5 0 0 0 .5.5H1a2 2 0 1 0 4 0h6a2 2 0 1 0 4 0h.5a.5.5 0 0 0 .5-.5V8a1 1 0 0 0-.293-.707l-3-3A1 1 0 0 0 12 4H9a2 2 0 0 0-2 2v6H4.5a2 2 0 0 0-4 0H.5a.5.5 0 0 1-.5-.5V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.5-.5H11v3zM9 11a1 1 0 0 1-1-1v-6h-.5A1.5 1.5 0 0 1 6 3.5v6a1 1 0 0 1-1 1H4a1 1 0 1 1-2 0H1v-6a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v6z"/>
+                  <path d="M12 9.5v-1H9v1h3zm3 0v-1h-3v1h3zM10.5 1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm-3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm-3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm-3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm12 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm-3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm-3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm-3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm-3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm-3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5zm-3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 1 0v-1a.5.5 0 0 0-.5-.5z"/>
+                </svg>
+              </a>
+            </li>
+
+
+          </ul>
         </li>
 
         <li *ngIf="operacionesRol" class="nav-item   ">

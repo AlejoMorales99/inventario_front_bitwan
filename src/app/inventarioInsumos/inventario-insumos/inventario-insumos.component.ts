@@ -5,6 +5,7 @@ import { LoginService } from 'src/app/services/login/login.service';
 import { MarcaService } from 'src/app/services/marca/marca.service';
 import { ProveedorService } from 'src/app/services/proveedor/proveedor.service';
 import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-inventario-insumos',
@@ -26,6 +27,7 @@ export class InventarioInsumosComponent {
   contextoOperacionBoton: String = "Aumentar insumo";
 
   nuevoInsumo: string = "";
+  aumentarInsumoOregistrarNuevo :any;
   cantidadNuevoInsumos: any = "";
   stockMinimoInsumo: any = "";
   proveedor: string = "";
@@ -83,7 +85,7 @@ export class InventarioInsumosComponent {
 
   ngOnInit() {
 
-
+   
     const usuario = this.loginServices.getUser();
 
     //valido que el usuario no quiere entrar a las rutas de la app de manera incorrecta sin haber iniciado sesion primero
@@ -114,6 +116,9 @@ export class InventarioInsumosComponent {
       this.servicesInsumos.getAllInsumos().subscribe(res => {
 
         this.insumosAll = res;
+
+        this.aumentarInsumoOregistrarNuevo = ""
+
 
       })
 
@@ -173,7 +178,7 @@ export class InventarioInsumosComponent {
 
     if (this.condicionNuevoInsumos == 0) {
 
-      if (this.nuevoInsumo == "" || this.cantidadNuevoInsumos == "" || this.proveedor == "" || this.marcaText == "") {
+      if (this.aumentarInsumoOregistrarNuevo == "" || this.cantidadNuevoInsumos == "" || this.proveedor == "" || this.marcaText == "") {
 
 
         Swal.fire({
@@ -191,7 +196,7 @@ export class InventarioInsumosComponent {
 
         Swal.fire({
           title: 'Aumentar Insumo',
-          text: '¿Estas seguro de aumentar el insumos  ' + this.nuevoInsumo + '?',
+          text: '¿Estas seguro de aumentar el insumos  ' + this.aumentarInsumoOregistrarNuevo + '?',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonText: 'Sí, estoy seguro',
@@ -206,7 +211,7 @@ export class InventarioInsumosComponent {
           if (result.isConfirmed) {
 
 
-            this.servicesInsumos.postInsumosExistentes(this.nuevoInsumo, this.cantidadNuevoInsumos, this.proveedor, this.marcaText).subscribe((res: any) => {
+            this.servicesInsumos.postInsumosExistentes(this.aumentarInsumoOregistrarNuevo, this.cantidadNuevoInsumos, this.proveedor, this.marcaText).subscribe((res: any) => {
 
               if (res.estado == 200) {
 
@@ -222,6 +227,9 @@ export class InventarioInsumosComponent {
                   }
                 });
 
+
+
+                this.cantidadNuevoInsumos = "";
                 this.ngOnInit();
 
               } else {
@@ -443,7 +451,153 @@ export class InventarioInsumosComponent {
   }
 
 
+  generateExcelReport() {
+
+    if(this.desahabilitarBuscadorDinamico == true){
+
+      Swal.fire({
+        title: 'Generar Informe',
+        text: '¿Estás seguro de generar un informe?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, estoy seguro',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          popup: 'bg-dark',
+          title: 'text-white',
+          htmlContainer: 'text-white'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          console.log('Confirmado');
+
+          // Obtén la tabla y las filas
+          const table = document.getElementById('myTable')!;
+          const rows = table.getElementsByTagName('tr');
+
+          // Captura los datos de la tabla
+          const data = [];
+          for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const cells = row.getElementsByTagName('td');
+            const rowData = [];
+            for (let j = 0; j < cells.length; j++) {
+              rowData.push(cells[j].innerText);
+            }
+            if (rowData.length > 0) { // Solo añade filas que tengan datos
+              data.push(rowData);
+            }
+          }
+
+          console.log(data);
+
+          // Convierte los datos capturados a una hoja de cálculo
+          const ws = XLSX.utils.aoa_to_sheet(data);
+          console.log(ws);
+
+          // Ajusta las columnas de la hoja
+          const columnStyles = [
+            { width: 20 },
+            { width: 15 },
+            { width: 15 },
+            { width: 20 },
+            { width: 20 },
+            { width: 20 },
+            { width: 20 },
+          ];
+
+          const colInfo = { wch: 20 };
+
+          columnStyles.forEach((style, columnIndex) => {
+            if (!ws['!cols']) {
+              ws['!cols'] = [];
+            }
+            ws['!cols'].push({ ...colInfo, ...style });
+          });
+
+          console.log(ws['!cols']);
+
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, 'Informe');
+
+          console.log(wb);
+
+          XLSX.writeFile(wb, 'InformeInventarioHistorialInsumos.xlsx');
+          console.log('Archivo guardado');
+        }
+      });
 
 
+    }else{
+
+      Swal.fire({
+        title: 'Generar Informe',
+        text: '¿Estás seguro de generar un informe?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, estoy seguro',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          popup: 'bg-dark',
+          title: 'text-white',
+          htmlContainer: 'text-white'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+
+
+
+
+          const datosReporte =  this.historialInsumosAll.map((insumo: any) => {
+            return {
+              // Cambia el orden de las columnas según sea necesario
+              NombreInsumo: insumo.nombreInsumo,
+              CantidadCompra: insumo.cantidadCompra,
+              Fecha_compra: insumo.fecha.substring(0,10),
+              usuario: insumo.usuario,
+              Marca_compra: insumo.marcacol,
+              Proveedor_compra: insumo.proveedor
+            };
+          });
+
+          const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosReporte);
+
+          // Define un estilo para las columnas (ancho y espacio)
+          const columnStyles = [
+            { width: 20, color: 'red' },
+            { width: 15 },
+            { width: 15 },
+            { width: 20 },
+            { width: 20 },
+            { width: 20 },
+            { width: 20 },
+          ];
+
+          const colInfo = { wch: 20 };
+
+          columnStyles.forEach((style, columnIndex) => {
+            if (!ws['!cols']) {
+              ws['!cols'] = [];
+            }
+            ws['!cols'].push({ ...colInfo, ...style });
+          });
+
+          console.log(ws['!cols']);
+
+          const wb: XLSX.WorkBook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, 'infomeHistorialInsumos');
+
+          console.log(wb);
+
+          XLSX.writeFile(wb, 'infomeHistorialInsumos.xlsx');
+
+        }
+      });
+
+    }
+
+
+  }
 
 }

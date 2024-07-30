@@ -44,6 +44,7 @@ import { EditarEstadoComponent } from './estados/editarEstado/editar-estado/edit
 import { EditarProveedorComponent } from './proveedores/editarProveedor/editar-proveedor/editar-proveedor.component';
 import { EditarTipoDeEquipoComponent } from './tipoEquipo/editarTipoDeEquipo/editar-tipo-de-equipo/editar-tipo-de-equipo.component';
 import { InventarioInsumosComponent } from './inventarioInsumos/inventario-insumos/inventario-insumos.component';
+import { ActaMovimientoInsumosComponent } from './actaMovimientoInsumos/acta-movimiento-insumos/acta-movimiento-insumos.component';
 
 
 
@@ -62,60 +63,66 @@ const appRoutes: Routes = [
   //ruta para acceder al inventario de insumos
   { path: 'inventarioInsumos' , component: InventarioInsumosComponent},
 
-  //referencias
+  //ruta para acceder al inventario de las referencias de los equipos
   { path: 'referenciasActivosFijos' , component: ReferenciasComponent},
 
+  //ruta para editar una referencia de algun equipo del inventario
   { path: 'referenciasActivosFijosEditar/:id' , component: EditarReferenciaComponent},
 
-  //wifi
+  //ruta para acceder al inventario de las bandas de frecuencia del inventario
   { path: 'wifi' , component: WifiComponent},
 
-  //editarWifi
+  //ruta para editar un registro de las bandas de frecuencia del inventario
   { path: 'wifiEditar/:id' , component: EditarWifiComponent},
 
-  //nodo
+  //ruta para acceder al inventario de los nodos del de inventario (tipo de conexion)
   { path: 'Nodos' , component: NodosComponent},
 
-  //editarNodo
+  //ruta para editar un registro de los nodos del inventario (tipo de conexion)
   { path: 'NodoEditar/:id' , component: EditarNodoComponent},
 
 
 
-  //marca
+  //ruta para acceder al inventario de las marcas del inventario
   { path: 'marca' , component: MarcasComponent},
 
-  //marcaEditar
+  //ruta para editar un registro de las marcas del inventario de la empresa
   { path: 'marcaEditar/:id' , component: EditarMarcaComponent},
 
-  //estados
+  //ruta para acceder al inventario de los diferentes estados de un equipo del inventario
   { path: 'estados' , component: EstadosComponent},
 
-  //editarEstados
+  //ruta para editar un registro del inventario de estados de los registros de la empresa
   { path: 'editarEstados/:id' , component: EditarEstadoComponent},
 
-  //categorias
+  //ruta para accerder a las diferentes categorias de un equipo del inventario de  la empresa
   { path: 'categorias' , component: CategoriasComponent},
 
-  //editarCategoria
+  //ruta para editar una categoria de algun equipo del inventario de la empresa
   { path: 'categoriasEditar/:id' , component: EditarCategoriaComponent},
 
-  //categorias
+  //ruta para acceder a la informacion de los proveedores del inventario la empresa
   { path: 'proveedores' , component: ProveedoresComponent},
 
-  //editarProveedor
+  //ruta para editar un proveedor del inventario de la empresa
   { path: 'editarProveedores/:id' , component: EditarProveedorComponent},
 
-  //tipoEquipo
+  //ruta para acceder a los diferentes tipos de equipo del inventario de la empresa
   { path: 'tipoEquipo' , component: TipoEquipoComponent},
 
-  //editarEquipo
+  //ruta para editar un tipo de equipo del inventario de la empresa
   { path: 'editarEquipo/:id' , component: EditarTipoDeEquipoComponent},
 
+  //ruta para editar un activo fijo (router,antena,poe) del inventario de la empresa
   { path: 'editarActivoFijo/:id' , component: EditarActivoFijoComponent},
 
-
+  //ruta para acceder a todas las actas de movimiento de los activos fijos del inventario de la empresa
   { path: 'actasDeMovimiento' , component: ActaMovimientoComponent},
 
+  //ruta para acedder a todas las actas de movimiento de los insumos del inventario de la empresa
+  { path: 'actasDeMovimientoInsumos' , component: ActaMovimientoInsumosComponent},
+
+  //ruta para acceder a todo el inventario de los tecnicos del inventario de la empresa
   { path: 'Tecnicos' , component: TecnicosComponent},
 
 
@@ -150,6 +157,7 @@ const appRoutes: Routes = [
     EditarProveedorComponent,
     EditarTipoDeEquipoComponent,
     InventarioInsumosComponent,
+    ActaMovimientoInsumosComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
