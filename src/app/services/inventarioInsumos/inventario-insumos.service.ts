@@ -33,6 +33,14 @@ export class InventarioInsumosService {
   }
 
 
+  getInsumosFechaInicioFechFin(fechaInicio:string,fechaFin:string,insumoTextHistorial:string){
+
+
+    const headers = this.loginServices.getAuthHeaders();
+    return this.http.get(`${this.urlActivosFijos}/getInsumosFechaInicioFechFin/${fechaInicio}/${fechaFin}/${insumoTextHistorial || "vacio"}`  , {headers})
+  }
+
+
   //endPoint para aumentar insumos ya existentes
   postInsumosExistentes(nuevoInsumos:string,cantidadNuevoInsumos:number,proveedor:string,marcaText:string){
 

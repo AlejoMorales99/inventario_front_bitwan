@@ -219,12 +219,14 @@
           <select *ngIf="habilitarInputsFiltrosPersonalizados" name="marcaText" [(ngModel)]="columnaFiltroPersonalizado"
             (change)="funt_FiltroPersonalizado($event)"
             class="form-select bajarTamañoSelectBuscadorInsumos mx-4 bg-dark border-secondary text-white">
-            <option selected value=""></option>
+            <option selected value="mostrarTodo">mostrarTodo</option>
             <option value="fechaInicioFin">Fecha inicio-fin</option>
-            <option value="fecha">Fecha</option>
-            <option value="marca">Marca</option>
-            <option value="proveedor">Proveedor</option>
+            
           </select>
+
+          <div *ngIf="ActivarFechaInicio" class="mb-3 mt-3 mx-3 ">
+            <input type="text" [(ngModel)]="insumoTextHistorial" class="form-control" id="insumo" name="insumoTextHistorial">
+          </div>
 
           <div *ngIf="ActivarFechaInicio" class="mb-3 mt-3 mx-3 ">
             <input type="date" [(ngModel)]="fechaInicio" class="form-control" id="fecha" name="fecha">
@@ -234,7 +236,7 @@
             <input type="date" [(ngModel)]="fechaFin" class="form-control" id="fecha" name="fecha">
           </div>
 
-          <button *ngIf="habilitarInputsFiltrosPersonalizados" (click)="BuscarRegistrosFiltroPersonalizado()" class="btn btn-primary mx-3">Buscar</button>
+          <button *ngIf="habilitarInputsFiltrosPersonalizadosbtnBuscar" (click)="BuscarRegistrosFiltroPersonalizado()" class="btn btn-primary mx-3">Buscar</button>
           <button *ngIf="habilitarInputsFiltrosPersonalizados"
             class="btn btn-danger position-absolute  end-0 mt-2 me-5  text-white"
             (click)="activarFiltroDinamico()">Deshacer cambio</button>

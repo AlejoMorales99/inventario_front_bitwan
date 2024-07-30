@@ -32,7 +32,7 @@ export class InventarioInsumosComponent {
   marcaText: string = "";
 
 
-  columnaFiltroPersonalizado:any;
+  columnaFiltroPersonalizado:any = "mostrarTodo";
 
 
   insumosAll: any;
@@ -41,12 +41,14 @@ export class InventarioInsumosComponent {
   marcas: any;
 
 
+  insumoTextHistorial:string = "";
   fechaInicio:any;
   fechaFin:any;
 
   habilitarInputNuevoInsumos: boolean = false;
   habilitarInputSelectInsumos: boolean = true;
   habilitarInputsFiltrosPersonalizados: boolean = false;
+  habilitarInputsFiltrosPersonalizadosbtnBuscar:boolean = false;
   desahabilitarBuscadorDinamico:boolean = true;
   ActivarFechaInicio:boolean = false;
   condicionNuevoInsumos: number = 0;
@@ -353,7 +355,16 @@ export class InventarioInsumosComponent {
 
   BuscarRegistrosFiltroPersonalizado(){
 
-    console.log(this.fechaFin,this.fechaInicio);
+
+
+    this.servicesInsumos.getInsumosFechaInicioFechFin(this.fechaInicio,this.fechaFin,this.insumoTextHistorial).subscribe((res:any)=>{
+
+      this.historialInsumosAll = res;
+
+
+    })
+
+
 
   }
 
@@ -361,11 +372,16 @@ export class InventarioInsumosComponent {
 
     if(event.target.value == "fechaInicioFin"){
       this.ActivarFechaInicio = true;
+      this.habilitarInputsFiltrosPersonalizadosbtnBuscar = true;
+    }else if(event.target.value == "mostrarTodo"){
+      this.habilitarInputsFiltrosPersonalizadosbtnBuscar = false;
+      this.ActivarFechaInicio = false;
+      this.getAllHistorialInsumos();
     }else{
       this.ActivarFechaInicio = false;
     }
 
- 
+
 
   }
 
@@ -406,10 +422,11 @@ export class InventarioInsumosComponent {
   this.habilitarInputsFiltrosPersonalizados = true;
   this.desahabilitarBuscadorDinamico = false;
   }
-  
+
   activarFiltroDinamico(){
     this.habilitarInputsFiltrosPersonalizados = false;
     this.desahabilitarBuscadorDinamico = true;
+    this.ActivarFechaInicio = false;
   }
 
   onInput(event: any): void {
