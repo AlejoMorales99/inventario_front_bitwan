@@ -605,7 +605,7 @@
               <div class="col-md-6">
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Nombre cliente</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios.nombrestercero.trim()+','+combinedData.servicios.apellidostercero.trim()" type="text"> <br>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios.nombrestercero.trim()+','+(combinedData.servicios.apellidostercero?.trim() ?? 'sin apellido')" type="text"> <br>
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Numero de servicio</label>
                 <input name="BodegaSale" class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios.numeroservicio" type="text"> <br>
@@ -617,7 +617,7 @@
                 <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios.descripciondireccion" type="text"> <br>
 
                 <label for="" *ngIf="mostrarInfoClienteRetirar">Barrio</label>
-                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios.barrio" type="text"> <br>
+                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteRetirar" [disabled]="mostrarInfoClienteRetirar" [value]="combinedData.servicios.barrio ?? 'sin barrio'" type="text"> <br>
 
               </div>
 
@@ -651,7 +651,7 @@
              <div class="col-md-6">
 
                <label for="" *ngIf="mostrarInfoClienteInstalar">Nombre cliente</label>
-               <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios.nombrestercero.trim()+','+combinedData.servicios.apellidostercero.trim()" type="text"> <br>
+               <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios.nombrestercero?.trim() + ', ' + (combinedData.servicios.apellidostercero?.trim() ?? 'sin apellido')" type="text"> <br>
 
                <label for="" *ngIf="mostrarInfoClienteInstalar">Ciudad</label>
                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios.municipio" type="text"> <br>
@@ -660,7 +660,7 @@
                <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios.descripciondireccion" type="text"> <br>
 
                <label for="" *ngIf="mostrarInfoClienteInstalar">Barrio</label>
-               <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios.barrio" type="text"> <br>
+               <input class="form-control bg-dark border-secondary text-white" *ngIf="mostrarInfoClienteInstalar" [disabled]="mostrarInfoClienteInstalar" [value]="combinedData.servicios.barrio ?? 'sin barrio'" type="text"> <br>
 
              </div>
 
