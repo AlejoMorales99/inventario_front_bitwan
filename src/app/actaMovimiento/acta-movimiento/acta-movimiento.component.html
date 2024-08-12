@@ -73,70 +73,70 @@
 
               <!-- Aquí se definen las columnas de la tabla con sus títulos y funciones la cual solo tiene una funcion que es un sortable que se aplica a cada TH  -->
 
-              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('razonMovimientocol')"
+              <th scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'razonMovimientocol' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'razonMovimientocol' && config.sortOrder === 'desc'}">
                 RAZÓN_MOV
               </th>
 
-              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('tipoEntrega')"
+              <th scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'tipoEntrega' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'tipoEntrega' && config.sortOrder === 'desc'}">
                 TIPO_ENVÍO
               </th>
 
 
 
-              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('estadoActaMovimiento')"
+              <th scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'estadoActaMovimiento' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'estadoActaMovimiento' && config.sortOrder === 'desc'}">
                 ESTADO_ACTA
               </th>
 
-              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('tercerocolSalida')"
+              <th scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'tercerocolSalida' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'tercerocolSalida' && config.sortOrder === 'desc'}">
                 SALE DEL SERVICIO
               </th>
 
 
-              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('tercerocolEntrada')"
+              <th scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'tercerocolEntrada' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'tercerocolEntrada' && config.sortOrder === 'desc'}">
                 ENTRA AL SERVICIO
               </th>
 
-              <th *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos" (click)="cambiarOrden('fechaValidacion')"
+              <th *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'fechaValidacion' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'fechaValidacion' && config.sortOrder === 'desc'}">
                 FH ACEPTACIÓN
               </th>
 
-              <th *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos" (click)="cambiarOrden('fechaRegistro')"
+              <th *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'fechaRegistro' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'fechaRegistro' && config.sortOrder === 'desc'}">
                 FH CREACIÓN
               </th>
 
-              <th  *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos" (click)="cambiarOrden('nombreUsuarioRegistra')"
+              <th  *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'nombreUsuarioRegistra' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'nombreUsuarioRegistra' && config.sortOrder === 'desc'}">
                 USUA QUE CREO EL ACTA
               </th>
 
-              <th  *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos" (click)="cambiarOrden('nombreUsuarioValida')"
+              <th  *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'nombreUsuarioValida' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'nombreUsuarioValida' && config.sortOrder === 'desc'}">
                 USUA QUE ACEPTO O RECHA
               </th>
 
-              <th  scope="col" class="tamañoTitulos" (click)="cambiarOrden('imgGuiaTrans')"
+              <th  scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'desc'}">
                 IMG_GUIA
               </th>
 
-              <th  scope="col" class="tamañoTitulos" (click)="cambiarOrden('imgGuiaTrans')"
+              <th  scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'desc'}">
                 IMG_ACTA
               </th>
 
-              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('obsActaRecha')"
+              <th scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'obsActaRecha' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'obsActaRecha' && config.sortOrder === 'desc'}">
                 OBS_ACTA_RECHA
               </th>
 
-              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('descripcion')"
+              <th scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'descripcion' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'descripcion' && config.sortOrder === 'desc'}">
                 DESCRIP
               </th>
@@ -788,17 +788,17 @@
             <thead>
               <tr>
 
-                <th  scope="col" class="tamañoTitulos" (click)="cambiarOrden('numeroActivo')"
+                <th  scope="col" class="tamañoTitulos"
                   [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'numeroActivo' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'numeroActivo' && config.sortOrder === 'desc'}">
                   NÚMERO
                 </th>
 
-                <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('MAC')"
+                <th scope="col" class="tamañoTitulos"
                   [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'MAC' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'MAC' && config.sortOrder === 'desc'}">
                   SERIAL
                 </th>
 
-                <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('Serial')"
+                <th scope="col" class="tamañoTitulos"
                   [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'macSerial' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'macSerial' && config.sortOrder === 'desc'}">
                   MAC
                 </th>

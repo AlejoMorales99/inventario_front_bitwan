@@ -208,19 +208,24 @@ export class ActasDeOperacionesComponent implements OnInit {
 
 
   abrirImagen(nombreImagen: string): void {
-    const imagenUrl = `${this.apiUrlImg}/static/` + nombreImagen;
+    const imagenUrl = `${this.apiUrlImg}${nombreImagen}?t=${new Date().getTime()}`;
+    const img = new Image();
 
-    // Abre una nueva ventana solo si el navegador no bloquea la apertura de ventanas emergentes
-    const newWindow = window.open('', '_blank');
+    img.onload = () => {
+      const newWindow = window.open('', '_blank');
+      if (newWindow) {
+        newWindow.document.write(`<html><body><img src="${imagenUrl}" alt="${nombreImagen}" /></body></html>`);
+        newWindow.document.close();
+      } else {
+        console.error('El navegador bloqueó la apertura de ventanas emergentes');
+      }
+    };
 
-    if (newWindow) {
-      newWindow.document.write(`<html><body><img src="${imagenUrl}" alt="${nombreImagen}" /></body></html>`);
-      newWindow.document.close();
-    } else {
+    img.onerror = () => {
+      console.error('La imagen no pudo cargarse.');
+    };
 
-      console.error('El navegador bloqueó la apertura de ventanas emergentes');
-
-    }
+    img.src = imagenUrl;
   }
 
 

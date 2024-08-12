@@ -182,7 +182,7 @@ export class ActaMovimientoComponent implements OnInit {
         //funcion que obtiene todas las actas de movimiento existentes
         this.activosFijos.getAllMovimientos(this.page,this.itemsPerPage).subscribe((movimientos:any) => {
 
-        
+
 
           this.guardarAllMovimientos = movimientos.data;
           this.totalItems = movimientos.total[0].total;
@@ -1023,6 +1023,10 @@ export class ActaMovimientoComponent implements OnInit {
 
                 this.operacionInputsValidar = true;
                 this.TipoEntrega = "";
+                this.condicionOcultarBodegaEntra = false;
+                this.condicionBodegaSale = false;
+                this.condicionBodegaSale = false;
+                this.operacionInputsValidar = false;
 
               })
 
@@ -1292,26 +1296,7 @@ export class ActaMovimientoComponent implements OnInit {
 
   }
 
-  //funcion para implementar el short en la tabla
-  cambiarOrden(columna: string) {
-    if (this.config.sortKey === columna) {
-      this.config.sortOrder = this.config.sortReverse ? 'asc' : 'desc';
-      this.config.sortReverse = !this.config.sortReverse;
-    } else {
-      this.config.sortKey = columna;
-      this.config.sortOrder = 'asc';
-      this.config.sortReverse = false;
-    }
 
-    // Aplica el filtro según el estado de la columna seleccionada
-    if (columna === 'estadoActaMovimiento') {
-      // Aquí podrías ajustar según los estados que quieres mostrar
-      this.filtrarPorEstado(['Aceptada', 'Pendiente Aceptacion']);
-    } else {
-      // Otros casos de ordenamiento por diferentes columnas
-      // ...
-    }
-  }
 
   filtrarPorEstado(estados: string[]) {
     // Filtrar los movimientos por los estados indicados
@@ -1329,21 +1314,25 @@ export class ActaMovimientoComponent implements OnInit {
     }
   }
 
-  //funcion que permite visualizar en otra pestaña la imagen una vez se le da click en la tabla para abrila
   abrirImagen(nombreImagen: string): void {
-    const imagenUrl = `${this.apiUrlImg}` + nombreImagen;
+    const imagenUrl = `${this.apiUrlImg}${nombreImagen}?t=${new Date().getTime()}`;
+    const img = new Image();
 
-    // Abre una nueva ventana solo si el navegador no bloquea la apertura de ventanas emergentes
-    const newWindow = window.open('', '_blank');
+    img.onload = () => {
+      const newWindow = window.open('', '_blank');
+      if (newWindow) {
+        newWindow.document.write(`<html><body><img src="${imagenUrl}" alt="${nombreImagen}" /></body></html>`);
+        newWindow.document.close();
+      } else {
+        console.error('El navegador bloqueó la apertura de ventanas emergentes');
+      }
+    };
 
-    if (newWindow) {
-      newWindow.document.write(`<html><body><img src="${imagenUrl}" alt="${nombreImagen}" /></body></html>`);
-      newWindow.document.close();
-    } else {
+    img.onerror = () => {
+      console.error('La imagen no pudo cargarse.');
+    };
 
-      console.error('El navegador bloqueó la apertura de ventanas emergentes');
-
-    }
+    img.src = imagenUrl;
   }
 
   //funcion que acepta al acta de movimiento y se realizan los respectivos movimientos del acta en las bodegas

@@ -78,13 +78,13 @@
                 <td>{{getAllActasMovimiento.usuarioValidoActa}} </td>
                 <td>{{getAllActasMovimiento.fechaCreacionActa}} </td>
                 <td>{{getAllActasMovimiento.fechaValidacionActa}} </td>
-                <td>
-                  <!-- hago una peticion a mi backend de manera estatica pero de una manera segura para mostrar la guia respectiva de cada acta -->
-                  <a *ngIf="getAllActasMovimiento.imgActa" (click)="abrirImagen(getAllActasMovimiento.imgActa)">
-                    <img [src]="apiUrlImg+'/static/' + getAllActasMovimiento.imgActa" width="20"
-                      height="20" alt="Imagen">
-                  </a>
-                </td>
+
+              <td>
+                <!-- hago una peticion a mi backend de manera estatica pero de una manera segura para mostrar la guia respectiva de cada acta -->
+                <a *ngIf="getAllActasMovimiento.imgActa" (click)="abrirImagen(getAllActasMovimiento.imgActa)">
+                  <img [src]="'https://lh3.googleusercontent.com/d/' + getAllActasMovimiento.imgActa " width="20" height="20" alt="Imagen">
+                </a>
+              </td>
 
                 <td>{{getAllActasMovimiento.descripcion}} </td>
                 <td>{{getAllActasMovimiento.obsActaRecha}} </td>
