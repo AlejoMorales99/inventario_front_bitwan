@@ -15,6 +15,7 @@ import * as XLSX from 'xlsx';
 export class InventarioInsumosComponent {
 
 
+
   constructor
     (
       private servicesInsumos: InventarioInsumosService,
@@ -30,9 +31,12 @@ export class InventarioInsumosComponent {
   aumentarInsumoOregistrarNuevo :any;
   cantidadNuevoInsumos: any = "";
   stockMinimoInsumo: any = "";
+  precioInsumo:string = "";
   proveedor: string = "";
   marcaText: string = "";
 
+
+  totalPrecio: number = 0;
 
   columnaFiltroPersonalizado:any = "mostrarTodo";
 
@@ -53,10 +57,13 @@ export class InventarioInsumosComponent {
   habilitarInputsFiltrosPersonalizadosbtnBuscar:boolean = false;
   desahabilitarBuscadorDinamico:boolean = true;
   ActivarFechaInicio:boolean = false;
+  activarNombreInsumo:boolean = false;
+  habilitarPrecio:boolean = false;
   condicionNuevoInsumos: number = 0;
 
   //variable para que el registro en la tabla lo muestre desde la pagina 1
   page: number = 1;
+  pageHistorial:number = 1;
   //---------------------------------------------------------------------
 
   //variable para hacer posible la busqyeda de los registros
@@ -67,7 +74,7 @@ export class InventarioInsumosComponent {
 
   //variable para cambiar la cantidad de registros a mostrar
   itemsPerPage: number = 15; // Valor predeterminado
-
+  itemPerPageHistorial: number = 15;
   //---------------------------------------------------------------//
 
 
@@ -85,7 +92,7 @@ export class InventarioInsumosComponent {
 
   ngOnInit() {
 
-   
+
     const usuario = this.loginServices.getUser();
 
     //valido que el usuario no quiere entrar a las rutas de la app de manera incorrecta sin haber iniciado sesion primero
@@ -140,6 +147,7 @@ export class InventarioInsumosComponent {
     })
 
 
+
   }
 
 
@@ -161,6 +169,11 @@ export class InventarioInsumosComponent {
     this.page = 1;
   }
 
+  actualizarPaginacionHistorial() {
+    // Reiniciar la paginación a la primera página cuando se cambie la cantidad de registros por página
+    this.pageHistorial = 1;
+  }
+
   aumentarInsumos(){
     //funcion que trae todos los proveedores de la empresa por medio de una api en node.js
     this.proveedorServices.getProveedor().subscribe(proveedor => {
@@ -178,7 +191,7 @@ export class InventarioInsumosComponent {
 
     if (this.condicionNuevoInsumos == 0) {
 
-      if (this.aumentarInsumoOregistrarNuevo == "" || this.cantidadNuevoInsumos == "" || this.proveedor == "" || this.marcaText == "") {
+      if (this.aumentarInsumoOregistrarNuevo == "" || this.cantidadNuevoInsumos == "" || this.proveedor == "" || this.marcaText == "" || this.precioInsumo == "") {
 
 
         Swal.fire({
@@ -211,7 +224,7 @@ export class InventarioInsumosComponent {
           if (result.isConfirmed) {
 
 
-            this.servicesInsumos.postInsumosExistentes(this.aumentarInsumoOregistrarNuevo, this.cantidadNuevoInsumos, this.proveedor, this.marcaText).subscribe((res: any) => {
+            this.servicesInsumos.postInsumosExistentes(this.aumentarInsumoOregistrarNuevo, this.cantidadNuevoInsumos, this.proveedor, this.marcaText,this.precioInsumo).subscribe((res: any) => {
 
               if (res.estado == 200) {
 
@@ -363,29 +376,93 @@ export class InventarioInsumosComponent {
 
   BuscarRegistrosFiltroPersonalizado(){
 
+    if(this.columnaFiltroPersonalizado == "fechaInicioFin"){
+
+      if(this.fechaInicio == undefined || this.fechaFin == undefined){
+
+        Swal.fire({
+          title: 'ERROR',
+          text: 'Error por favor llene todos los campos',
+          icon: 'error',
+          customClass: {
+            popup: 'bg-dark',
+            title: 'text-white',
+            htmlContainer: 'text-white'
+          }
+        });
+
+      }else{
+
+        this.servicesInsumos.getInsumosFechaInicioFechFin(this.fechaInicio,this.fechaFin,this.insumoTextHistorial).subscribe((res:any)=>{
+          this.historialInsumosAll = res;
+        })
+
+      }
 
 
-    this.servicesInsumos.getInsumosFechaInicioFechFin(this.fechaInicio,this.fechaFin,this.insumoTextHistorial).subscribe((res:any)=>{
+    }else if(this.columnaFiltroPersonalizado == "nombreInsumo"){
 
-      this.historialInsumosAll = res;
+      if(this.nuevoInsumo == ""){
+        Swal.fire({
+          title: 'ERROR',
+          text: 'Error por favor llene todos los campos',
+          icon: 'error',
+          customClass: {
+            popup: 'bg-dark',
+            title: 'text-white',
+            htmlContainer: 'text-white'
+          }
+        });
+      }else{
+
+        this.servicesInsumos.getOneNombreInsumo(this.nuevoInsumo).subscribe((res:any)=>{
+
+          this.historialInsumosAll = res.historialInsumosAll;
+          this.totalPrecio = res.total[0].totalPrecioInsumo;
+          this.habilitarPrecio = true;
 
 
-    })
+        })
+
+      }
+
+
+
+
+
+    }else{
+
+    }
+
 
 
 
   }
 
   funt_FiltroPersonalizado(event:any){
-
+    this.nuevoInsumo = "";
+    this.habilitarPrecio = false;
     if(event.target.value == "fechaInicioFin"){
+
       this.ActivarFechaInicio = true;
       this.habilitarInputsFiltrosPersonalizadosbtnBuscar = true;
+
+      this.activarNombreInsumo = false;
+
     }else if(event.target.value == "mostrarTodo"){
+
       this.habilitarInputsFiltrosPersonalizadosbtnBuscar = false;
       this.ActivarFechaInicio = false;
+      this.activarNombreInsumo = false;
       this.getAllHistorialInsumos();
-    }else{
+
+    }else if(event.target.value == "nombreInsumo"){
+
+      this.activarNombreInsumo = true;
+      this.ActivarFechaInicio = false;
+      this.habilitarInputsFiltrosPersonalizadosbtnBuscar = true;
+
+    } else{
       this.ActivarFechaInicio = false;
     }
 
@@ -427,20 +504,30 @@ export class InventarioInsumosComponent {
   }
 
   filtroPersonalizado(){
-  this.habilitarInputsFiltrosPersonalizados = true;
-  this.desahabilitarBuscadorDinamico = false;
+    this.columnaFiltroPersonalizado = "mostrarTodo";
+    this.habilitarInputsFiltrosPersonalizados = true;
+    this.desahabilitarBuscadorDinamico = false;
+
   }
 
   activarFiltroDinamico(){
     this.habilitarInputsFiltrosPersonalizados = false;
     this.desahabilitarBuscadorDinamico = true;
     this.ActivarFechaInicio = false;
+    this.habilitarInputsFiltrosPersonalizadosbtnBuscar = false;
+    this.activarNombreInsumo = false;
   }
 
-  onInput(event: any): void {
+  separacionPorPuntosCantidad(event: any): void {
     const value = event.target.value.replace(/\D/g, ''); // Remove all non-digit characters
     this.cantidadNuevoInsumos = this.formatNumber(value);
     event.target.value = this.cantidadNuevoInsumos.toString();
+  }
+
+  separacionPorPuntosPrecio(event: any): void {
+    const value = event.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+    this.precioInsumo = this.formatNumber(value);
+    event.target.value = this.precioInsumo.toString();
   }
 
   private formatNumber(value: string): string {
@@ -469,7 +556,7 @@ export class InventarioInsumosComponent {
         }
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log('Confirmado');
+
 
           // Obtén la tabla y las filas
           const table = document.getElementById('myTable')!;
@@ -554,11 +641,24 @@ export class InventarioInsumosComponent {
               // Cambia el orden de las columnas según sea necesario
               NombreInsumo: insumo.nombreInsumo,
               CantidadCompra: insumo.cantidadCompra,
+              precio_compra: insumo.precioInsumo,
               Fecha_compra: insumo.fecha.substring(0,10),
               usuario: insumo.usuario,
               Marca_compra: insumo.marcacol,
-              Proveedor_compra: insumo.proveedor
+              Proveedor_compra: insumo.proveedor,
+
             };
+          });
+
+          datosReporte.push({
+            NombreInsumo: '', // O puedes poner algún texto como "Total"
+            CantidadCompra: '',
+            precio_compra: '', // O puedes poner algún texto como "Total"
+            Fecha_compra: '',
+            usuario: '',
+            Marca_compra: '',
+            Proveedor_compra: '',
+            totalComprasInsumos: this.totalPrecio
           });
 
           const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosReporte);

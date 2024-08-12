@@ -23,14 +23,15 @@
         <div class="mb-3 d-md-flex flex-md-row  justify-content-around mt-4">
 
           <!-- Select con *ngIf que verifica el usuario logueado para saber si mostrar todas las opciones o no -->
-          <select *ngIf="operacionesRol" class="form-select w-25  mx-1  botonesActa mb-3   bg-dark text-white border-secondary"  (change)="filtroLimpiar($event.target)" [(ngModel)]="selectedColumn">
+          <select *ngIf="operacionesRolBuscador" class="form-select w-25  mx-1  botonesActa mb-3   bg-dark text-white border-secondary"  (change)="filtroLimpiar($event.target)" [(ngModel)]="selectedColumn">
             <!-- Opciones del select -->
             <option value="mostrarTodo">Filtrar todo</option>
             <option value="razon de movimiento">Razon de movimiento</option>
             <option value="tipo envio">tipo de envio</option>
             <option value="estado acta">estado del acta</option>
-            <option value="entra servicio">entra al servicio</option>
             <option value="sale servicio">sale del servicio</option>
+            <option value="entra servicio">entra al servicio</option>
+
 
             <!-- Opciones adicionales con *ngIf que verifica el usuario logueado para saber si mostrar todas las columnas o no -->
             <option  *ngIf="bloquearColumnas" value="verMovimientosOnts">ver movimientos de una ont</option>
@@ -40,11 +41,11 @@
 
 
           <!-- Input para búsqueda con *ngIf que verifica el usuario logueado para saber si mostrar el boton o no -->
-          <input *ngIf="operacionesRol" disabled="{{dashabilitarBuscador}}" class="form-control botonesActa w-25  bg-dark border-secondary mb-3 text-white" placeholder="BUSCADOR" name="search" [(ngModel)]="buscarActivos" autocomplete="on">
+          <input *ngIf="operacionesRolBuscador" disabled="{{dashabilitarBuscador}}" class="form-control botonesActa w-25  bg-dark border-secondary mb-3 text-white" placeholder="BUSCADOR" name="search" [(ngModel)]="buscarActivos" autocomplete="on">
 
 
           <!-- Botón para buscar con *ngIf que verifica el usuario logueado para saber si puede buscar registros o no -->
-          <button style="border: none;" *ngIf="operacionesRol" [disabled]="dashabilitarBuscador" type="button" class="btn mb-3 botonesActa mx-1 fondoTable text-white " (click)="buscarRegistro()"  >Buscar</button>
+          <button style="border: none;" *ngIf="operacionesRolBuscador" [disabled]="dashabilitarBuscador" type="button" class="btn mb-3 botonesActa mx-1 fondoTable text-white " (click)="buscarRegistro()"  >Buscar</button>
 
           <!-- Botón para abrir el modal con *ngIf que verifica el usuario logueado para saber si mostrarle el boton o no -->
            <button *ngIf="operacionesRol" type="button" class="btn mb-3 botonesActa mx-1 fondoTable text-white  " data-bs-toggle="modal"
@@ -82,6 +83,8 @@
                 TIPO_ENVÍO
               </th>
 
+
+
               <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('estadoActaMovimiento')"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'estadoActaMovimiento' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'estadoActaMovimiento' && config.sortOrder === 'desc'}">
                 ESTADO_ACTA
@@ -118,14 +121,14 @@
                 USUA QUE ACEPTO O RECHA
               </th>
 
-              <th *ngIf="bloquearColumnas" scope="col" class="tamañoTitulos" (click)="cambiarOrden('guiaTransportadora')"
-                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'guiaTransportadora' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'guiaTransportadora' && config.sortOrder === 'desc'}">
-                GUÍA_TRANS
+              <th  scope="col" class="tamañoTitulos" (click)="cambiarOrden('imgGuiaTrans')"
+                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'desc'}">
+                IMG_GUIA
               </th>
 
-              <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('imgGuiaTrans')"
+              <th  scope="col" class="tamañoTitulos" (click)="cambiarOrden('imgGuiaTrans')"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'desc'}">
-                IMG_GUÍA
+                IMG_ACTA
               </th>
 
               <th scope="col" class="tamañoTitulos" (click)="cambiarOrden('obsActaRecha')"
@@ -138,17 +141,18 @@
                 DESCRIP
               </th>
 
-              <th class="tamañoTitulos" *ngIf="operacionesRol" colspan="3" scope="col">OPERACIONES</th>
+              <th class="tamañoTitulos" *ngIf="operacionesRolBuscador" colspan="3" scope="col">OPERACIONES</th>
             </tr>
           </thead>
           <tbody>
 
             <!-- Aquí se generan las filas de la tabla a partir de los datos utilizo una libreria de angular para agregar una paginacion y un filtro -->
-            <tr  class="tamañoInformacion" *ngFor="let guardarAllMovimientos of guardarAllMovimientos  | orderBy:config.sortKey:config.sortReverse   | paginate: { itemsPerPage: itemsPerPage, currentPage:  page } ">
+            <tr  class="tamañoInformacion" *ngFor="let guardarAllMovimientos of guardarAllMovimientos  | orderBy:config.sortKey:config.sortReverse   | paginate: { itemsPerPage: itemsPerPage, currentPage:  page, totalItems: totalItems } ">
 
 
               <td>{{guardarAllMovimientos.razonMovimientocol}}</td>
               <td>{{guardarAllMovimientos.tipoEntrega}}</td>
+
 
               <!-- Agrego condiciones de color de texto dependiendo de que estado tenga el acta si esta validada es verder si es anulada roja y si esta pendiente es amarilla -->
               <td [ngStyle]="{
@@ -167,14 +171,22 @@
               <td *ngIf="bloquearColumnas" >{{guardarAllMovimientos.fechaRegistro}}</td>
               <td *ngIf="bloquearColumnas" >{{guardarAllMovimientos.nombreUsuarioRegistra}}</td>
               <td *ngIf="bloquearColumnas" >{{guardarAllMovimientos.nombreUsuarioValida}}</td>
-              <td *ngIf="bloquearColumnas" >{{guardarAllMovimientos.guiaTransportadora}}</td>
+
               <td>
                 <!-- hago una peticion a mi backend de manera estatica pero de una manera segura para mostrar la guia respectiva de cada acta -->
                 <a *ngIf="guardarAllMovimientos.imgGuiaTrans" (click)="abrirImagen(guardarAllMovimientos.imgGuiaTrans)">
-                  <img [src]="apiUrlImg+'/static/' + guardarAllMovimientos.imgGuiaTrans" width="20"
-                    height="20" alt="Imagen">
+                  <img [src]="'https://lh3.googleusercontent.com/d/' + guardarAllMovimientos.imgGuiaTrans" width="20" height="20" alt="Imagen">
                 </a>
               </td>
+
+              <td>
+                <!-- hago una peticion a mi backend de manera estatica pero de una manera segura para mostrar la guia respectiva de cada acta -->
+                <a *ngIf="guardarAllMovimientos.imgActaFisica" (click)="abrirImagen(guardarAllMovimientos.imgActaFisica)">
+                  <img [src]="'https://lh3.googleusercontent.com/d/' + guardarAllMovimientos.imgActaFisica " width="20" height="20" alt="Imagen">
+                </a>
+              </td>
+
+
               <td>{{guardarAllMovimientos.obsActaRecha}}</td>
               <td>{{guardarAllMovimientos.descripcion}}</td>
 
@@ -203,7 +215,7 @@
                 guardarAllMovimientos.razonMovimientocol !='Retiro Migración' &&
                 guardarAllMovimientos.estadoActaMovimiento!='Aceptada' &&
                 guardarAllMovimientos.estadoActaMovimiento!='Rechazada'  &&
-                guardarAllMovimientos.tercerocolEntrada==userTecnico">
+                guardarAllMovimientos.tercerocolEntrada==userTecnico_O_Adminiistractivo">
 
                 <!-- Botón con evento de clic que llama a la función aceptarActa() para aceptar el acta y hacer el movimiento de las onts -->
                 <button
@@ -226,7 +238,7 @@
                 guardarAllMovimientos.razonMovimientocol !='Retiro Migración' &&
                 guardarAllMovimientos.estadoActaMovimiento!='Aceptada' &&
                 guardarAllMovimientos.estadoActaMovimiento!='Rechazada'  &&
-                guardarAllMovimientos.tercerocolEntrada==userTecnico">
+                guardarAllMovimientos.tercerocolEntrada==userTecnico_O_Adminiistractivo">
 
                 <!-- Botón con evento de clic que llama a la función anularActa() para anular el acta y dejar todo como estaba -->
                 <button
@@ -470,7 +482,7 @@
             </select>
           </div>
           <!-- Componente de paginación -->
-          <pagination-controls (pageChange)="page = $event" class="custom-pagination  border-secondary text-white "
+          <pagination-controls (pageChange)="page = $event; actualizarPaginacion()" class="custom-pagination  border-secondary text-white "
             previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
         </div>
 
@@ -509,6 +521,9 @@
                 <select *ngIf="operacionInputsValidar" (change)="validarTipo($event.target)" name="TipoEntrega" [(ngModel)]="TipoEntrega" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
                   <option *ngFor="let guardarTipoDeEntrega of guardarTipoDeEntrega" value="{{guardarTipoDeEntrega.idTipoEntrega}}"> {{guardarTipoDeEntrega.nombre}} </option>
                 </select>
+
+                <label *ngIf="condicionOperaciones" for="">Ingrese el numero de servicio</label>
+                <input *ngIf="condicionOperaciones"  class="form-control bg-dark border-secondary text-white mb-3" name="NumServicioOperaciones" type="number" [(ngModel)]="NumServicioOperaciones" >
 
                 <label *ngIf="condicionOcultarBodegaEntra" class="form-label">Bodega a la que entrara la ont</label>
                 <ng-select *ngIf="condicionOcultarBodegaEntra" (clear)="borrarSeleccion()" [notFoundText]="'Referencia no encontrada'"  name="BodegaEntra" [(ngModel)]="BodegaEntra" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example" >
@@ -576,10 +591,12 @@
                   <input type="text" name="Descripcion" [(ngModel)]="Descripcion" class="form-control bg-dark border-secondary text-white">
                 </div>
 
-                <div *ngIf="operacionInputsTipo" class="mb-3">
-                  <label class="form-label">Ingrese el numero de guia de la trasportadora</label>
-                  <input type="number" name="GuiaTrasportadora" [(ngModel)]="GuiaTrasportadora" class="form-control bg-dark border-secondary text-white">
+                <div *ngIf="habilitarActaFisicaImg" class="mb-3">
+                  <label class="form-label">Cargue la imagen del acta fisica</label>
+                  <input type="file" (change)="capturarImagen($event)" accept=".png, .jpg, .jpeg" name="imageInputValue" class="form-control bg-dark border-secondary text-white">
+                  <img width="100" *ngIf="savedImage" [src]="savedImage" alt="Imagen guardada">
                 </div>
+
 
                 <div *ngIf="operacionInputsTipo" class="mb-3">
                   <label class="form-label">Cargue la imagen de la guia de la trasportadora</label>

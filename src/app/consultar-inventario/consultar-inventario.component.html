@@ -29,13 +29,13 @@
               <option value="Numero activo fijo">Numero activo fijo</option>
               <option value="Serial">Serial</option>
               <option value="MAC">MAC</option>
-              <option *ngIf="operacionesRol" value="Descripcion">Descripcion</option>
-              <option *ngIf="operacionesRol" value="fecha">fecha</option>
-              <option *ngIf="operacionesRol" value="categoria">categoria</option>
-              <option *ngIf="operacionesRol" value="estado">estado</option>
-              <option *ngIf="operacionesRol" value="proveedor">proveedor</option>
-              <option *ngIf="operacionesRol" value="servicio">servicio</option>
-              <option *ngIf="operacionesRol" value="fechabodega">fecha/bodega</option>
+              <option *ngIf="operacionesRolAdmin" value="Descripcion">Descripcion</option>
+              <option *ngIf="operacionesRolAdmin" value="fecha">fecha</option>
+              <option *ngIf="operacionesRolAdmin" value="categoria">categoria</option>
+              <option *ngIf="operacionesRolAdmin" value="estado">estado</option>
+              <option *ngIf="operacionesRolAdmin" value="proveedor">proveedor</option>
+              <option *ngIf="operacionesRolOperacionesYtecnicos" value="servicio">servicio</option>
+              <option *ngIf="operacionesRolAdmin" value="fechabodega">fecha/bodega</option>
             </select>
 
             <input *ngIf="enabledFiltroTecnico" class="form-control mx-2 mb-2 mb-md-0 bg-dark border-secondary text-white w-auto w-md-25" placeholder="Buscador"
@@ -70,7 +70,7 @@
 
 
 
-            <button *ngIf="operacionesRol" type="button" class="btn botonesActa fondoTable text-white mx-2 w-50 mb-3   mx-md-5" (click)="focusSerialInicio()"  data-bs-toggle="modal"  data-bs-target="#modalActivosFijos">
+            <button *ngIf="operacionesRolAdmin" type="button" class="btn botonesActa fondoTable text-white mx-2 w-50 mb-3   mx-md-5" (click)="focusSerialInicio()"  data-bs-toggle="modal"  data-bs-target="#modalActivosFijos">
 
 
               Registrar activos fijos por codigo de barras
@@ -82,7 +82,7 @@
 
             </button>
 
-            <button *ngIf="operacionesRol" type="button" class="btn botonesActa fondoTable text-white mx-2 w-50 mb-3 mx-md-5"data-bs-toggle="modal" (click)="focusSerialInicio()" data-bs-target="#modalSegundo">
+            <button *ngIf="operacionesRolAdmin" type="button" class="btn botonesActa fondoTable text-white mx-2 w-50 mb-3 mx-md-5"data-bs-toggle="modal" (click)="focusSerialInicio()" data-bs-target="#modalSegundo">
 
 
               Registrar activo fijo manual
@@ -93,7 +93,7 @@
 
             </button>
 
-            <button class="btn  botonesActa  text-white " *ngIf="operacionesRol"  (click)="generateExcelReport()">
+            <button class="btn  botonesActa  text-white " *ngIf="operacionesRolAdmin"  (click)="generateExcelReport()">
               Generar Reporte
 
 
@@ -108,18 +108,18 @@
                 <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('macSerial')"[ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'macSerial' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'macSerial' && config.sortOrder === 'desc'}" >MAC</th>
                 <th *ngIf="colTecnicosMostrar" scope="col" class="tamañoTitulos"(click)="cambiarOrden('referencia')"[ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'referencia' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'referencia' && config.sortOrder === 'desc'}" >referencia</th>
 
-                <th scope="col" class="tamañoTitulos"(click)="cambiarOrden('descripcion')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'descripcion' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'descripcion' && config.sortOrder === 'desc'}"  >DESCRIPCIÓN</th>
-                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos"(click)="cambiarOrden('fechaIngreso')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'fechaIngreso' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'fechaIngreso' && config.sortOrder === 'desc'}" >FECHA_INGRESO</th>
-                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos"(click)="cambiarOrden('fechaModificacion')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'fechaModificacion' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'fechaModificacion' && config.sortOrder === 'desc'}" >FECHA_MODIFICACIÓN</th>
-                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos"(click)="cambiarOrden('categoria')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'categoria' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'categoria' && config.sortOrder === 'desc'}" >CATEGORÍA</th>
-                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos"(click)="cambiarOrden('estado')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'estado' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'estado' && config.sortOrder === 'desc'}" >ESTADO</th>
-                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos"(click)="cambiarOrden('proveedor')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'proveedor' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'proveedor' && config.sortOrder === 'desc'}" >PROVEEDOR</th>
-                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos" (click)="cambiarOrden('referencia')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'referencia' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'referencia' && config.sortOrder === 'desc'}" >REFERENCIA</th>
-                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos"(click)="cambiarOrden('servicio')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'servicio' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'servicio' && config.sortOrder === 'desc'}" >SERVICIO</th>
+                <th *ngIf="operacionesRolAdmin"scope="col" class="tamañoTitulos"(click)="cambiarOrden('descripcion')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'descripcion' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'descripcion' && config.sortOrder === 'desc'}"  >DESCRIPCIÓN</th>
+                <th *ngIf="operacionesRolAdmin" scope="col" class="tamañoTitulos"(click)="cambiarOrden('fechaIngreso')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'fechaIngreso' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'fechaIngreso' && config.sortOrder === 'desc'}" >FECHA_INGRESO</th>
+                <th *ngIf="operacionesRolAdmin" scope="col" class="tamañoTitulos"(click)="cambiarOrden('fechaModificacion')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'fechaModificacion' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'fechaModificacion' && config.sortOrder === 'desc'}" >FECHA_MODIFICACIÓN</th>
+                <th *ngIf="operacionesRolAdmin" scope="col" class="tamañoTitulos"(click)="cambiarOrden('categoria')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'categoria' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'categoria' && config.sortOrder === 'desc'}" >CATEGORÍA</th>
+                <th *ngIf="operacionesRolAdmin" scope="col" class="tamañoTitulos"(click)="cambiarOrden('estado')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'estado' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'estado' && config.sortOrder === 'desc'}" >ESTADO</th>
+                <th *ngIf="operacionesRolAdmin" scope="col" class="tamañoTitulos"(click)="cambiarOrden('proveedor')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'proveedor' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'proveedor' && config.sortOrder === 'desc'}" >PROVEEDOR</th>
+                <th *ngIf="operacionesRolAdmin" scope="col" class="tamañoTitulos" (click)="cambiarOrden('referencia')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'referencia' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'referencia' && config.sortOrder === 'desc'}" >REFERENCIA</th>
+                <th *ngIf="operacionesRolOperacionesYtecnicos" scope="col" class="tamañoTitulos"(click)="cambiarOrden('servicio')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'servicio' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'servicio' && config.sortOrder === 'desc'}" >SERVICIO</th>
                 <!-- <th scope="col" (click)="cambiarOrden('tipo_modificacion')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'tipo_modificacion' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'tipo_modificacion' && config.sortOrder === 'desc'}" >TIPO_MODIFICACION</th> -->
-                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos" (click)="cambiarOrden('usuario')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'usuario' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'usuario' && config.sortOrder === 'desc'}" >USUARIO QUE REGISTRO</th>
-                <th *ngIf="operacionesRol" scope="col" class="tamañoTitulos" (click)="cambiarOrden('usuarioModifica')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'usuarioModifica' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'usuarioModifica' && config.sortOrder === 'desc'}" >USUARIO QUE MODIFICO</th>
-                <th class="tamañoTitulos" *ngIf="operacionesRol" colspan="3" scope="col">OPERACIONES</th>
+                <th *ngIf="operacionesRolAdmin" scope="col" class="tamañoTitulos" (click)="cambiarOrden('usuario')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'usuario' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'usuario' && config.sortOrder === 'desc'}" >USUARIO QUE REGISTRO</th>
+                <th *ngIf="operacionesRolAdmin" scope="col" class="tamañoTitulos" (click)="cambiarOrden('usuarioModifica')" [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'usuarioModifica' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'usuarioModifica' && config.sortOrder === 'desc'}" >USUARIO QUE MODIFICO</th>
+                <th class="tamañoTitulos" *ngIf="operacionesRolAdmin" colspan="3" scope="col">OPERACIONES</th>
               </tr>
             </thead>
             <tbody>
@@ -130,18 +130,18 @@
                 <td>{{activosFijos.MAC}}</td>
                 <td *ngIf="colTecnicosMostrar">{{activosFijos.referencia_ont}}</td>
 
-                <td>{{activosFijos.descripcion}}</td>
-                <td *ngIf="operacionesRol">{{activosFijos.fechaIngreso}}</td>
-                <td *ngIf="operacionesRol">{{activosFijos.fechaModificacion}}</td>
-                <td *ngIf="operacionesRol" >{{activosFijos.categoria}}</td>
-                <td *ngIf="operacionesRol" >{{activosFijos.estado}}</td>
-                <td *ngIf="operacionesRol" >{{activosFijos.proveedor}}</td>
-                <td *ngIf="operacionesRol" >{{activosFijos.referencia}}</td>
-                <td *ngIf="operacionesRol">{{(activosFijos.servicio || activosFijos.servicio_Cliente) }}</td>
-                <td *ngIf="operacionesRol">{{activosFijos.usuario}}</td>
-                <td *ngIf="operacionesRol">{{activosFijos.usuarioModifica}}</td>
+                <td *ngIf="operacionesRolAdmin">{{activosFijos.descripcion}}</td>
+                <td *ngIf="operacionesRolAdmin">{{activosFijos.fechaIngreso}}</td>
+                <td *ngIf="operacionesRolAdmin">{{activosFijos.fechaModificacion}}</td>
+                <td *ngIf="operacionesRolAdmin" >{{activosFijos.categoria}}</td>
+                <td *ngIf="operacionesRolAdmin" >{{activosFijos.estado}}</td>
+                <td *ngIf="operacionesRolAdmin" >{{activosFijos.proveedor}}</td>
+                <td *ngIf="operacionesRolAdmin" >{{activosFijos.referencia}}</td>
+                <td *ngIf="operacionesRolOperacionesYtecnicos">{{(activosFijos.servicio || activosFijos.servicio_Cliente) }}</td>
+                <td *ngIf="operacionesRolAdmin">{{activosFijos.usuario}}</td>
+                <td *ngIf="operacionesRolAdmin">{{activosFijos.usuarioModifica}}</td>
 
-                <td *ngIf="operacionesRol" >
+                <td *ngIf="operacionesRolAdmin" >
                   <button [routerLink]= "['/editarActivoFijo', activosFijos.idactivoFijo]" class="btn botonesActa fondoTable text-white">
 
 

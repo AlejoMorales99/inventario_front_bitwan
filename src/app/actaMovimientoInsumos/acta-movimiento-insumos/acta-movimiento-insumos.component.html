@@ -1,3 +1,206 @@
 <app-navbar></app-navbar>
 
-<p>acta-movimiento-insumos works!</p>
+<!-- Contenedor principal -->
+<div class="container-fluid  slide-in  p-5 ">
+
+  <!-- Fila que contiene la cabecera de la tabla -->
+  <div class="row borderTable ">
+
+    <!-- Cabecera de la tabla -->
+    <div class="fondoTable  text-white text-center p-3 ">
+      ACTAS DE MOVIMIENTOS INSUMOS
+    </div>
+
+
+
+
+    <div class="col-md-12">
+
+
+      <div class="row  rounded table-responsive">
+
+
+        <div class="mb-3 d-md-flex flex-md-row  justify-content-around mt-4">
+
+
+          <select  class="form-select w-25  mx-1  botonesActa mb-3   bg-dark text-white border-secondary" >
+            <!-- Opciones del select -->
+            <option value="mostrarTodo">Filtrar todo</option>
+            <option value="razon de movimiento">Razon de movimiento</option>
+            <option value="estado acta">estado del acta</option>
+            <option value="entra servicio">entra al servicio</option>
+            <option value="sale servicio">sale del servicio</option>
+
+            <!-- Opciones adicionales con *ngIf que verifica el usuario logueado para saber si mostrar todas las columnas o no -->
+
+            <option   value="fecha aceptacion">fecha de aceptacion</option>
+            <option   value="fecha creacion">fecha de creacion del acta</option>
+          </select>
+
+
+           <input   class="form-control botonesActa w-25  bg-dark border-secondary mb-3 text-white" placeholder="BUSCADOR" name="search"  autocomplete="on">
+
+           <button style="border: none;"  type="button" class="btn mb-3 botonesActa mx-1 fondoTable text-white "   >Buscar</button>
+
+
+            <button type="button" class="btn mb-3 botonesActa mx-1 fondoTable text-white  " data-bs-toggle="modal" data-bs-target="#crearActaModal">
+
+             Crear Acta Insumos
+
+
+             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+               <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+             </svg>
+
+           </button>
+
+
+
+           <br><button class="btn mb-3 botonesActa mx-1 fondoTable text-white " >Generar Reporte</button>
+
+        </div>
+
+
+        <table class="table table-dark table-hover text-white hover table-striped text-center" id="tableInsumos" >
+          <thead>
+
+            <tr>
+
+              <th scope="col" class="tamañoTitulos">
+                RAZÓN_MOV
+              </th>
+
+
+
+              <th scope="col" class="tamañoTitulos" >
+                ESTADO_ACTA
+              </th>
+
+              <th scope="col" class="tamañoTitulos">
+                SALE DEL SERVICIO
+              </th>
+
+              <th scope="col" class="tamañoTitulos">
+                ENTRA AL SERVICIO
+              </th>
+
+              <th  scope="col" class="tamañoTitulos">
+                FH CREACIÓN
+              </th>
+
+              <th  scope="col" class="tamañoTitulos">
+                FH ACEPTACIÓN
+              </th>
+
+
+
+              <th  scope="col" class="tamañoTitulos">
+                USUA QUE CREO EL ACTA
+              </th>
+
+              <th   scope="col" class="tamañoTitulos">
+                USUA QUE ACEPTO O RECHA
+              </th>
+
+              <th scope="col" class="tamañoTitulos">
+                DESCRIP
+              </th>
+
+              <th scope="col" class="tamañoTitulos" >
+                OBS_ACTA_RECHA
+              </th>
+
+
+
+              <th class="tamañoTitulos"  colspan="3" scope="col">OPERACIONES</th>
+            </tr>
+
+
+          </thead>
+
+          <tbody>
+
+            <tr  class="tamañoInformacion" >
+
+              <tr  class="tamañoInformacion" *ngFor="let getAllActasDeMovimiento of getAllActasDeMovimiento ">
+
+
+                <td>{{getAllActasDeMovimiento.razonM}}</td>
+
+
+                <!-- Agrego condiciones de color de texto dependiendo de que estado tenga el acta si esta validada es verder si es anulada roja y si esta pendiente es amarilla -->
+                <td [ngStyle]="{
+                  'color':
+                  getAllActasDeMovimiento.estadoActa === 'Aceptada' ? '#08E66D' :
+                  getAllActasDeMovimiento.estadoActa === 'Rechazada' ? 'red' :
+                  getAllActasDeMovimiento.estadoActa === 'Pendiente Aceptacion' ? 'yellow' : ''
+                  }">
+                  {{ getAllActasDeMovimiento.estadoActa }}
+                </td>
+
+                <td >{{getAllActasDeMovimiento.serSale}}</td>
+                <td >{{getAllActasDeMovimiento.serEntra}}</td>
+                <td >{{getAllActasDeMovimiento.fhR | date:'yyyy-MM-dd'}}</td>
+                <td >{{getAllActasDeMovimiento.fhV | date:'yyyy-MM-dd'}}</td>
+                <td >{{getAllActasDeMovimiento.usuarioRegistra }}</td>
+                <td >{{getAllActasDeMovimiento.usuarioValida }}</td>
+                <td >{{getAllActasDeMovimiento.des }}</td>
+                <td >{{getAllActasDeMovimiento.obsActaRecha }}</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<div class="modal fade" id="crearActaModal" tabindex="-1" aria-labelledby="crearActaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content bg-dark text-white">
+          <div class="modal-header">
+              <h5 class="modal-title" id="crearActaModalLabel">Crear Acta Insumos</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <!-- Contenido del modal -->
+              <form>
+
+                <div class="mb-3">
+                  <label class="form-label">Seleccione los insumos a entregar</label>
+                  <select name="insSelecEnviar" [(ngModel)]="insSelecEnviar" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example" multiple (change)="updateInputs()">
+                    <option *ngFor="let insumo of getListaInsumos" [value]="insumo">{{ insumo.nombreInsumo }}</option>
+                  </select>
+                </div>
+
+
+                <div *ngFor="let insumo of insSelecEnviar; let i = index" class="mb-3">
+                  <label class="form-label">{{ insumo.nombreInsumo }} - Cantidad</label>
+                  <input (input)="separacionPorPuntosCantidad($event, i)" type="text" [(ngModel)]="insumo.cantidad" class="form-control mb-3 bg-dark border-secondary text-white" placeholder="Ingrese la cantidad">
+                </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Selecione al tecnico al cual le desea enviar el material</label>
+                    <ng-select [notFoundText]="'Tecnico no encontrado'" name="tecnicoEnvio" [(ngModel)]="tecnicoEnvio"  class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
+                      <ng-option *ngFor="let getbodegasTecnicos of getbodegasTecnicos" value="{{getbodegasTecnicos.ID}}">{{getbodegasTecnicos.nombre}} </ng-option>
+                    </ng-select>
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" (click)="crearActa()" class="btn btn-primary">Crear Acta</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<!-- Componente de barra de progreso -->
+<ng-progress></ng-progress>
+

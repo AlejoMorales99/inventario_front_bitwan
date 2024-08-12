@@ -154,7 +154,7 @@
                   <label class="form-label">Cantidad a Registrar</label>
                   <input type="text" name="cantidadNuevoInsumos" placeholder="Ingresa la cantidad del insumo"
                     [(ngModel)]="cantidadNuevoInsumos" class="form-control bg-dark border-secondary text-white"
-                    (input)="onInput($event)">
+                    (input)="separacionPorPuntosCantidad($event)">
                 </div>
 
                 <div *ngIf="habilitarInputNuevoInsumos" class="mb-3">
@@ -164,7 +164,10 @@
                     class="form-control bg-dark border-secondary text-white">
                 </div>
 
-
+                <div class="mb-3" *ngIf="habilitarInputSelectInsumos">
+                  <label class="form-label">Precio total</label>
+                  <input type="text" name="precioInsumo" placeholder="Ingresa el precio total del insumo"  (input)="separacionPorPuntosPrecio($event)" [(ngModel)]="precioInsumo" class="form-control bg-dark border-secondary text-white">
+                </div>
 
                 <label class="form-label">Proveedor</label>
                 <select name="proveedor" [(ngModel)]="proveedor"
@@ -220,9 +223,14 @@
             (change)="funt_FiltroPersonalizado($event)"
             class="form-select bajarTamañoSelectBuscadorInsumos mx-4 bg-dark border-secondary text-white">
             <option selected value="mostrarTodo">mostrarTodo</option>
+            <option selected value="nombreInsumo">Nombre insumo</option>
             <option value="fechaInicioFin">Fecha inicio-fin</option>
 
           </select>
+
+          <div *ngIf="activarNombreInsumo" class="mb-3 mt-3 mx-3 ">
+            <input type="text" [(ngModel)]="nuevoInsumo" class="form-control" placeholder="insumo a buscar" id="nuevoInsumo" name="nuevoInsumo">
+          </div>
 
           <div *ngIf="ActivarFechaInicio" class="mb-3 mt-3 mx-3 ">
             <input type="text" [(ngModel)]="insumoTextHistorial" class="form-control" id="insumo" name="insumoTextHistorial">
@@ -249,6 +257,7 @@
               <tr>
                 <th scope="col" class="tamañoTitulos text-white">NOMBRE INSUMO</th>
                 <th scope="col" class="tamañoTitulos text-white">CANTIDAD COMPRA</th>
+                <th scope="col" class="tamañoTitulos text-white">PRECIO COMPRA</th>
                 <th scope="col" class="tamañoTitulos text-white">USUARIO REGISTRO</th>
                 <th scope="col" class="tamañoTitulos text-white">FECHA REGISTRO</th>
                 <th scope="col" class="tamañoTitulos text-white">MARCA COMPRA</th>
@@ -257,9 +266,10 @@
             </thead>
             <tbody class="text-white">
               <tr
-                *ngFor="let historialInsumosAll of historialInsumosAll | filter:buscarHistorialInsumo | orderBy:config.sortKey:config.sortReverse | paginate: { itemsPerPage: itemsPerPage, currentPage: page }">
+                *ngFor="let historialInsumosAll of historialInsumosAll | filter:buscarHistorialInsumo | orderBy:config.sortKey:config.sortReverse | paginate: { itemsPerPage: itemPerPageHistorial, currentPage: pageHistorial }">
                 <td>{{historialInsumosAll.nombreInsumo}}</td>
-                <td>{{historialInsumosAll.cantidadCompra}}</td>
+                <td>{{historialInsumosAll.cantidadCompra | number:'1.0-0'}}</td>
+                <td>{{historialInsumosAll.precioInsumo | number:'1.0-0'}}</td>
                 <td>{{historialInsumosAll.usuario}}</td>
                 <td>{{ historialInsumosAll.fecha | date:'yyyy-MM-dd' }}</td>
                 <td>{{historialInsumosAll.marcacol}}</td>
@@ -267,11 +277,16 @@
               </tr>
             </tbody>
           </table>
+
+          <div *ngIf="habilitarPrecio" >
+            <strong>Total Precio Insumo: {{ totalPrecio | number:'1.0-0' }}</strong>
+          </div>
+
           <div class="d-flex justify-content-center mt-3 flex-wrap">
-            <label class="text-white" for="itemsPerPage">Registros por página:</label>
+            <label class="text-white" for="itemPerPageHistorial">Registros por página:</label>
             <div class="mx-2">
-              <select class="form-select w-100 bg-dark text-white border-secondary mx-2" id="itemsPerPage"
-                [(ngModel)]="itemsPerPage" (change)="actualizarPaginacion()">
+              <select class="form-select w-100 bg-dark text-white border-secondary mx-2" id="itemPerPageHistorial"
+                [(ngModel)]="itemPerPageHistorial" (change)="actualizarPaginacionHistorial()">
                 <option value="15">15</option>
                 <option value="20">20</option>
                 <option value="25">25</option>
@@ -279,7 +294,7 @@
                 <!-- Agrega más opciones según tus necesidades -->
               </select>
             </div>
-            <pagination-controls (pageChange)="page = $event" class="custom-pagination text-white"
+            <pagination-controls (pageChange)="pageHistorial = $event" class="custom-pagination text-white"
               previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
           </div>
         </div>

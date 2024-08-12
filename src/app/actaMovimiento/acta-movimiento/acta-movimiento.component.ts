@@ -5,6 +5,7 @@ import { LoginService } from 'src/app/services/login/login.service';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
 import { environment } from '../../../../dotenv';
+import { ActasOperacionesService } from 'src/app/services/actasOperaciones/actas-operaciones.service';
 
 
 @Component({
@@ -14,42 +15,44 @@ import { environment } from '../../../../dotenv';
 })
 export class ActaMovimientoComponent implements OnInit {
 
-  apiUrlImg = environment.ip_serber_pruebas_https;
+  apiUrlImg = environment.urlDrive;
 
   //en esta variblae tipo Element guardo el id de la ont que se busque en el input del formulario
   @ViewChild('valorOnts') miInput!: ElementRef;
 
-  constructor(private activosFijos: ActivosFijosService, private loginServices: LoginService, private rout: Router) { }
+  constructor(private activosFijos: ActivosFijosService, private loginServices: LoginService, private actasOperaciones: ActasOperacionesService, private rout: Router) { }
 
   //variable la cual uso para guardar la informacion del usuario que se loguea como el nombre el id etc
   usuario: any;
 
-  userTecnico:any;
+  userTecnico_O_Adminiistractivo: any;
 
   //varibale para validar a que usuarios mostrarles el boton de poder descargar reportes
-  mostrarBotonDescargaExcel:boolean = true;
+  mostrarBotonDescargaExcel: boolean = true;
 
   //variables las cuales guardan los valores cuando se vaya a crear un acta de movimientoo
   RazonMovimiento: string = "";
-  TipoEntrega: string = "";
   BodegaEntra: string = "";
   BodegaSale: string = "";
   Descripcion: string = "";
-  GuiaTrasportadora: string = "";
+  TipoEntrega: string = "";
   ImgGuia: string = "";
   savedImage: string | null = null;
   valorNombreBodega: string = ""
   razonAnulacion: any = "";
-  ServicioDelClienteEspecifico:any = "";
+  ServicioDelClienteEspecifico: any = "";
   archivoCapturado: any;
-  combinedData:any;
+  combinedData: any;
   clickedActivos: number[] = [];
   botonesPresionados: { [id: string]: boolean } = {};
   idActaActualBotonVer: string | null = null;
+  NumServicioOperaciones: string = "";
+  totalItems:number = 0;
+  condicionBusqueda: number = 0;
   //----------------------------------------------------------------------------------//
 
   //variable que sirve para especificar por que columna va a buscar registros el usuario
-  selectedColumn:string = "mostrarTodo"
+  selectedColumn: string = "mostrarTodo"
 
   /*esta varibale la uso para tener una condicion sobre la cantidad de inputs que se pueden crear dependiendo de el tipo de movimiento que vaya a hacer el usuario o tambien para
   ocultar o mostrar el boton*/
@@ -67,14 +70,16 @@ export class ActaMovimientoComponent implements OnInit {
   desahibilitarBuscarCliente: boolean = false;
   condicionEntraBodega: boolean = false;
   condicionOcultarBodegaEntra: boolean = false;
-  condicionVariosServiciosCliente:boolean = false;
-  bloquearColumnas:boolean = true;
-  ocultarBotonCrearActa:boolean = true;
-  ocultarNombreCompletoTecnico:boolean = false;
-  dashabilitarBuscador:boolean = true;
-  ocultarBotonBuscarClienteInstalacion:boolean = false;
-  mostrarInfoClienteInstalar:boolean = false;
-  ocultarBotonBorrarClienteInstalacion:boolean = false;
+  condicionVariosServiciosCliente: boolean = false;
+  bloquearColumnas: boolean = true;
+  ocultarBotonCrearActa: boolean = true;
+  ocultarNombreCompletoTecnico: boolean = false;
+  dashabilitarBuscador: boolean = true;
+  ocultarBotonBuscarClienteInstalacion: boolean = false;
+  mostrarInfoClienteInstalar: boolean = false;
+  ocultarBotonBorrarClienteInstalacion: boolean = false;
+  habilitarActaFisicaImg: boolean = false;
+  condicionOperaciones: boolean = false;
 
   //---------------------------------------------------------------------------------------//
 
@@ -91,9 +96,9 @@ export class ActaMovimientoComponent implements OnInit {
   guardarServicio: any;
   guardarActa: any;
   guardarClienteRetirar: any;
-  guardarServiciosClientesEspecificos:any;
+  guardarServiciosClientesEspecificos: any;
   guardarAllMovimientos: any;
-  nombreTecnicoCompleto:any;
+  nombreTecnicoCompleto: any;
   public buscarActivos: any;
   public buscarActivosActaVer: any;
   //------------------------------------------------------
@@ -116,25 +121,26 @@ export class ActaMovimientoComponent implements OnInit {
   dynamicInputs: any[] = []; // para repetir inputs
   guardarValorOnts: any[] = [];
   resultadosPorInput: any[] = [];
-  formData: any;
+
   //----------------------------------------------------------------------------------------//
 
   //estas variables las uso para validar si mostrar ciertos botones o no dependiendo del usuario
-  operacionesRol: boolean = true;
+  operacionesRolBuscador: boolean = true;
   operacionInputsValidar: boolean = false;
   operacionInputsTipo: boolean = false;
+  operacionesRol: boolean = true;
   //--------------------------------------------------------------------//
 
   guardarServicioTecnicos: any;
 
-  infoTextoActivosFijos:boolean = false;
+  infoTextoActivosFijos: boolean = false;
 
   //funcion que se ejecuta apenas se carga la pagina
   ngOnInit() {
 
     //al iniciar la pagina llamo a la funcion getUser la cual me trae la informacion del usuario que se logue
     this.usuario = this.loginServices.getUser();
-    this.userTecnico = this.loginServices.getTecnico();
+    this.userTecnico_O_Adminiistractivo = this.loginServices.getTecnico();
 
     this.infoTextoActivosFijos = false;
     //si al iniciar la pagina esta variable es nula significa que el usuario esta intentando accerder a una pagina sin loguearse primero por lo cual no podra y sere redireccionado al login
@@ -159,15 +165,28 @@ export class ActaMovimientoComponent implements OnInit {
       this.guardarTiposDeMovimientos = [];
 
       //se valida que usuario es el que se esta logueando si no es ninguna de estos 2 por logica entonces se sabria que el que se loguea es un tecnico
-      if (this.userTecnico == "karol yiseth mosquera alzate"  ||  this.userTecnico == "mari luz pulgarin" || this.userTecnico == "milton ferley renteria florez") {
+      if (this.userTecnico_O_Adminiistractivo == "karol yiseth mosquera alzate" || this.userTecnico_O_Adminiistractivo == "mari luz pulgarin" || this.userTecnico_O_Adminiistractivo == "milton ferley renteria florez" || this.userTecnico_O_Adminiistractivo == "leydi jhoana duque salazar" || this.userTecnico_O_Adminiistractivo == "yessica alejandra garcia blandon" || this.userTecnico_O_Adminiistractivo == "luz estela lopez henao") {
 
-        this.usuario.data.nombres = "alcala1"
+        if (this.userTecnico_O_Adminiistractivo == "leydi jhoana duque salazar" || this.userTecnico_O_Adminiistractivo == "yessica alejandra garcia blandon" || this.userTecnico_O_Adminiistractivo == "luz estela lopez henao") {
+          this.mostrarBotonDescargaExcel = false;
+          this.operacionesRol = false;
+        }
+
+        if (this.userTecnico_O_Adminiistractivo == "karol yiseth mosquera alzate" || this.userTecnico_O_Adminiistractivo == "mari luz pulgarin") {
+          this.usuario.data.nombres = "alcala1"
+        }
+
+
 
 
         //funcion que obtiene todas las actas de movimiento existentes
-        this.activosFijos.getAllMovimientos().subscribe(movimientos => {
-          this.guardarAllMovimientos = movimientos;
+        this.activosFijos.getAllMovimientos(this.page,this.itemsPerPage).subscribe((movimientos:any) => {
 
+        
+
+          this.guardarAllMovimientos = movimientos.data;
+          this.totalItems = movimientos.total[0].total;
+          console.log(this.totalItems)
           this.guardarAllMovimientos.forEach((element: any) => {
             if (element.tercerocolEntrada === null) {
               element.tercerocolEntrada = element.entraCliente;
@@ -195,10 +214,10 @@ export class ActaMovimientoComponent implements OnInit {
 
 
       } else {
-       this.mostrarBotonDescargaExcel = false;
-       this.bloquearColumnas = false;
+        this.mostrarBotonDescargaExcel = false;
+        this.bloquearColumnas = false;
 
-       //funcion que muestra las actas de movimiento que tengan relacion con el tecnico que esta logueado en la aplicacion
+        //funcion que muestra las actas de movimiento que tengan relacion con el tecnico que esta logueado en la aplicacion
         this.activosFijos.getAllMovimientosTecnicos().subscribe(movimientos => {
           this.guardarAllMovimientos = movimientos;
 
@@ -244,9 +263,9 @@ export class ActaMovimientoComponent implements OnInit {
   }
 
   //funcion que se encarga de las busquedad de los registros dependiendo de la columna por la cual se quiera buscar
-  buscarRegistro(){
-
-    if(this.buscarActivos!= "" && this.selectedColumn== "mostrarTodo" ){
+  buscarRegistro() {
+    this.condicionBusqueda = 1;
+    if (this.buscarActivos != "" && this.selectedColumn == "mostrarTodo") {
 
       Swal.fire({
         title: 'ERROR',
@@ -259,7 +278,7 @@ export class ActaMovimientoComponent implements OnInit {
         }
       });
 
-    }else if(this.buscarActivos == "" || this.selectedColumn == ""){
+    } else if (this.buscarActivos == "" || this.selectedColumn == "") {
       Swal.fire({
         title: 'ERROR',
         text: 'EXISTEN CAMPOS REQUERIDOS VACIOS',
@@ -270,45 +289,32 @@ export class ActaMovimientoComponent implements OnInit {
           htmlContainer: 'text-white'
         }
       });
-    }else{
+    } else {
 
-      if(this.selectedColumn == "fecha creacion" || this.selectedColumn =="fecha aceptacion"){
+      if (this.selectedColumn == "fecha creacion" || this.selectedColumn == "fecha aceptacion") {
 
-        const fechaValida = /^\d{4}-\d{2}-\d{2}$/.test(this.buscarActivos);
+        this.activosFijos.buscarRegistros(this.buscarActivos, this.selectedColumn, this.page, this.itemsPerPage).subscribe(registros => {
+          if (registros == "") {
+            Swal.fire({
+              title: 'ERROR',
+              text: `NO SE ENCONTRÓ EL REGISTRO ${this.buscarActivos} de la columna ${this.selectedColumn}`,
+              icon: 'error',
+              customClass: {
+                popup: 'bg-dark',
+                title: 'text-white',
+                htmlContainer: 'text-white'
+              }
+            });
+          } else {
+            this.guardarAllMovimientos = registros.data;
+            this.totalItems = registros.total[0].total
+          }
+        });
 
-        if (!fechaValida) {
-          Swal.fire({
-            title: 'ERROR',
-            text: 'El formato de la fecha es incorrecto. Debe ser YYYY-MM-DD',
-            icon: 'error',
-            customClass: {
-              popup: 'bg-dark',
-              title: 'text-white',
-              htmlContainer: 'text-white'
-            }
-          });
-        } else {
-          this.activosFijos.buscarRegistros(this.buscarActivos, this.selectedColumn,this.page, this.itemsPerPage).subscribe(registros => {
-            if (registros == "") {
-              Swal.fire({
-                title: 'ERROR',
-                text: `NO SE ENCONTRÓ EL REGISTRO ${this.buscarActivos} de la columna ${this.selectedColumn}`,
-                icon: 'error',
-                customClass: {
-                  popup: 'bg-dark',
-                  title: 'text-white',
-                  htmlContainer: 'text-white'
-                }
-              });
-            } else {
-              this.guardarAllMovimientos = registros;
-            }
-          });
-        }
-      }else{
-        this.activosFijos.buscarRegistros(this.buscarActivos,this.selectedColumn,this.page, this.itemsPerPage).subscribe(registros=>{
+      } else {
+        this.activosFijos.buscarRegistros(this.buscarActivos, this.selectedColumn, this.page, this.itemsPerPage).subscribe((registros: any) => {
 
-          if(registros == ""){
+          if (registros == "") {
             Swal.fire({
               title: 'ERROR',
               text: `NO SE ENCONTRO EL REGISTRO ${this.buscarActivos} de la columna ${this.selectedColumn}`,
@@ -319,8 +325,9 @@ export class ActaMovimientoComponent implements OnInit {
                 htmlContainer: 'text-white'
               }
             });
-          }else{
-            this.guardarAllMovimientos = registros
+          } else {
+            this.guardarAllMovimientos = registros.data;
+            this.totalItems = registros.total[0].total
           }
 
         })
@@ -378,7 +385,7 @@ export class ActaMovimientoComponent implements OnInit {
     this.guardarValorOnts.splice(index, 1); // Eliminar el valor guardado correspondiente
     this.anular = false;
 
-    if(this.dynamicInputs.length == 0){
+    if (this.dynamicInputs.length == 0) {
       this.infoTextoActivosFijos = false
     }
 
@@ -403,9 +410,9 @@ export class ActaMovimientoComponent implements OnInit {
 
       if (this.usuario.data.nombres == "alcala1") {
 
-        if(this.RazonMovimiento == '15'){
+        if (this.RazonMovimiento == '15') {
 
-          if(this.BodegaSale == "" || this.BodegaSale == null ){
+          if (this.BodegaSale == "" || this.BodegaSale == null) {
 
             Swal.fire({
               title: 'ERROR',
@@ -418,9 +425,9 @@ export class ActaMovimientoComponent implements OnInit {
               }
             });
 
-          }else{
+          } else {
 
-            this.activosFijos.buscarActivoFijoMover(value,this.RazonMovimiento,this.BodegaSale).subscribe(acta => {
+            this.activosFijos.buscarActivoFijoMover(value, this.RazonMovimiento, this.BodegaSale).subscribe(acta => {
 
               if (acta == "") {
 
@@ -494,9 +501,9 @@ export class ActaMovimientoComponent implements OnInit {
 
           }
 
-        }else{
+        } else {
 
-          if(this.BodegaEntra == "" || this.BodegaSale == ""){
+          if (this.BodegaEntra == "" || this.BodegaSale == "") {
             Swal.fire({
               title: 'ERROR',
               text: `Por favor llene todos los campos primero antes de buscar un activo fijo`,
@@ -507,8 +514,8 @@ export class ActaMovimientoComponent implements OnInit {
                 htmlContainer: 'text-white'
               }
             });
-          }else{
-            this.activosFijos.buscarActivoFijoMover(value,this.RazonMovimiento,this.BodegaSale).subscribe(acta => {
+          } else {
+            this.activosFijos.buscarActivoFijoMover(value, this.RazonMovimiento, this.BodegaSale).subscribe(acta => {
 
               if (acta == "") {
 
@@ -673,55 +680,41 @@ export class ActaMovimientoComponent implements OnInit {
 
     if (this.RazonMovimiento == '5' || this.RazonMovimiento == '6' || this.RazonMovimiento == '7' || this.RazonMovimiento == '8') {
 
-      if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == ""  || this.BodegaSale == null ) {
-        Swal.fire({
-          title: 'ERROR',
-          text: 'POR FAVOR LLENE LOS CAMPOS',
-          icon: 'error',
-          customClass: {
-            popup: 'bg-dark',
-            title: 'text-white',
-            htmlContainer: 'text-white'
-          }
-        });
+      if (this.userTecnico_O_Adminiistractivo == "karol yiseth mosquera alzate" || this.userTecnico_O_Adminiistractivo == "mari luz pulgarin") {
+        this.habilitarActaFisicaImg = false;
 
-      } else {
+        if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null) {
+          Swal.fire({
+            title: 'ERROR',
+            text: 'POR FAVOR LLENE LOS CAMPOS',
+            icon: 'error',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          });
 
-        Swal.fire({
-          title: '¿Estás seguro?',
-          text: 'Por favor Verifique que la informacion este correcta, ya que no podra modificar la informacion despues de crear el acta!',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, estoy seguro',
-          cancelButtonText: 'Cancelar',
-          customClass: {
-            popup: 'bg-dark',
-            title: 'text-white',
-            htmlContainer: 'text-white'
-          }
-        }).then((result) => {
-          if (result.isConfirmed) {
+        } else {
 
-            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.GuiaTrasportadora, this.archivoCapturado, this.guardarValorOnts,this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
+          Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Por favor Verifique que la informacion este correcta, ya que no podra modificar la informacion despues de crear el acta!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, estoy seguro',
+            cancelButtonText: 'Cancelar',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
 
+              this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.archivoCapturado, this.guardarValorOnts, this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
 
-              if (crear.length >= 1) {
-
-                Swal.fire({
-                  title: 'ERROR',
-                  text: `LA BODEGA DE  ${this.valorNombreBodega.toLocaleUpperCase()} YA CUENTA CON UNA ACTA PENDIENTE`,
-                  icon: 'error',
-                  customClass: {
-                    popup: 'bg-dark',
-                    title: 'text-white',
-                    htmlContainer: 'text-white'
-                  }
-                });
-              } else {
                 this.limpiar()
-
-                this.formData = "";
-                localStorage.removeItem(`borradorFormulario_${this.usuario.data.idusuario}`);
 
                 this.ngOnInit();
 
@@ -745,22 +738,92 @@ export class ActaMovimientoComponent implements OnInit {
                 this.ocultarNombreCompletoTecnico = false;
                 this.condicionOcultarBodegaEntra = false;
                 this.condicionRetiro = false;
-              }
+                this.habilitarActaFisicaImg = false;
+              })
 
-            })
+            }
+          })
 
-          }
-        })
+        }
+
+
+      }else{
+
+        if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.archivoCapturado == null) {
+          Swal.fire({
+            title: 'ERROR',
+            text: 'POR FAVOR LLENE LOS CAMPOS',
+            icon: 'error',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          });
+
+        } else {
+
+          Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Por favor Verifique que la informacion este correcta, ya que no podra modificar la informacion despues de crear el acta!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, estoy seguro',
+            cancelButtonText: 'Cancelar',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+
+              this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.archivoCapturado, this.guardarValorOnts, this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
+
+                this.limpiar()
+
+                this.ngOnInit();
+
+                Swal.fire({
+                  title: 'EXITO',
+                  text: 'ACTA CREADA CON EXITO',
+                  icon: 'success',
+                  customClass: {
+                    popup: 'bg-dark',
+                    title: 'text-white',
+                    htmlContainer: 'text-white'
+                  }
+                });
+                this.BodegaSale = "";
+                this.mostrarInfoClienteRetirar = false;
+                this.ocultarBotonBorrarCliente = false;
+                this.ocultarBotonBuscarCliente = true;
+                this.desahibilitarBuscarCliente = false;
+                this.condicionVariosServiciosCliente = false
+                this.infoTextoActivosFijos = false;
+                this.ocultarNombreCompletoTecnico = false;
+                this.condicionOcultarBodegaEntra = false;
+                this.condicionRetiro = false;
+                this.habilitarActaFisicaImg = false;
+              })
+
+            }
+          })
+
+        }
 
       }
 
 
 
-    } else if (this.RazonMovimiento == '1' || this.RazonMovimiento == '2' || this.RazonMovimiento == '3' || this.RazonMovimiento == '4' || this.RazonMovimiento == '19') {
 
 
 
-      if (this.BodegaEntra == "" || this.BodegaEntra == null  || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
+    } else if (this.RazonMovimiento == '2' || this.RazonMovimiento == '3' || this.RazonMovimiento == '4' || this.RazonMovimiento == '19') {
+
+
+
+      if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0 || this.archivoCapturado == null) {
         Swal.fire({
           title: 'ERROR',
           text: 'POR FAVOR LLENE LOS CAMPOS',
@@ -788,45 +851,29 @@ export class ActaMovimientoComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
 
-            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.GuiaTrasportadora, this.archivoCapturado, this.guardarValorOnts,this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
+            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.archivoCapturado, this.guardarValorOnts, this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
 
-              if(crear.length >= 1) {
+              this.limpiar()
 
-                Swal.fire({
-                  title: 'ERROR',
-                  text: `El numero de servicio  ${this.BodegaEntra} YA CUENTA CON UNA ACTA PENDIENTE`,
-                  icon: 'error',
-                  customClass: {
-                    popup: 'bg-dark',
-                    title: 'text-white',
-                    htmlContainer: 'text-white'
-                  }
-                });
+              this.ocultarNombreCompletoTecnico = false;
+              this.ngOnInit();
 
-
-              }else{
-                this.limpiar()
-
-                this.formData = "";
-                this.ocultarNombreCompletoTecnico = false;
-                this.ngOnInit();
-
-                Swal.fire({
-                  title: 'EXITO',
-                  text: 'ACTA CREADA CON EXITO',
-                  icon: 'success',
-                  customClass: {
-                    popup: 'bg-dark',
-                    title: 'text-white',
-                    htmlContainer: 'text-white'
-                  }
-                });
-                this.mostrarInfoClienteInstalar = false;
-                this.condicionBodegaSale = false;
-                this.condicionEntraBodega = false;
-                this.ocultarBotonBuscarClienteInstalacion = false;
-                this.ocultarBotonBorrarClienteInstalacion = false;
-              }
+              Swal.fire({
+                title: 'EXITO',
+                text: 'ACTA CREADA CON EXITO',
+                icon: 'success',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
+              this.mostrarInfoClienteInstalar = false;
+              this.condicionBodegaSale = false;
+              this.condicionEntraBodega = false;
+              this.ocultarBotonBuscarClienteInstalacion = false;
+              this.ocultarBotonBorrarClienteInstalacion = false;
+              this.habilitarActaFisicaImg = false;
 
             })
 
@@ -835,12 +882,70 @@ export class ActaMovimientoComponent implements OnInit {
 
       }
 
-    } else if (this.RazonMovimiento == '9' || this.RazonMovimiento == '10' ||  this.RazonMovimiento == '20') {
+    } else if (this.RazonMovimiento == '1') {
 
-      if (this.BodegaEntra == ""  || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
+      if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
+        Swal.fire({
+          title: 'ERROR',
+          text: 'POR FAVOR LLENE LOS CAMPOS',
+          icon: 'error',
+          customClass: {
+            popup: 'bg-dark',
+            title: 'text-white',
+            htmlContainer: 'text-white'
+          }
+        });
+      } else {
 
+        Swal.fire({
+          title: '¿Estás seguro?',
+          text: 'Por favor Verifique que la informacion este correcta, ya que no podra modificar la informacion despues de crear el acta!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, estoy seguro',
+          cancelButtonText: 'Cancelar',
+          customClass: {
+            popup: 'bg-dark',
+            title: 'text-white',
+            htmlContainer: 'text-white'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
 
+            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.archivoCapturado, this.guardarValorOnts, this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
 
+              this.limpiar()
+
+              this.ocultarNombreCompletoTecnico = false;
+              this.ngOnInit();
+
+              Swal.fire({
+                title: 'EXITO',
+                text: 'ACTA CREADA CON EXITO',
+                icon: 'success',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
+              this.mostrarInfoClienteInstalar = false;
+              this.condicionBodegaSale = false;
+              this.condicionEntraBodega = false;
+              this.ocultarBotonBuscarClienteInstalacion = false;
+              this.ocultarBotonBorrarClienteInstalacion = false;
+              this.habilitarActaFisicaImg = false;
+
+            })
+
+          }
+        })
+
+      }
+
+    } else if (this.RazonMovimiento == '9' || this.RazonMovimiento == '10' || this.RazonMovimiento == '20') {
+
+      if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
 
         Swal.fire({
           title: 'ERROR',
@@ -856,7 +961,7 @@ export class ActaMovimientoComponent implements OnInit {
 
       } else if (this.TipoEntrega == '2') {
 
-        if (this.GuiaTrasportadora == "" || this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
+        if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
 
           Swal.fire({
             title: 'ERROR',
@@ -900,40 +1005,24 @@ export class ActaMovimientoComponent implements OnInit {
           }).then((result) => {
             if (result.isConfirmed) {
 
-              this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.GuiaTrasportadora, this.archivoCapturado, this.guardarValorOnts,this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
+              this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.archivoCapturado, this.guardarValorOnts, this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
 
+                this.limpiar()
+                this.ngOnInit();
+                this.ocultarNombreCompletoTecnico = false;
+                Swal.fire({
+                  title: 'EXITO',
+                  text: 'ACTA CREADA CON EXITO',
+                  icon: 'success',
+                  customClass: {
+                    popup: 'bg-dark',
+                    title: 'text-white',
+                    htmlContainer: 'text-white'
+                  }
+                });
 
-                if (crear.length >= 1) {
-
-                  Swal.fire({
-                    title: 'ERROR',
-                    text: `LA BODEGA DE  ${this.valorNombreBodega.toLocaleUpperCase()} YA CUENTA CON UNA ACTA PENDIENTE`,
-                    icon: 'error',
-                    customClass: {
-                      popup: 'bg-dark',
-                      title: 'text-white',
-                      htmlContainer: 'text-white'
-                    }
-                  });
-                } else {
-                  this.limpiar()
-
-                  this.formData = "";
-                  localStorage.removeItem(`borradorFormulario_${this.usuario.data.idusuario}`);
-
-                  this.ngOnInit();
-                  this.ocultarNombreCompletoTecnico = false;
-                  Swal.fire({
-                    title: 'EXITO',
-                    text: 'ACTA CREADA CON EXITO',
-                    icon: 'success',
-                    customClass: {
-                      popup: 'bg-dark',
-                      title: 'text-white',
-                      htmlContainer: 'text-white'
-                    }
-                  });
-                }
+                this.operacionInputsValidar = true;
+                this.TipoEntrega = "";
 
               })
 
@@ -945,7 +1034,7 @@ export class ActaMovimientoComponent implements OnInit {
 
       } else {
 
-        console.log(this.BodegaEntra);
+
 
         Swal.fire({
           title: '¿Estás seguro?',
@@ -961,42 +1050,24 @@ export class ActaMovimientoComponent implements OnInit {
           }
         }).then((result) => {
           if (result.isConfirmed) {
-            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.GuiaTrasportadora, this.archivoCapturado, this.guardarValorOnts,this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
+            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.archivoCapturado, this.guardarValorOnts, this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
 
+              this.limpiar()
 
-              if (crear.length >= 1) {
+              this.ngOnInit();
+              this.ocultarNombreCompletoTecnico = false;
+              Swal.fire({
+                title: 'EXITO',
+                text: 'ACTA CREADA CON EXITO',
+                icon: 'success',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
 
-                Swal.fire({
-                  title: 'ERROR',
-                  text: `LA BODEGA DE  ${this.valorNombreBodega.toLocaleUpperCase()} YA CUENTA CON UNA ACTA EN ESTADO PENDIENTE`,
-                  icon: 'error',
-                  customClass: {
-                    popup: 'bg-dark',
-                    title: 'text-white',
-                    htmlContainer: 'text-white'
-                  }
-                });
-
-              } else {
-
-                this.limpiar()
-
-                this.formData = "";
-                localStorage.removeItem(`borradorFormulario_${this.usuario.data.idusuario}`);
-                this.ngOnInit();
-                this.ocultarNombreCompletoTecnico = false;
-                Swal.fire({
-                  title: 'EXITO',
-                  text: 'ACTA CREADA CON EXITO',
-                  icon: 'success',
-                  customClass: {
-                    popup: 'bg-dark',
-                    title: 'text-white',
-                    htmlContainer: 'text-white'
-                  }
-                });
-
-              }
+              this.operacionInputsValidar = true;
 
             })
           }
@@ -1007,7 +1078,7 @@ export class ActaMovimientoComponent implements OnInit {
 
       }
 
-    }else if (this.RazonMovimiento == '14' || this.RazonMovimiento == '18' || this.RazonMovimiento == '17'){
+    } else if (this.RazonMovimiento == '14' || this.RazonMovimiento == '18' || this.RazonMovimiento == '17') {
 
       if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
         Swal.fire({
@@ -1037,43 +1108,24 @@ export class ActaMovimientoComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
 
-            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.GuiaTrasportadora, this.archivoCapturado, this.guardarValorOnts,this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
+            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.archivoCapturado, this.guardarValorOnts, this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
 
+              this.limpiar()
+              this.ngOnInit();
+              this.ocultarNombreCompletoTecnico = false;
+              Swal.fire({
+                title: 'EXITO',
+                text: 'ACTA CREADA CON EXITO',
+                icon: 'success',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
 
-              if(crear.length >= 1) {
-
-                Swal.fire({
-                  title: 'ERROR',
-                  text: `El numero de servicio  ${this.valorNombreBodega} YA CUENTA CON UNA ACTA PENDIENTE`,
-                  icon: 'error',
-                  customClass: {
-                    popup: 'bg-dark',
-                    title: 'text-white',
-                    htmlContainer: 'text-white'
-                  }
-                });
-
-
-              }else{
-                this.limpiar()
-
-                this.formData = "";
-
-
-                this.ngOnInit();
-                this.ocultarNombreCompletoTecnico = false;
-                Swal.fire({
-                  title: 'EXITO',
-                  text: 'ACTA CREADA CON EXITO',
-                  icon: 'success',
-                  customClass: {
-                    popup: 'bg-dark',
-                    title: 'text-white',
-                    htmlContainer: 'text-white'
-                  }
-                });
-              }
-
+              this.condicionOcultarBodegaEntra = false;
+              this.condicionBodegaSale = false;
             })
 
           }
@@ -1083,9 +1135,9 @@ export class ActaMovimientoComponent implements OnInit {
 
 
 
-    }else if(this.RazonMovimiento == '15'){
+    } else if (this.RazonMovimiento == '15') {
 
-      if ( this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
+      if (this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
         Swal.fire({
           title: 'ERROR',
           text: 'POR FAVOR LLENE LOS CAMPOS',
@@ -1113,42 +1165,24 @@ export class ActaMovimientoComponent implements OnInit {
         }).then((result) => {
           if (result.isConfirmed) {
 
-            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.GuiaTrasportadora, this.archivoCapturado, this.guardarValorOnts,this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
+            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.archivoCapturado, this.guardarValorOnts, this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
 
+              this.limpiar()
+              this.ngOnInit();
+              this.ocultarNombreCompletoTecnico = false;
+              Swal.fire({
+                title: 'EXITO',
+                text: 'ACTA CREADA CON EXITO',
+                icon: 'success',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
 
-              if(crear.length >= 1) {
-
-                Swal.fire({
-                  title: 'ERROR',
-                  text: `El numero de servicio  ${this.valorNombreBodega} YA CUENTA CON UNA ACTA PENDIENTE`,
-                  icon: 'error',
-                  customClass: {
-                    popup: 'bg-dark',
-                    title: 'text-white',
-                    htmlContainer: 'text-white'
-                  }
-                });
-
-
-              }else{
-                this.limpiar()
-
-                this.formData = "";
-
-
-                this.ngOnInit();
-                this.ocultarNombreCompletoTecnico = false;
-                Swal.fire({
-                  title: 'EXITO',
-                  text: 'ACTA CREADA CON EXITO',
-                  icon: 'success',
-                  customClass: {
-                    popup: 'bg-dark',
-                    title: 'text-white',
-                    htmlContainer: 'text-white'
-                  }
-                });
-              }
+              this.condicionBodegaSale = false;
+              this.resultadosPorInput = [];
 
             })
 
@@ -1157,9 +1191,67 @@ export class ActaMovimientoComponent implements OnInit {
 
       }
 
+    } else if (this.RazonMovimiento == '28' || this.RazonMovimiento == '29' || this.RazonMovimiento == '30' || this.RazonMovimiento == '31' || this.RazonMovimiento == '32' || this.RazonMovimiento == '33' || this.RazonMovimiento == '34' || this.RazonMovimiento == '35' || this.RazonMovimiento == '37' || this.RazonMovimiento == '24' || this.RazonMovimiento == '25' || this.RazonMovimiento == '26' || this.RazonMovimiento == '27') {
+
+      if (!this.NumServicioOperaciones || this.NumServicioOperaciones.toString().trim() === "" || this.archivoCapturado == null) {
+        Swal.fire({
+          title: 'ERROR',
+          text: 'POR FAVOR LLENE LOS CAMPOS',
+          icon: 'error',
+          customClass: {
+            popup: 'bg-dark',
+            title: 'text-white',
+            htmlContainer: 'text-white'
+          }
+        });
+      } else {
+
+
+        Swal.fire({
+          title: '¿Estás seguro?',
+          text: 'Por favor Verifique que la informacion este correcta, ya que no podra modificar la informacion despues de crear el acta!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, estoy seguro',
+          cancelButtonText: 'Cancelar',
+          customClass: {
+            popup: 'bg-dark',
+            title: 'text-white',
+            htmlContainer: 'text-white'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            this.actasOperaciones.postActasDeOperaciones(this.RazonMovimiento, this.NumServicioOperaciones, this.Descripcion, this.archivoCapturado).subscribe((res: any) => {
+
+              Swal.fire({
+                title: 'EXITO',
+                text: 'ACTA CREADA CON EXITO',
+                icon: 'success',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
+
+              this.NumServicioOperaciones = "";
+              this.RazonMovimiento = "";
+              this.archivoCapturado = null;
+              this.savedImage = "";
+              this.habilitarActaFisicaImg = false;
+              this.condicionOperaciones = false;
+            })
+
+          }
+
+        })
+
+
+      }
+
+
     }
-
-
 
   }
 
@@ -1223,19 +1315,23 @@ export class ActaMovimientoComponent implements OnInit {
 
   filtrarPorEstado(estados: string[]) {
     // Filtrar los movimientos por los estados indicados
-    this.guardarAllMovimientos = this.guardarAllMovimientos.filter((movimiento:any) => estados.includes(movimiento.estadoActaMovimiento));
+    this.guardarAllMovimientos = this.guardarAllMovimientos.filter((movimiento: any) => estados.includes(movimiento.estadoActaMovimiento));
   }
   //------------------------------------------------//
 
-  //funcion solo para reinciar la paginacion a 1 por si se actualiza la pagina
+
   actualizarPaginacion() {
-    // Reiniciar la paginación a la primera página cuando se cambie la cantidad de registros por página
-    this.page = 1;
+
+    if(this.condicionBusqueda == 1){
+      this.buscarRegistro();
+    }else{
+      this.ngOnInit();
+    }
   }
 
   //funcion que permite visualizar en otra pestaña la imagen una vez se le da click en la tabla para abrila
   abrirImagen(nombreImagen: string): void {
-    const imagenUrl = `${this.apiUrlImg}/static/` + nombreImagen;
+    const imagenUrl = `${this.apiUrlImg}` + nombreImagen;
 
     // Abre una nueva ventana solo si el navegador no bloquea la apertura de ventanas emergentes
     const newWindow = window.open('', '_blank');
@@ -1251,9 +1347,9 @@ export class ActaMovimientoComponent implements OnInit {
   }
 
   //funcion que acepta al acta de movimiento y se realizan los respectivos movimientos del acta en las bodegas
-  aceptarActa(idActa: string, servicio: string, servicioSale: string,numTercero:string,tipoMovimiento:string) {
+  aceptarActa(idActa: string, servicio: string, servicioSale: string, numTercero: string, tipoMovimiento: string) {
 
-    this.activosFijos.aceptarActa(idActa, servicio, servicioSale,numTercero,tipoMovimiento).subscribe((validarActa: any) => {
+    this.activosFijos.aceptarActa(idActa, servicio, servicioSale, numTercero, tipoMovimiento).subscribe((validarActa: any) => {
 
       this.RazonMovimiento = "";
 
@@ -1281,7 +1377,7 @@ export class ActaMovimientoComponent implements OnInit {
   }
 
   //funcion que rechaza el acta y no se realiza ningun movimiento entre bodegas
-  anularActa(idActa: string, servicio: string,numTercero:string,tipoMovimiento:string) {
+  anularActa(idActa: string, servicio: string, numTercero: string, tipoMovimiento: string) {
 
     Swal.fire({
       title: '¿Por qué quieres rechazar el acta?',
@@ -1298,7 +1394,7 @@ export class ActaMovimientoComponent implements OnInit {
       if (result.isConfirmed) {
         this.razonAnulacion = result.value;
 
-        this.activosFijos.anularActa(idActa, servicio, this.razonAnulacion,numTercero,tipoMovimiento).subscribe((validarActa: any) => {
+        this.activosFijos.anularActa(idActa, servicio, this.razonAnulacion, numTercero, tipoMovimiento).subscribe((validarActa: any) => {
           this.ngOnInit();
 
 
@@ -1336,12 +1432,18 @@ export class ActaMovimientoComponent implements OnInit {
 
     this.guardarServicio = [];
 
-    this.TipoEntrega = "";
+
     this.dynamicInputs = [];
     this.resultadosPorInput = [];
     this.guardarValorOnts = [];
 
     if (this.valorNombreBodega == "Retiro Final" || this.valorNombreBodega == 'Retiro Soporte' || this.valorNombreBodega == 'Retiro Migración' || this.valorNombreBodega == 'Retiro Traslado') {
+
+      if (this.userTecnico_O_Adminiistractivo == "karol yiseth mosquera alzate" || this.userTecnico_O_Adminiistractivo == "mari luz pulgarin") {
+        this.habilitarActaFisicaImg = false;
+      } else {
+        this.habilitarActaFisicaImg = true;
+      }
 
       this.ocultarNombreCompletoTecnico = false
       this.ocultarBotonBuscarCliente = true;
@@ -1358,13 +1460,16 @@ export class ActaMovimientoComponent implements OnInit {
       this.mostrarInfoClienteRetirar = false;
       this.condicionVariosServiciosCliente = false;
       this.ocultarBotonBorrarCliente = false;
-     this.desahibilitarBuscarCliente = false;
-     this.ocultarBotonBuscarClienteInstalacion = false;
-     this.ocultarBotonBorrarClienteInstalacion = false;
+      this.desahibilitarBuscarCliente = false;
+      this.ocultarBotonBuscarClienteInstalacion = false;
+      this.ocultarBotonBorrarClienteInstalacion = false;
+      this.condicionOperaciones = false;
+      this.operacionInputsTipo = false;
+
 
     } else if (this.valorNombreBodega == 'Instalación Inicial' || this.valorNombreBodega == 'Instalación Traslado' || this.valorNombreBodega == 'Instalación Migración' || this.valorNombreBodega == 'Instalación Soporte') {
 
-
+      this.habilitarActaFisicaImg = true;
       this.mostrarInfoClienteInstalar = false;
       this.ocultarBotonBorrarClienteInstalacion = false;
       this.ocultarNombreCompletoTecnico = false
@@ -1382,18 +1487,36 @@ export class ActaMovimientoComponent implements OnInit {
       this.ocultarBotonBuscarClienteInstalacion = true;
       this.ocultarBotonBorrarCliente = false;
       this.desahibilitarBuscarCliente = false;
+      this.ocultarBotonCrearActa = true;
+      this.condicionOperaciones = false;
 
 
+    } else if (this.valorNombreBodega == 'Fachada de la casa' || this.valorNombreBodega == 'Marquilla-Instalación' || this.valorNombreBodega == 'Marquilla-Reconexión' || this.valorNombreBodega == 'Marquilla-Retiro' || this.valorNombreBodega == 'Marquilla-Soporte' || this.valorNombreBodega == 'Marquilla-Traslado Reconexión' || this.valorNombreBodega == 'Marquilla-Traslado Retiro' || this.valorNombreBodega == 'Marquilla-Traslado Instalación' || this.valorNombreBodega == 'Paz y Salvo' || this.valorNombreBodega == 'Contrato TV Stick' || this.valorNombreBodega == 'Contrato Único de Servicios Fijos' || this.valorNombreBodega == 'Contrato - Cesión Unilateral' || this.valorNombreBodega == 'Contrato - Migracion') {
 
+      this.condicionOperaciones = true;
+      this.habilitarActaFisicaImg = true;
+      this.condicionOcultarBodegaEntra = false;
+      this.condicionBodegaSale = false;
+      this.condicionEntraBodega = false;
+      this.ocultarBotonBuscarClienteInstalacion = false;
+      this.ocultarBotonBorrarClienteInstalacion = false;
+      this.condicionRetiro = false;
+      this.ocultarBotonBuscarCliente = false;
+      this.ocultarBotonBorrarCliente = false;
+      this.ocultarBotonCrearActa = true;
+      this.mostrarInfoClienteRetirar = false;
+      this.condicionVariosServiciosCliente = false;
+      this.mostrarInfoClienteInstalar = false;
+      return;
 
-    } else if(this.valorNombreBodega == 'Ajuste Inventario Salida') {
+    } else if (this.valorNombreBodega == 'Ajuste Inventario Salida') {
       this.guardarServicioTecnicos = [];
       this.ocultarNombreCompletoTecnico = false;
       this.infoTextoActivosFijos = false;
       this.BodegaSale = "";
       this.BodegaEntra = "";
-
-      this.activosFijos.getBodegaAjusteInventario().subscribe( response => {
+      this.ocultarBotonCrearActa = true;
+      this.activosFijos.getBodegaAjusteInventario().subscribe(response => {
 
         this.guardarServicioTecnicos = response
 
@@ -1406,11 +1529,11 @@ export class ActaMovimientoComponent implements OnInit {
       this.ServicioDelClienteEspecifico = "";
       this.condicionVariosServiciosCliente = false;
       this.ocultarBotonBorrarCliente = false;
-     this.desahibilitarBuscarCliente = false;
-     this.mostrarInfoClienteRetirar = false;
-     this.condicionRetiro = false;
+      this.desahibilitarBuscarCliente = false;
+      this.mostrarInfoClienteRetirar = false;
+      this.condicionRetiro = false;
 
-    } else if(this.valorNombreBodega == 'Venta Salida'){
+    } else if (this.valorNombreBodega == 'Venta Salida') {
       this.BodegaSale = "";
       this.BodegaEntra = "";
       this.ocultarNombreCompletoTecnico = false;
@@ -1419,16 +1542,18 @@ export class ActaMovimientoComponent implements OnInit {
       this.condicionEntraBodega = false;
       this.condicionRetiro = false;
       this.condicionBodegaSale = true;
+      this.ocultarBotonCrearActa = true;
 
-    } else if(this.valorNombreBodega == 'Ajuste Inventario Ingreso'){
+
+    } else if (this.valorNombreBodega == 'Ajuste Inventario Ingreso') {
       this.guardarServicioTecnicos = [];
       this.guardarServicioTecnicos = "";
       this.BodegaSale = "";
       this.BodegaEntra = "";
       this.ocultarNombreCompletoTecnico = false;
       this.infoTextoActivosFijos = false;
-
-      this.activosFijos.getBodegaAjusteInventarioIngreso().subscribe( response => {
+      this.ocultarBotonCrearActa = true;
+      this.activosFijos.getBodegaAjusteInventarioIngreso().subscribe(response => {
 
         this.guardarServicioTecnicos = response
 
@@ -1449,7 +1574,8 @@ export class ActaMovimientoComponent implements OnInit {
       this.condicionRetiro = false;
 
 
-    }else if(this.valorNombreBodega == 'Reconexion'){
+    } else if (this.valorNombreBodega == 'Reconexion') {
+      this.habilitarActaFisicaImg = true;
       this.ocultarBotonBorrarClienteInstalacion = false;
       this.ocultarNombreCompletoTecnico = false;
       this.BodegaSale = "";
@@ -1464,7 +1590,7 @@ export class ActaMovimientoComponent implements OnInit {
       this.infoTextoActivosFijos = false;
       this.BodegaSale = "";
       this.BodegaEntra = "";
-
+      this.condicionOperaciones = false;
 
       this.condicionRetiro = false;
       this.condicionOcultarBodegaEntra = false;
@@ -1472,7 +1598,7 @@ export class ActaMovimientoComponent implements OnInit {
       this.ocultarBotonBorrarCliente = false;
       this.desahibilitarBuscarCliente = false;
 
-    }else{
+    } else {
       this.ocultarBotonBorrarClienteInstalacion = false;
       this.mostrarInfoClienteInstalar = false;
       this.BodegaSale = "";
@@ -1484,10 +1610,12 @@ export class ActaMovimientoComponent implements OnInit {
       this.ServicioDelClienteEspecifico = "";
       this.condicionVariosServiciosCliente = false;
       this.ocultarBotonBorrarCliente = false;
-     this.desahibilitarBuscarCliente = false;
-     this.mostrarInfoClienteRetirar = false;
-     this.condicionRetiro = false;
-     this.infoTextoActivosFijos = false;
+      this.desahibilitarBuscarCliente = false;
+      this.mostrarInfoClienteRetirar = false;
+      this.condicionRetiro = false;
+      this.infoTextoActivosFijos = false;
+      this.condicionOperaciones = false;
+      this.ocultarBotonCrearActa = true;
     }
     this.BodegaSale = "";
     this.BodegaEntra = "";
@@ -1523,7 +1651,6 @@ export class ActaMovimientoComponent implements OnInit {
       this.operacionInputsTipo = true;
     } else {
       this.operacionInputsTipo = false;
-      this.GuiaTrasportadora = ""
       this.archivoCapturado = null;
       this.savedImage = ""
     }
@@ -1534,11 +1661,10 @@ export class ActaMovimientoComponent implements OnInit {
   limpiar() {
     this.BodegaEntra = "";
     this.BodegaSale = "";
-    this.GuiaTrasportadora = "";
+
     this.RazonMovimiento = "";
     this.Descripcion = "";
     this.ImgGuia = "";
-    this.TipoEntrega = "";
     this.archivoCapturado = null;
     this.operacionInputsValidar = false;
     this.operacionInputsTipo = false;
@@ -1589,44 +1715,44 @@ export class ActaMovimientoComponent implements OnInit {
       });
 
 
-    }else{
+    } else {
 
-        this.activosFijos.obtenerClienteServicios(this.BodegaEntra).subscribe((res:any)=>{
+      this.activosFijos.obtenerClienteServicios(this.BodegaEntra).subscribe((res: any) => {
 
-           this.combinedData = {
-            servicios: res.data
-          };
+        this.combinedData = {
+          servicios: res.data
+        };
 
-          if(this.combinedData.servicios.length == 0){
+        if (this.combinedData.servicios.length == 0) {
 
-            Swal.fire({
-              title: 'ERROR',
-              text: 'NO EXISTE ACTIVO FIJO PARA RETIRAR A ESTE CLIENTE',
-              icon: 'error',
-              customClass: {
-                popup: 'bg-dark',
-                title: 'text-white',
-                htmlContainer: 'text-white'
-              }
-            });
+          Swal.fire({
+            title: 'ERROR',
+            text: 'NO EXISTE ACTIVO FIJO PARA RETIRAR A ESTE CLIENTE',
+            icon: 'error',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          });
 
-            this.condicionVariosServiciosCliente = false;
+          this.condicionVariosServiciosCliente = false;
 
-          } else {
-            this.ocultarBotonBuscarClienteInstalacion = false;
-            this.condicionBodegaSale = true;
-            this.ocultarBotonCrearActa = true;
-            this.condicionRetiro = false;
-            this.mostrarInfoClienteInstalar = true;
-            this.desahibilitarBuscarCliente = true;
+        } else {
+          this.ocultarBotonBuscarClienteInstalacion = false;
+          this.condicionBodegaSale = true;
+          this.ocultarBotonCrearActa = true;
+          this.condicionRetiro = false;
+          this.mostrarInfoClienteInstalar = true;
+          this.desahibilitarBuscarCliente = true;
 
-            this.ocultarBotonBorrarClienteInstalacion = true;
-
-
-          }
+          this.ocultarBotonBorrarClienteInstalacion = true;
 
 
-        })
+        }
+
+
+      })
 
 
     }
@@ -1650,19 +1776,19 @@ export class ActaMovimientoComponent implements OnInit {
       });
 
 
-    }else{
+    } else {
 
-      this.activosFijos.buscarCliente(this.BodegaSale).subscribe((cliente:any) => {
+      this.activosFijos.buscarCliente(this.BodegaSale).subscribe((cliente: any) => {
 
         this.guardarClienteRetirar = cliente;
 
-        console.log( this.guardarClienteRetirar);
+        console.log(this.guardarClienteRetirar);
 
-        this.activosFijos.obtenerClienteServicios(this.BodegaSale).subscribe((res:any)=>{
+        this.activosFijos.obtenerClienteServicios(this.BodegaSale).subscribe((res: any) => {
 
           console.log(res);
 
-           this.combinedData = {
+          this.combinedData = {
             cliente: this.guardarClienteRetirar,
             servicios: res.data
           };
@@ -1670,13 +1796,13 @@ export class ActaMovimientoComponent implements OnInit {
           console.log(this.combinedData);
 
 
-          if( this.guardarClienteRetirar.length>1){
+          if (this.guardarClienteRetirar.length > 1) {
 
 
             this.condicionVariosServiciosCliente = true;
-            this.guardarServiciosClientesEspecificos =  this.guardarClienteRetirar
+            this.guardarServiciosClientesEspecificos = this.guardarClienteRetirar
 
-          }else if(this.guardarClienteRetirar.error == "Cliente no encontrado" || this.guardarClienteRetirar == ""){
+          } else if (this.guardarClienteRetirar.error == "Cliente no encontrado" || this.guardarClienteRetirar == "") {
 
             Swal.fire({
               title: 'ERROR',
@@ -1721,7 +1847,7 @@ export class ActaMovimientoComponent implements OnInit {
   //funcion que obtiene varios equipos en el caso de que el numero de servicio tenga mas de 1 equipo en este caso se mostraran todos los equipos en una select para que el usuario selecione cual retirar
   servicioEspecificoCliente() {
 
-    this.activosFijos.buscarClienteEspecifico(this.ServicioDelClienteEspecifico,this.BodegaSale).subscribe((cliente:any) => {
+    this.activosFijos.buscarClienteEspecifico(this.ServicioDelClienteEspecifico, this.BodegaSale).subscribe((cliente: any) => {
 
       this.guardarClienteRetirar = cliente;
 
@@ -1775,7 +1901,7 @@ export class ActaMovimientoComponent implements OnInit {
     this.ocultarBotonCrearActa = false;
   }
 
-  buscarOtroClienteInstalacion(){
+  buscarOtroClienteInstalacion() {
 
     this.mostrarInfoClienteInstalar = false;
     this.ocultarBotonBorrarCliente = false;
@@ -1792,17 +1918,18 @@ export class ActaMovimientoComponent implements OnInit {
   }
 
   //funcion que sirve para filtrar todo en el buscador
-  filtroLimpiar(evento: any){
+  filtroLimpiar(evento: any) {
 
     const selectedIndex = evento.options[evento.selectedIndex].text;
 
-    if(selectedIndex == "Filtrar todo"){
+    if (selectedIndex == "Filtrar todo") {
+      this.condicionBusqueda = 0;
       this.ngOnInit();
       this.buscarActivos = ""
 
       this.dashabilitarBuscador = true;
 
-    }else{
+    } else {
       this.dashabilitarBuscador = false;
     }
 
@@ -1825,7 +1952,7 @@ export class ActaMovimientoComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        const datosReporte:any[] = this.guardarAllMovimientos;
+        const datosReporte: any[] = this.guardarAllMovimientos;
 
         const datosReporteSinIdActivoFijo = datosReporte.map(item => {
           const newItem = { ...item };
@@ -1894,7 +2021,7 @@ export class ActaMovimientoComponent implements OnInit {
     });
   }
 
-  borrarSeleccion(){
+  borrarSeleccion() {
     this.ocultarNombreCompletoTecnico = false
   }
 
@@ -1910,7 +2037,7 @@ export class ActaMovimientoComponent implements OnInit {
   }
 
 
-  cambiarColorPredeterminadoBotonVer(){
+  cambiarColorPredeterminadoBotonVer() {
 
     if (this.idActaActualBotonVer) {
       this.botonesPresionados[this.idActaActualBotonVer] = false;

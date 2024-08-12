@@ -106,7 +106,8 @@ export class ConsultarInventarioComponent implements OnInit {
   totalOnts:any;
   //-----------------------------------------------------------------//
 
-  operacionesRol: boolean = true;
+  operacionesRolAdmin: boolean = true;
+  operacionesRolOperacionesYtecnicos:boolean = true;
   variableError: any;
 
 
@@ -158,15 +159,23 @@ export class ConsultarInventarioComponent implements OnInit {
 
 
 
-      if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ' || usuario.data.nombres=='MILTON FERLEY') {
+      if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ' || usuario.data.nombres=='MILTON FERLEY' || usuario.data.nombres== "LEYDI JHOANA"|| usuario.data.nombres== "YESSICA ALEJANDRA" || usuario.data.nombres== "LUZ ESTELA ") {
+
 
         this.servicioActivosFijos.getActivosFijos(this.page, this.itemsPerPage).subscribe(response => {
         this.activosFijosInventario = response.data;
         this.totalItems = response.total;
 
-    });
+        });
 
-        this.operacionesRol = true;
+        this.operacionesRolAdmin = true;
+
+
+        if(usuario.data.nombres== "LEYDI JHOANA" || usuario.data.nombres== "YESSICA ALEJANDRA" || usuario.data.nombres== "LUZ ESTELA "){
+          this.operacionesRolAdmin = false;
+        }
+
+
       } else {
         this.enabledFiltroAdmin = false;
         this.enabledFiltroTecnico = true;
@@ -188,7 +197,8 @@ export class ConsultarInventarioComponent implements OnInit {
           this.totalOnts = total[0].total;
         })
 
-        this.operacionesRol = false;
+        this.operacionesRolAdmin = false;
+        this.operacionesRolOperacionesYtecnicos = false;
       }
 
     }

@@ -11,8 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class ActivosFijosService {
 
-  urlActivosFijos: String = environment.ip_serber_pruebas_https
-  bodegaExcel:String = "";
+  urlActivosFijos: String = environment.apiUrl
 
   constructor(private http: HttpClient, private loginServices: LoginService) {}
 
@@ -22,7 +21,7 @@ export class ActivosFijosService {
     const usuario = this.loginServices.getUser();
     const usuarioCompleto = this.loginServices.getTecnico();
 
-    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY"){
+    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY" || usuario.data.nombres == "LEYDI JHOANA" || usuario.data.nombres == "YESSICA ALEJANDRA" || usuario.data.nombres == "LUZ ESTELA "){
       usuario.data.nombres = "alcala1";
 
     }else{
@@ -39,7 +38,7 @@ export class ActivosFijosService {
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
 
-    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY"){
+    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY" || usuario.data.nombres == "LEYDI JHOANA" || usuario.data.nombres == "YESSICA ALEJANDRA"  || usuario.data.nombres == "LUZ ESTELA "){
       usuario.data.nombres = "alcala1";
     }
     console.log(usuario.data.nombres.trim());
@@ -223,7 +222,7 @@ buscarActivoFijoMoverTecnicos(buscar:string){
 
 
 
-  postActaDeMovimiento(RazonMovimiento:string, TipoEntrega:string, BodegaEntra:string, BodegaSale:string, Descripcion:string, GuiaTrasportadora:string,  ImgGuia:string, idOnts:any,ServicioDelClienteEspecifico:string){
+  postActaDeMovimiento(RazonMovimiento:string, TipoEntrega:string, BodegaEntra:string, BodegaSale:string, Descripcion:string,  ImgGuia:string, idOnts:any,ServicioDelClienteEspecifico:string){
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
     const tecnico = this.loginServices.getTecnico();
@@ -235,7 +234,6 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     form.append('BodegaEntra', BodegaEntra);
     form.append('BodegaSale', BodegaSale);
     form.append('Descripcion', Descripcion);
-    form.append('GuiaTrasportadora', GuiaTrasportadora);
     form.append('estadoActa', '1');
     form.append('nombre', tecnico);
     form.append('files',ImgGuia);
@@ -248,9 +246,9 @@ buscarActivoFijoMoverTecnicos(buscar:string){
 
 
 
-  getAllMovimientos(){
+  getAllMovimientos(page: number, itemsPerPage: number){
     const headers = this.loginServices.getAuthHeaders();
-    return this.http.get(`${this.urlActivosFijos}/getAllActaMovimientos`, {headers} )
+    return this.http.get(`${this.urlActivosFijos}/getAllActaMovimientos/${page}/${itemsPerPage}`, {headers} )
   }
 
 

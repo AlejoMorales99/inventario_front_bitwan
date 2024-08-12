@@ -5,5 +5,6 @@ export const environment = {
   url_produccion: "",
   url_login_produccion: "https://www.bitwan.info/api/public/login",
   portServerPruebas: "44080",
+  urlDrive: "https://lh3.googleusercontent.com/d/",
   password: "C0n3x1on4dm1n"
 };

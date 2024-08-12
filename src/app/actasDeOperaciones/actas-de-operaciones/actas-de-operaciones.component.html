@@ -1,0 +1,162 @@
+<app-navbar></app-navbar>
+
+<div class="container-fluid slide-in mt-5 p-5 ">
+
+
+
+  <div class="row borderTable ">
+
+
+
+    <div class="fondoTable  text-white text-center p-3 " >
+      Actas De Operaciones
+    </div>
+
+
+    <div class="col-md-12">
+
+        <div class="row  rounded table-responsive">
+
+        <div class="mb-3 d-md-flex flex-md-row   mt-4">
+
+
+          <select  [(ngModel)]="selecColumnaActasOperaciones" (change)="filtroLimpiar($event.target)"  class="form-select w-25  mx-3  botonesActa mb-3   bg-dark text-white border-secondary">
+
+            <option value="mostrarTodo">Filtrar todo</option>
+            <option value="razonActaOperacion">Razon de movimiento</option>
+            <option value="estadoActaOperacion">estado del acta</option>
+            <option value="numServicioActa">Numero de servicio</option>
+            <option value="usuarioCreoActa">Usuario que creo el acta</option>
+            <option value="usuarioValidoActa">Usuario que valido el acta</option>
+            <option value="fechaCreacionActa">fecha de creacion del acta</option>
+            <option value="fechaValidacionActa">fecha de aceptacion</option>
+
+          </select>
+
+
+
+          <input disabled="{{disabledInputBuscar}}" class="form-control botonesActa w-25 mx-3 bg-dark border-secondary mb-3 text-white" [(ngModel)]="inpBuscadorActasOperaciones" placeholder="BUSCADOR" name="search"  autocomplete="on">
+
+
+          <!-- Botón para buscar con *ngIf que verifica el usuario logueado para saber si puede buscar registros o no -->
+          <button [disabled]="disabledInputBuscar" style="border: none;"  type="button" (click)="btnBuscarRegistrosActasOperaciones()" class="btn mb-3 botonesActa mx-1 fondoTable text-white "   >Buscar</button>
+
+
+        </div>
+
+
+
+          <table class="table table-dark table-hover text-white hover table-striped text-center">
+            <thead>
+              <tr>
+
+                <th class="tamañoTitulos" >RAZÓN_MOV</th>
+                <th class="tamañoTitulos" >ESTADO DEL ACTA</th>
+                <th class="tamañoTitulos" >NUMERO DE SERVICIO</th>
+                <th class="tamañoTitulos" >USUARIO QUE CREO EL ACTA</th>
+                <th class="tamañoTitulos" >USUARIO QUE VALIDO EL ACTA</th>
+                <th class="tamañoTitulos" >FECHA CREACION</th>
+                <th class="tamañoTitulos" >FECHA ACEPTACION</th>
+                <th class="tamañoTitulos" >IMG ACTA</th>
+                <th class="tamañoTitulos" >DESCRIPCION</th>
+                <th class="tamañoTitulos" >OBS_ACTA_RECHA</th>
+                <th colspan="2" class="tamañoTitulos" >OPERACIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr class="animacion" *ngFor="let getAllActasMovimiento of getAllActasMovimiento  | paginate: { itemsPerPage: itemsPerPage, currentPage:  page,  totalItems: totalGetAllActasOperaciones }  " >
+
+                <td>{{getAllActasMovimiento.razonMovimientocol}} </td>
+                <td
+                [ngStyle]="{'color':getAllActasMovimiento.estadoActaNombre === 'Aceptada' ? '#08E66D' :
+                getAllActasMovimiento.estadoActaNombre === 'Rechazada' ? 'red' :
+                getAllActasMovimiento.estadoActaNombre === 'Pendiente Aceptacion' ? 'yellow' : ''}" >
+                {{getAllActasMovimiento.estadoActaNombre}} </td>
+                <td>{{getAllActasMovimiento.numServicioActa}} </td>
+                <td>{{getAllActasMovimiento.usuarioCreoActa}} </td>
+                <td>{{getAllActasMovimiento.usuarioValidoActa}} </td>
+                <td>{{getAllActasMovimiento.fechaCreacionActa}} </td>
+                <td>{{getAllActasMovimiento.fechaValidacionActa}} </td>
+                <td>
+                  <!-- hago una peticion a mi backend de manera estatica pero de una manera segura para mostrar la guia respectiva de cada acta -->
+                  <a *ngIf="getAllActasMovimiento.imgActa" (click)="abrirImagen(getAllActasMovimiento.imgActa)">
+                    <img [src]="apiUrlImg+'/static/' + getAllActasMovimiento.imgActa" width="20"
+                      height="20" alt="Imagen">
+                  </a>
+                </td>
+
+                <td>{{getAllActasMovimiento.descripcion}} </td>
+                <td>{{getAllActasMovimiento.obsActaRecha}} </td>
+
+                <td >
+
+
+                  <button *ngIf="getAllActasMovimiento.usuarioCreoActa != userTecnico_O_Adminiistractivo &&  getAllActasMovimiento.estadoActaNombre != 'Aceptada' && getAllActasMovimiento.estadoActaNombre != 'Rechazada'"
+                    (click)="aceptarActaOperaciones(getAllActasMovimiento.idactasDeOperaciones)" class="btn  btn-success">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                      <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                    </svg>
+
+
+                  </button>
+                </td>
+
+                <td >
+
+
+                  <button *ngIf="getAllActasMovimiento.usuarioCreoActa != userTecnico_O_Adminiistractivo &&  getAllActasMovimiento.estadoActaNombre != 'Aceptada' && getAllActasMovimiento.estadoActaNombre != 'Rechazada'"
+                    (click)="rechazarActaDeOperaciones(getAllActasMovimiento.idactasDeOperaciones)" class="btn  btn-danger">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                      <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+
+
+                  </button>
+                </td>
+
+
+              </tr>
+
+
+
+            </tbody>
+          </table>
+
+          <div class="d-flex justify-content-center mt-3 flex-wrap">
+            <label class="text-white" for="itemsPerPage">Registros por página:</label>
+            <div class="mx-2">
+              <select class="form-select bg-dark text-white border-secondary w-100 mx-2" id="itemsPerPage"
+                [(ngModel)]="itemsPerPage" (change)="actualizarPaginacion()">
+                <option value="10">10</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="500">500</option>
+                <option value="1000">1000</option>
+
+                <!-- Agrega más opciones según tus necesidades -->
+              </select>
+            </div>
+
+            <pagination-controls (pageChange)="page = $event; actualizarPaginacion()"
+              class="custom-pagination border-secondary text-white" previousLabel="Anterior" nextLabel="Siguiente">
+            </pagination-controls>
+          </div>
+
+
+
+        </div>
+
+    </div>
+
+
+
+  </div>
+
+
+
+
+<ng-progress></ng-progress>

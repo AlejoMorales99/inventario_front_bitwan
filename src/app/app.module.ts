@@ -45,6 +45,7 @@ import { EditarProveedorComponent } from './proveedores/editarProveedor/editar-p
 import { EditarTipoDeEquipoComponent } from './tipoEquipo/editarTipoDeEquipo/editar-tipo-de-equipo/editar-tipo-de-equipo.component';
 import { InventarioInsumosComponent } from './inventarioInsumos/inventario-insumos/inventario-insumos.component';
 import { ActaMovimientoInsumosComponent } from './actaMovimientoInsumos/acta-movimiento-insumos/acta-movimiento-insumos.component';
+import { ActasDeOperacionesComponent } from './actasDeOperaciones/actas-de-operaciones/actas-de-operaciones.component';
 
 
 
@@ -122,6 +123,10 @@ const appRoutes: Routes = [
   //ruta para acedder a todas las actas de movimiento de los insumos del inventario de la empresa
   { path: 'actasDeMovimientoInsumos' , component: ActaMovimientoInsumosComponent},
 
+  //ruta para acedder a todas las actas de movimiento de los insumos del inventario de la empresa
+  { path: 'actasDeOperaciones' , component: ActasDeOperacionesComponent},
+
+
   //ruta para acceder a todo el inventario de los tecnicos del inventario de la empresa
   { path: 'Tecnicos' , component: TecnicosComponent},
 
@@ -158,6 +163,7 @@ const appRoutes: Routes = [
     EditarTipoDeEquipoComponent,
     InventarioInsumosComponent,
     ActaMovimientoInsumosComponent,
+    ActasDeOperacionesComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
