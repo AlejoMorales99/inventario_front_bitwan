@@ -16,7 +16,7 @@ export class ActasDeOperacionesComponent implements OnInit {
 
   usuario: any;
 
-  apiUrlImg = environment.apiUrl;
+  apiUrlImg = environment.urlDrive;
 
   condicionBusqueda:number = 0;
 

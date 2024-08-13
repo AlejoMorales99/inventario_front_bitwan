@@ -14,7 +14,7 @@ export class TecnicosService {
   constructor(private http: HttpClient) { }
 
 
-  urlTecnicos: String = environment.apiUrl
+  urlTecnicos: String = environment.url_server_pruebas
 
   getTecnicos(){
     return this.http.get(`${this.urlTecnicos}`)

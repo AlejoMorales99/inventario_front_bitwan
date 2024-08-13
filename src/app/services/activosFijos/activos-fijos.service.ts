@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class ActivosFijosService {
 
-  urlActivosFijos: String = environment.apiUrl
+  urlActivosFijos: String = environment.url_server_pruebas
 
   constructor(private http: HttpClient, private loginServices: LoginService) {}
 
