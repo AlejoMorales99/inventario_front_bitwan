@@ -89,7 +89,7 @@ export class LoginService {
   }
 
   loginUsuario(nombreUsuario:string,numTercero:string){
-
+    console.log(this.urlActivosFijos);
     return this.http.get(`${this.urlActivosFijos}/loginUsuario/${nombreUsuario}/${numTercero}`)
   }
 
