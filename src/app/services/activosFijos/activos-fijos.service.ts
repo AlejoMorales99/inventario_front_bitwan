@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class ActivosFijosService {
 
-  urlActivosFijos: String = environment.url_server_pruebas
+  urlActivosFijos: String = environment.apiUrl
 
   constructor(private http: HttpClient, private loginServices: LoginService) {}
 
@@ -21,7 +21,7 @@ export class ActivosFijosService {
     const usuario = this.loginServices.getUser();
     const usuarioCompleto = this.loginServices.getTecnico();
 
-    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY" || usuario.data.nombres == "LEYDI JHOANA" || usuario.data.nombres == "YESSICA ALEJANDRA" || usuario.data.nombres == "LUZ ESTELA "){
+    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY" || usuario.data.nombres == "LEYDI JHOANA" || usuario.data.nombres == "YESSICA ALEJANDRA" || usuario.data.nombres == "LUZ ESTELA " || usuario.data.alias=='juballesteros'){
       usuario.data.nombres = "alcala1";
 
     }else{
@@ -38,11 +38,24 @@ export class ActivosFijosService {
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
 
-    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY" || usuario.data.nombres == "LEYDI JHOANA" || usuario.data.nombres == "YESSICA ALEJANDRA"  || usuario.data.nombres == "LUZ ESTELA "){
+    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY" || usuario.data.nombres == "LEYDI JHOANA" || usuario.data.nombres == "YESSICA ALEJANDRA"  || usuario.data.nombres == "LUZ ESTELA " || usuario.data.alias=='juballesteros'){
       usuario.data.nombres = "alcala1";
     }
     console.log(usuario.data.nombres.trim());
     return this.http.get(`${this.urlActivosFijos}/buscarRegistrosPorFechaAndServicio/${servicio}/${columna}/${fechaInicio}/${fechaFin}/${usuario.data.nombres.trim()}/${usuario.data.idusuario}/${page}/${itemsPerPage}` , {headers} )
+
+  }
+
+  buscarRegistrosPorReferenciaBodega(servicio:string,valoresReferencia:string,page: number, itemsPerPage: number): Observable<any>{
+
+    const headers = this.loginServices.getAuthHeaders();
+    const usuario = this.loginServices.getUser();
+
+    if(usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres == "MARI LUZ" || usuario.data.nombres == "MILTON FERLEY" || usuario.data.nombres == "LEYDI JHOANA" || usuario.data.nombres == "YESSICA ALEJANDRA"  || usuario.data.nombres == "LUZ ESTELA " || usuario.data.alias=='juballesteros'){
+      usuario.data.nombres = "alcala1";
+    }
+    console.log(usuario.data.nombres.trim());
+    return this.http.get(`${this.urlActivosFijos}/buscarRegistrosPorReferenciaBodega/${servicio}/${valoresReferencia}/${usuario.data.nombres.trim()}/${usuario.data.idusuario}/${page}/${itemsPerPage}` , {headers} )
 
   }
 
@@ -182,7 +195,7 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
     const usuarioCompleto = this.loginServices.getTecnico();
-    if(usuario.data.nombres == 'KAROL YISETH' || usuario.data.nombres == 'MARI LUZ' || usuario.data.nombres == 'MILTON FERLEY'){
+    if(usuario.data.nombres == 'KAROL YISETH' || usuario.data.nombres == 'MARI LUZ' || usuario.data.nombres == 'MILTON FERLEY' || usuario.data.alias=='juballesteros'){
       usuario.data.nombres = "alcala1"
     }else{
       usuario.data.nombres = usuarioCompleto;
@@ -195,7 +208,7 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     const headers = this.loginServices.getAuthHeaders();
     const usuario = this.loginServices.getUser();
 
-    if(usuario.data.nombres == 'KAROL YISETH' ||  usuario.data.nombres == 'MARI LUZ' || usuario.data.nombres == 'MILTON FERLEY'){
+    if(usuario.data.nombres == 'KAROL YISETH' ||  usuario.data.nombres == 'MARI LUZ' || usuario.data.nombres == 'MILTON FERLEY' || usuario.data.alias=='juballesteros'){
       usuario.data.nombres = "alcala1"
       usuario.data.numerotercero = 5065;
     }else{
@@ -314,7 +327,7 @@ buscarActivoFijoMoverTecnicos(buscar:string){
 
     const headers = this.loginServices.getAuthHeaders();
 
-    return this.http.get(`https://www.bitwan.info/api/public/servicios/getbasicserviciobynumero/${numServicio}` ,  {headers})
+    return this.http.get(`https://servicios.bitwan.info/api/public/servicios/getbasicserviciobynumero/${numServicio}` ,  {headers})
 
 
   }
@@ -361,7 +374,7 @@ buscarActivoFijoMoverTecnicos(buscar:string){
     body.set('json', JSON.stringify({"criteria":["numerotercero"],"value":numTercero,"onlyusers":true,"page":0,"limit":10}));
     body.set('authorization',token)
 
-    return this.http.post("https://www.bitwan.info/api/public/terceros/searchbycriteria", body.toString() , {headers:header})
+    return this.http.post("https://servicios.bitwan.info/api/public/terceros/searchbycriteria", body.toString() , {headers:header})
 
   }
 

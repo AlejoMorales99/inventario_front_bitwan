@@ -59,6 +59,8 @@ export class ConsultarInventarioComponent implements OnInit {
   fechaInicio: string = "";
   fechaFin: string = "";
 
+  selectedOptionsReferencias:any;
+
   selectedColumn: string = "mostrarTodo" // Columna seleccionada para la búsqueda (mac, serial o proveedor)
   searchValue: string = "" // Valor ingresado para buscar
 
@@ -108,6 +110,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
   operacionesRolAdmin: boolean = true;
   operacionesRolOperacionesYtecnicos:boolean = true;
+  referenciaMultiple:boolean= false;
   variableError: any;
 
 
@@ -118,6 +121,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
   action:any;
   condicionBusqueda: number = 0;
+  activosFijosTotalReporte: any;
 
 
   //aqui hago todas las instancias que necesito
@@ -159,7 +163,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
 
 
-      if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ' || usuario.data.nombres=='MILTON FERLEY' || usuario.data.nombres== "LEYDI JHOANA"|| usuario.data.nombres== "YESSICA ALEJANDRA" || usuario.data.nombres== "LUZ ESTELA ") {
+      if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ' || usuario.data.nombres=='MILTON FERLEY' || usuario.data.nombres== "LEYDI JHOANA"|| usuario.data.nombres== "YESSICA ALEJANDRA" || usuario.data.nombres== "LUZ ESTELA " || usuario.data.alias=='juballesteros') {
 
 
         this.servicioActivosFijos.getActivosFijos(this.page, this.itemsPerPage).subscribe(response => {
@@ -251,6 +255,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
             this.activosFijosInventario = registros.data
               this.totalItems = registros.total[0].total
+              this.activosFijosTotalReporte = registros.totalReporte;
           }
 
         })
@@ -300,7 +305,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
               this.activosFijosInventario = registros.data
               this.totalItems = registros.total[0].total
-
+              this.activosFijosTotalReporte = registros.totalReporte;
             }
           });
         }
@@ -337,9 +342,45 @@ export class ConsultarInventarioComponent implements OnInit {
 
               this.activosFijosInventario = registros.data
               this.totalItems = registros.total[0].total
-
+              this.activosFijosTotalReporte = registros.totalReporte;
             }
 
+          })
+        }
+
+      }else if(this.selectedColumn == "referenciaBodega"){
+
+
+        if(this.selectedOptionsReferencias == undefined ){
+          Swal.fire({
+            title: 'ERROR',
+            text: 'EXISTEN CAMPOS REQUERIDOS VACIOS',
+            icon: 'error',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          });
+        }else{
+          this.servicioActivosFijos.buscarRegistrosPorReferenciaBodega(this.buscarActivos,this.selectedOptionsReferencias,this.page, this.itemsPerPage).subscribe(res=>{
+            if(res.data == ""){
+              Swal.fire({
+                title: 'ERROR',
+                text: `NO SE ENCONTRO EL REGISTRO ${this.buscarActivos} de la columna ${this.selectedColumn}`,
+                icon: 'error',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
+            }else{
+
+              this.activosFijosInventario = res.data
+              this.totalItems = res.total[0].total
+              this.activosFijosTotalReporte = res.totalReporte;
+            }
           })
         }
 
@@ -361,7 +402,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
             this.activosFijosInventario = registros.data
             this.totalItems = registros.total[0].total
-
+            this.activosFijosTotalReporte = registros.totalReporte;
           }
 
         })
@@ -693,7 +734,7 @@ export class ConsultarInventarioComponent implements OnInit {
     if(selectedIndex == "Filtrar todo"){
       this.condicionBusqueda = 0;
       this.ngOnInit();
-
+      this.referenciaMultiple = false;
       this.buscarActivos = ""
       this.fechaReporte = false;
       this.buscadorCondicion = true;
@@ -701,9 +742,22 @@ export class ConsultarInventarioComponent implements OnInit {
     }else if(selectedIndex == "fecha/bodega"){
       this.fechaReporte = true;
       this.buscadorCondicion = false;
+      this.referenciaMultiple = false;
+
+    }else if(selectedIndex == "Referencia/bodega"){
+      this.referenciaMultiple = true;
+      this.fechaReporte = false;
+      this.buscadorCondicion = false;
+      this.referenciasServices.getReferencias().subscribe(referencia => {
+        this.referenciaInventario = referencia;
+
+      })
+
+
     }else{
       this.fechaReporte = false;
       this.buscadorCondicion = false;
+      this.referenciaMultiple = false;
     }
 
 
@@ -730,7 +784,7 @@ export class ConsultarInventarioComponent implements OnInit {
       if (result.isConfirmed) {
 
 
-        const datosReporte:any[] = this.activosFijosInventario;
+        const datosReporte:any[] = this.activosFijosTotalReporte;
 
         const datosReporteSinIdActivoFijo = datosReporte.map(item => {
           // Copia el objeto para evitar modificar el objeto original

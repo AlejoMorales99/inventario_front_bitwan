@@ -80,6 +80,8 @@ export class ActaMovimientoComponent implements OnInit {
   ocultarBotonBorrarClienteInstalacion: boolean = false;
   habilitarActaFisicaImg: boolean = false;
   condicionOperaciones: boolean = false;
+  ocultarBotonInstalarMarquilla:boolean = false;
+  ocultarBotonBorrarClienteInstalacionMarquilla = false;
 
   //---------------------------------------------------------------------------------------//
 
@@ -165,14 +167,14 @@ export class ActaMovimientoComponent implements OnInit {
       this.guardarTiposDeMovimientos = [];
 
       //se valida que usuario es el que se esta logueando si no es ninguna de estos 2 por logica entonces se sabria que el que se loguea es un tecnico
-      if (this.userTecnico_O_Adminiistractivo == "karol yiseth mosquera alzate" || this.userTecnico_O_Adminiistractivo == "mari luz pulgarin" || this.userTecnico_O_Adminiistractivo == "milton ferley renteria florez" || this.userTecnico_O_Adminiistractivo == "leydi jhoana duque salazar" || this.userTecnico_O_Adminiistractivo == "yessica alejandra garcia blandon" || this.userTecnico_O_Adminiistractivo == "luz estela lopez henao") {
+      if (this.userTecnico_O_Adminiistractivo == "karol yiseth mosquera alzate" || this.userTecnico_O_Adminiistractivo == "mari luz pulgarin" || this.userTecnico_O_Adminiistractivo == "milton ferley renteria florez" || this.userTecnico_O_Adminiistractivo == "leydi jhoana duque salazar" || this.userTecnico_O_Adminiistractivo == "yessica alejandra garcia blandon" || this.userTecnico_O_Adminiistractivo == "luz estela lopez henao" || this.userTecnico_O_Adminiistractivo == "juan carlos ballesteros restrepo") {
 
         if (this.userTecnico_O_Adminiistractivo == "leydi jhoana duque salazar" || this.userTecnico_O_Adminiistractivo == "yessica alejandra garcia blandon" || this.userTecnico_O_Adminiistractivo == "luz estela lopez henao") {
           this.mostrarBotonDescargaExcel = false;
           this.operacionesRol = false;
         }
 
-        if (this.userTecnico_O_Adminiistractivo == "karol yiseth mosquera alzate" || this.userTecnico_O_Adminiistractivo == "mari luz pulgarin") {
+        if (this.userTecnico_O_Adminiistractivo == "karol yiseth mosquera alzate" || this.userTecnico_O_Adminiistractivo == "mari luz pulgarin" || this.userTecnico_O_Adminiistractivo == "juan carlos ballesteros restrepo") {
           this.usuario.data.nombres = "alcala1"
         }
 
@@ -749,7 +751,7 @@ export class ActaMovimientoComponent implements OnInit {
 
       }else{
 
-        if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.archivoCapturado == null) {
+        if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null ) {
           Swal.fire({
             title: 'ERROR',
             text: 'POR FAVOR LLENE LOS CAMPOS',
@@ -823,7 +825,7 @@ export class ActaMovimientoComponent implements OnInit {
 
 
 
-      if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0 || this.archivoCapturado == null) {
+      if (this.BodegaEntra == "" || this.BodegaEntra == null || this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0 ) {
         Swal.fire({
           title: 'ERROR',
           text: 'POR FAVOR LLENE LOS CAMPOS',
@@ -1338,30 +1340,36 @@ export class ActaMovimientoComponent implements OnInit {
   //funcion que acepta al acta de movimiento y se realizan los respectivos movimientos del acta en las bodegas
   aceptarActa(idActa: string, servicio: string, servicioSale: string, numTercero: string, tipoMovimiento: string) {
 
-    this.activosFijos.aceptarActa(idActa, servicio, servicioSale, numTercero, tipoMovimiento).subscribe((validarActa: any) => {
+    Swal.fire({
+      title: '¿Estás seguro de aceptar el acta?',
+      text: 'Por favor verifique bien la informacin antes de aceptar el acta',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, estoy seguro',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'bg-dark',
+        title: 'text-white',
+        htmlContainer: 'text-white'
+      }
+    }).then((result) => {
 
-      this.RazonMovimiento = "";
-
-      this.ngOnInit();
-      Swal.fire({
-        title: 'EXITO',
-        text: 'ACTA ACEPTADA CON EXITO',
-        icon: 'success',
-        customClass: {
-          popup: 'bg-dark',
-          title: 'text-white',
-          htmlContainer: 'text-white'
-        }
-      });
-
-
-
-
-
-
-
-
-
+      if (result.isConfirmed) {
+        this.activosFijos.aceptarActa(idActa, servicio, servicioSale, numTercero, tipoMovimiento).subscribe((validarActa: any) => {
+          this.RazonMovimiento = "";
+          this.ngOnInit();
+          Swal.fire({
+            title: 'EXITO',
+            text: 'ACTA ACEPTADA CON EXITO',
+            icon: 'success',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          });
+        })
+      }
     })
   }
 
@@ -1454,6 +1462,8 @@ export class ActaMovimientoComponent implements OnInit {
       this.ocultarBotonBorrarClienteInstalacion = false;
       this.condicionOperaciones = false;
       this.operacionInputsTipo = false;
+      this.ocultarBotonInstalarMarquilla = false;
+      this.ocultarBotonBorrarClienteInstalacionMarquilla = false;
 
 
     } else if (this.valorNombreBodega == 'Instalación Inicial' || this.valorNombreBodega == 'Instalación Traslado' || this.valorNombreBodega == 'Instalación Migración' || this.valorNombreBodega == 'Instalación Soporte') {
@@ -1478,7 +1488,8 @@ export class ActaMovimientoComponent implements OnInit {
       this.desahibilitarBuscarCliente = false;
       this.ocultarBotonCrearActa = true;
       this.condicionOperaciones = false;
-
+      this.ocultarBotonInstalarMarquilla = false;
+      this.ocultarBotonBorrarClienteInstalacionMarquilla = false;
 
     } else if (this.valorNombreBodega == 'Fachada de la casa' || this.valorNombreBodega == 'Marquilla-Instalación' || this.valorNombreBodega == 'Marquilla-Reconexión' || this.valorNombreBodega == 'Marquilla-Retiro' || this.valorNombreBodega == 'Marquilla-Soporte' || this.valorNombreBodega == 'Marquilla-Traslado Reconexión' || this.valorNombreBodega == 'Marquilla-Traslado Retiro' || this.valorNombreBodega == 'Marquilla-Traslado Instalación' || this.valorNombreBodega == 'Paz y Salvo' || this.valorNombreBodega == 'Contrato TV Stick' || this.valorNombreBodega == 'Contrato Único de Servicios Fijos' || this.valorNombreBodega == 'Contrato - Cesión Unilateral' || this.valorNombreBodega == 'Contrato - Migracion') {
 
@@ -1496,6 +1507,7 @@ export class ActaMovimientoComponent implements OnInit {
       this.mostrarInfoClienteRetirar = false;
       this.condicionVariosServiciosCliente = false;
       this.mostrarInfoClienteInstalar = false;
+      this.ocultarBotonInstalarMarquilla = true;
       return;
 
     } else if (this.valorNombreBodega == 'Ajuste Inventario Salida') {
@@ -1684,6 +1696,61 @@ export class ActaMovimientoComponent implements OnInit {
   //funcion para validar si mostrar los elementos inputs o no dependiendo de la opcion de la acta (otra validacion mas)
   trackByFn(index: number, item: any): any {
     return index;
+  }
+
+
+  buscarClienteInstalarMarquila(){
+
+    if (this.NumServicioOperaciones == "") {
+
+      Swal.fire({
+        title: 'ERROR',
+        text: 'POR FAVOR INGRESE UN NUMERO DE SERVICIO',
+        icon: 'error',
+        customClass: {
+          popup: 'bg-dark',
+          title: 'text-white',
+          htmlContainer: 'text-white'
+        }
+      });
+
+
+    }else{
+
+      this.activosFijos.obtenerClienteServicios(this.NumServicioOperaciones).subscribe((res: any) => {
+
+        this.combinedData = {
+          servicios: res.data
+        };
+
+        if (this.combinedData.servicios.length == 0) {
+
+          Swal.fire({
+            title: 'ERROR',
+            text: 'NO EXISTE ACTIVO FIJO PARA RETIRAR A ESTE CLIENTE',
+            icon: 'error',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          });
+
+
+
+        } else {
+
+          this.ocultarBotonBorrarClienteInstalacionMarquilla = true;
+          this.ocultarBotonInstalarMarquilla = false;
+          this.mostrarInfoClienteInstalar = true;
+        }
+
+
+      })
+
+
+    }
+
   }
 
 
@@ -1888,6 +1955,14 @@ export class ActaMovimientoComponent implements OnInit {
     this.condicionVariosServiciosCliente = false;
     this.ServicioDelClienteEspecifico = "";
     this.ocultarBotonCrearActa = false;
+  }
+
+  buscarOtroClienteInstalacionMarquilla() {
+    this.ocultarBotonBorrarClienteInstalacionMarquilla = false;
+    this.ocultarBotonInstalarMarquilla = true;
+    this.mostrarInfoClienteInstalar = false;
+    this.NumServicioOperaciones = "";
+
   }
 
   buscarOtroClienteInstalacion() {

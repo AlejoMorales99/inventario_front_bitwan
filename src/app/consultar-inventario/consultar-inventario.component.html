@@ -29,6 +29,7 @@
               <option value="Numero activo fijo">Numero activo fijo</option>
               <option value="Serial">Serial</option>
               <option value="MAC">MAC</option>
+              <option *ngIf="operacionesRolAdmin" value="referencia">Referencia</option>
               <option *ngIf="operacionesRolAdmin" value="Descripcion">Descripcion</option>
               <option *ngIf="operacionesRolAdmin" value="fecha">fecha</option>
               <option *ngIf="operacionesRolAdmin" value="categoria">categoria</option>
@@ -36,6 +37,7 @@
               <option *ngIf="operacionesRolAdmin" value="proveedor">proveedor</option>
               <option *ngIf="operacionesRolOperacionesYtecnicos" value="servicio">servicio</option>
               <option *ngIf="operacionesRolAdmin" value="fechabodega">fecha/bodega</option>
+              <option *ngIf="operacionesRolAdmin" value="referenciaBodega">Referencia/bodega</option>
             </select>
 
             <input *ngIf="enabledFiltroTecnico" class="form-control mx-2 mb-2 mb-md-0 bg-dark border-secondary text-white w-auto w-md-25" placeholder="Buscador"
@@ -55,6 +57,12 @@
               <label class="text-white"  *ngIf="fechaReporte" for="fechaFin">Fecha de Fin</label>
               <input *ngIf="fechaReporte" class="form-control bg-dark text-white " type="date" id="fechaFin" [(ngModel)]="fechaFin">
             </div>
+
+
+
+            <ng-select *ngIf="referenciaMultiple" name="selectedOptionsReferencias"  [(ngModel)]="selectedOptionsReferencias" class="form-select mx-2  mb-3 bg-dark border-secondary text-white" aria-label="Default select example"   [multiple]="true" >
+              <ng-option class="text-white" *ngFor="let referencia of referenciaInventario" [value]="referencia.idreferencia">{{referencia.nombre}}</ng-option>
+           </ng-select>
 
             <button  *ngIf="enabledFiltroAdmin" style="border: none;" [disabled]="buscadorCondicion" type="button" class="btn botonesActa fondoTable text-white mx-2 w-25 mb-3  mx-md-5" (click)="buscarRegistro()" >
 

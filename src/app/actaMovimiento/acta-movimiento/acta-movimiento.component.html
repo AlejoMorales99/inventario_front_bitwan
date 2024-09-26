@@ -126,7 +126,7 @@
                 IMG_GUIA
               </th>
 
-              <th  scope="col" class="tamañoTitulos"
+               <th  scope="col" class="tamañoTitulos"
                 [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'imgGuiaTrans' && config.sortOrder === 'desc'}">
                 IMG_ACTA
               </th>
@@ -179,8 +179,8 @@
                 </a>
               </td>
 
-              <td>
-                <!-- hago una peticion a mi backend de manera estatica pero de una manera segura para mostrar la guia respectiva de cada acta -->
+               <td>
+
                 <a *ngIf="guardarAllMovimientos.imgActaFisica" (click)="abrirImagen(guardarAllMovimientos.imgActaFisica)">
                   <img [src]="'https://lh3.googleusercontent.com/d/' + guardarAllMovimientos.imgActaFisica " width="20" height="20" alt="Imagen">
                 </a>
@@ -468,7 +468,7 @@
         <div class="d-flex slide-in justify-content-center mt-3 flex-wrap">
 
           <!-- Opciones de cantidad de registros por página -->
-          <label class="text-white" for="itemsPerPage">Registros por página:</label>
+         
           <div class="mx-2 ">
             <select class="form-select bg-dark text-white border-secondary w-100 mx-2 " id="itemsPerPage"
               [(ngModel)]="itemsPerPage" (change)="actualizarPaginacion()">
@@ -522,8 +522,7 @@
                   <option *ngFor="let guardarTipoDeEntrega of guardarTipoDeEntrega" value="{{guardarTipoDeEntrega.idTipoEntrega}}"> {{guardarTipoDeEntrega.nombre}} </option>
                 </select>
 
-                <label *ngIf="condicionOperaciones" for="">Ingrese el numero de servicio</label>
-                <input *ngIf="condicionOperaciones"  class="form-control bg-dark border-secondary text-white mb-3" name="NumServicioOperaciones" type="number" [(ngModel)]="NumServicioOperaciones" >
+
 
                 <label *ngIf="condicionOcultarBodegaEntra" class="form-label">Bodega a la que entrara la ont</label>
                 <ng-select *ngIf="condicionOcultarBodegaEntra" (clear)="borrarSeleccion()" [notFoundText]="'Referencia no encontrada'"  name="BodegaEntra" [(ngModel)]="BodegaEntra" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example" >
@@ -535,6 +534,22 @@
                   <ng-select *ngIf="condicionBodegaSale" [notFoundText]="'Referencia no encontrada'" [(ngModel)]="BodegaSale" name="BodegaSale" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
                   <ng-option *ngFor="let guardarServicio of guardarServicioTecnicos" value="{{guardarServicio.ID}}"> {{guardarServicio.nombre}} </ng-option>
                 </ng-select>
+
+
+                <label *ngIf="condicionOperaciones" for="">Ingrese el numero de servicio</label>
+                <div class="row" >
+                  <div class="col-md-12 d-flex" >
+                    <input *ngIf="condicionOperaciones"  class="form-control w-50 bg-dark border-secondary text-white mb-3" name="NumServicioOperaciones" type="number" [(ngModel)]="NumServicioOperaciones" >
+
+                    <button (click)="buscarClienteInstalarMarquila()" *ngIf="ocultarBotonInstalarMarquilla" class="btn h-75 mx-3 botonesActa text-white">Buscar Cliente</button>
+
+                    <button (click)="buscarOtroClienteInstalacionMarquilla()" *ngIf="ocultarBotonBorrarClienteInstalacionMarquilla"
+                      class="btn mx-3 mb-3  btn-danger text-white">Buscar otro cliente
+                    </button>
+
+                  </div>
+
+                </div>
 
                 <label *ngIf="condicionEntraBodega" for="">Ingrese el numero de servicio a instalar</label>
                 <div class="row" >
@@ -591,11 +606,11 @@
                   <input type="text" name="Descripcion" [(ngModel)]="Descripcion" class="form-control bg-dark border-secondary text-white">
                 </div>
 
-                <div *ngIf="habilitarActaFisicaImg" class="mb-3">
+                <!-- <div *ngIf="habilitarActaFisicaImg" class="mb-3">
                   <label class="form-label">Cargue la imagen del acta fisica</label>
                   <input type="file" (change)="capturarImagen($event)" accept=".png, .jpg, .jpeg" name="imageInputValue" class="form-control bg-dark border-secondary text-white">
                   <img width="100" *ngIf="savedImage" [src]="savedImage" alt="Imagen guardada">
-                </div>
+                </div> -->
 
 
                 <div *ngIf="operacionInputsTipo" class="mb-3">
