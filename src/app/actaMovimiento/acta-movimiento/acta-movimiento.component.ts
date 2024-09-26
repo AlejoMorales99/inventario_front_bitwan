@@ -1774,7 +1774,7 @@ export class ActaMovimientoComponent implements OnInit {
     } else {
 
       this.activosFijos.obtenerClienteServicios(this.BodegaEntra).subscribe((res: any) => {
-
+        
         this.combinedData = {
           servicios: res.data
         };
