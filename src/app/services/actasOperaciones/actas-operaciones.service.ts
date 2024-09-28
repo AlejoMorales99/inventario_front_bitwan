@@ -8,7 +8,7 @@ import { environment } from 'dotenv';
 })
 export class ActasOperacionesService {
 
-  urlActivosFijos: String = environment.apiUrl
+  urlActivosFijos: String = environment.url_server_pruebas
 
   constructor(private http: HttpClient, private loginServices: LoginService) { }
 

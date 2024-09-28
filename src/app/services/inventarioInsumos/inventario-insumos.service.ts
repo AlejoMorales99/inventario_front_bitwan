@@ -9,7 +9,7 @@ import { LoginService } from '../login/login.service';
 export class InventarioInsumosService {
 
   //url de la api
-  urlActivosFijos: String = environment.apiUrl
+  urlActivosFijos: String = environment.url_server_pruebas
 
   constructor(private http: HttpClient,  private loginServices: LoginService) { }
 
