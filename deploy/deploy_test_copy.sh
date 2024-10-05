@@ -4,7 +4,7 @@
 IMAGE_NAME="img_front_inventario_28092024"
 CONTAINER_NAME="front_inventario"
 REPO_PATH="/root/proyectos/inventario/inventario_front_bitwan/"  #  ruta de tu repositorio local
-PORT1=5006
+PORT1=5022
 PORT2=80
 
 # Cambiar al directorio del repositorio
