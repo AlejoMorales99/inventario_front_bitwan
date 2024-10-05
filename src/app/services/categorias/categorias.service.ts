@@ -8,7 +8,7 @@ import { environment } from '../../../../dotenv';
 })
 export class CategoriasService {
 
-  urlCategorias: String = environment.ip_serber_pruebas_https;
+  urlCategorias: String = environment.url_server_pruebas;
 
   constructor(private http: HttpClient , private loginServices: LoginService) { }
 

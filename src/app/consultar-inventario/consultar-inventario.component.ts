@@ -122,6 +122,8 @@ export class ConsultarInventarioComponent implements OnInit {
   action:any;
   condicionBusqueda: number = 0;
   activosFijosTotalReporte: any;
+  valorPage: any;
+
 
 
   //aqui hago todas las instancias que necesito
@@ -160,16 +162,11 @@ export class ConsultarInventarioComponent implements OnInit {
 
     } else {
 
-
-
-
       if (usuario.data.nombres == "KAROL YISETH" || usuario.data.nombres== 'MARI LUZ' || usuario.data.nombres=='MILTON FERLEY' || usuario.data.nombres== "LEYDI JHOANA"|| usuario.data.nombres== "YESSICA ALEJANDRA" || usuario.data.nombres== "LUZ ESTELA " || usuario.data.alias=='juballesteros') {
-
 
         this.servicioActivosFijos.getActivosFijos(this.page, this.itemsPerPage).subscribe(response => {
         this.activosFijosInventario = response.data;
         this.totalItems = response.total;
-
         });
 
         this.operacionesRolAdmin = true;
@@ -208,8 +205,9 @@ export class ConsultarInventarioComponent implements OnInit {
     }
   }
 
+
   buscarRegistro(){
-    this.condicionBusqueda = 1;
+   this.condicionBusqueda = 1;
     if(this.buscarActivos!= "" && this.selectedColumn== "mostrarTodo" ){
 
       Swal.fire({
@@ -238,6 +236,7 @@ export class ConsultarInventarioComponent implements OnInit {
           }
         });
       }else{
+        this.page = this.valorPage;
         this.servicioActivosFijos.buscarRegistrosPorFechaAndServicio(this.buscarActivos,this.selectedColumn,this.fechaInicio,this.fechaFin,this.page, this.itemsPerPage).subscribe(registros=>{
 
           if(registros.data == ""){
@@ -288,6 +287,7 @@ export class ConsultarInventarioComponent implements OnInit {
             }
           });
         } else {
+          this.page = this.valorPage;
           this.servicioActivosFijos.buscarRegistros(this.buscarActivos, this.selectedColumn,this.page, this.itemsPerPage).subscribe(registros => {
             if (registros.data == "") {
               Swal.fire({
@@ -325,6 +325,7 @@ export class ConsultarInventarioComponent implements OnInit {
           });
 
         }else{
+          this.page = this.valorPage;
           this.servicioActivosFijos.buscarRegistrosPorFechaAndServicio(this.buscarActivos,this.selectedColumn,this.fechaInicio,this.fechaFin,this.page, this.itemsPerPage).subscribe(registros=>{
 
             if(registros.data == ""){
@@ -363,6 +364,7 @@ export class ConsultarInventarioComponent implements OnInit {
             }
           });
         }else{
+          this.page = this.valorPage;
           this.servicioActivosFijos.buscarRegistrosPorReferenciaBodega(this.buscarActivos,this.selectedOptionsReferencias,this.page, this.itemsPerPage).subscribe(res=>{
             if(res.data == ""){
               Swal.fire({
@@ -385,8 +387,12 @@ export class ConsultarInventarioComponent implements OnInit {
         }
 
       }else{
+
+       this.page = this.valorPage;
+
         this.servicioActivosFijos.buscarRegistros(this.buscarActivos,this.selectedColumn,this.page, this.itemsPerPage).subscribe(registros=>{
-          console.log(registros);
+
+
           if(registros.data == ""){
             Swal.fire({
               title: 'ERROR',
@@ -445,9 +451,10 @@ export class ConsultarInventarioComponent implements OnInit {
   }
   //------------------------------------------------//
 
-  actualizarPaginacion() {
+  actualizarPaginacion(page:any) {
 
     if(this.condicionBusqueda == 1){
+      this.valorPage = page;
       this.buscarRegistro();
     }else{
       this.ngOnInit();
@@ -651,7 +658,6 @@ export class ConsultarInventarioComponent implements OnInit {
 
 
   }
-
 
 
 

@@ -169,22 +169,24 @@
             </tbody>
           </table>
           <div class="d-flex justify-content-center mt-3 flex-wrap">
-            <label class="text-white" for="itemsPerPage">Registros por página:</label>
+           
             <div class="mx-2">
               <select class="form-select bg-dark text-white border-secondary w-100 mx-2" id="itemsPerPage"
-                [(ngModel)]="itemsPerPage" (change)="actualizarPaginacion()">
+                [(ngModel)]="itemsPerPage" (change)="actualizarPaginacion(page)">
                 <option value="10">10</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
                 <option value="200">200</option>
                 <option value="500">500</option>
                 <option value="1000">1000</option>
-              
+
                 <!-- Agrega más opciones según tus necesidades -->
               </select>
             </div>
 
-            <pagination-controls (pageChange)="page = $event; actualizarPaginacion()"
+
+
+            <pagination-controls (pageChange)="page = $event;  actualizarPaginacion(page)"
               class="custom-pagination border-secondary text-white" previousLabel="Anterior" nextLabel="Siguiente">
             </pagination-controls>
           </div>
