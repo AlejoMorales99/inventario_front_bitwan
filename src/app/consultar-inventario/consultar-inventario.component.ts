@@ -167,7 +167,6 @@ export class ConsultarInventarioComponent implements OnInit {
         this.servicioActivosFijos.getActivosFijos(this.page, this.itemsPerPage).subscribe(response => {
         this.activosFijosInventario = response.data;
         this.totalItems = response.total;
-        this.activosFijosTotalReporte = response.totalReporte;
         });
 
         this.operacionesRolAdmin = true;
