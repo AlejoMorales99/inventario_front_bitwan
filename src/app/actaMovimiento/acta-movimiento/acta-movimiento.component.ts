@@ -412,7 +412,7 @@ export class ActaMovimientoComponent implements OnInit {
 
       if (this.usuario.data.nombres == "alcala1") {
 
-        if (this.RazonMovimiento == '15') {
+        if (this.RazonMovimiento == '15' || this.RazonMovimiento == '40' || this.RazonMovimiento == '41') {
 
           if (this.BodegaSale == "" || this.BodegaSale == null) {
 
@@ -1197,6 +1197,63 @@ export class ActaMovimientoComponent implements OnInit {
 
       }
 
+    } else if(this.RazonMovimiento == '40' || this.RazonMovimiento == '41'){
+
+      if (this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
+        Swal.fire({
+          title: 'ERROR',
+          text: 'POR FAVOR LLENE LOS CAMPOS',
+          icon: 'error',
+          customClass: {
+            popup: 'bg-dark',
+            title: 'text-white',
+            htmlContainer: 'text-white'
+          }
+        });
+      } else {
+
+        Swal.fire({
+          title: '¿Estás seguro?',
+          text: 'Por favor Verifique que la informacion este correcta, ya que no podra modificar la informacion despues de crear el acta!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, estoy seguro',
+          cancelButtonText: 'Cancelar',
+          customClass: {
+            popup: 'bg-dark',
+            title: 'text-white',
+            htmlContainer: 'text-white'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            this.activosFijos.postActaDeMovimiento(this.RazonMovimiento, this.TipoEntrega, this.BodegaEntra, this.BodegaSale, this.Descripcion, this.archivoCapturado, this.guardarValorOnts, this.ServicioDelClienteEspecifico).subscribe((crear: any) => {
+
+              this.limpiar()
+              this.ngOnInit();
+              this.ocultarNombreCompletoTecnico = false;
+              Swal.fire({
+                title: 'EXITO',
+                text: 'ACTA CREADA CON EXITO',
+                icon: 'success',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
+
+              this.condicionBodegaSale = false;
+              this.resultadosPorInput = [];
+
+            })
+
+          }
+        })
+
+      }
+
+
     } else if (this.RazonMovimiento == '28' || this.RazonMovimiento == '29' || this.RazonMovimiento == '30' || this.RazonMovimiento == '31' || this.RazonMovimiento == '32' || this.RazonMovimiento == '33' || this.RazonMovimiento == '34' || this.RazonMovimiento == '35' || this.RazonMovimiento == '37' || this.RazonMovimiento == '24' || this.RazonMovimiento == '25' || this.RazonMovimiento == '26' || this.RazonMovimiento == '27') {
 
       if (!this.NumServicioOperaciones || this.NumServicioOperaciones.toString().trim() === "" || this.archivoCapturado == null) {
@@ -1546,6 +1603,19 @@ export class ActaMovimientoComponent implements OnInit {
       this.ocultarBotonCrearActa = true;
 
 
+    }else if(this.valorNombreBodega == 'Retiro oficina bitwan' || this.valorNombreBodega == 'Retiro infraestructura'){
+      this.BodegaSale = "";
+      this.BodegaEntra = "";
+      this.ocultarNombreCompletoTecnico = false;
+      this.operacionInputsValidar = false;
+      this.condicionOcultarBodegaEntra = false;
+      this.condicionEntraBodega = false;
+      this.condicionRetiro = false;
+      this.condicionBodegaSale = true;
+      this.ocultarBotonCrearActa = true;
+      this.guardarServicioTecnicos = [];
+      this.guardarServicioTecnicos = "";
+
     } else if (this.valorNombreBodega == 'Ajuste Inventario Ingreso') {
       this.guardarServicioTecnicos = [];
       this.guardarServicioTecnicos = "";
@@ -1555,12 +1625,7 @@ export class ActaMovimientoComponent implements OnInit {
       this.infoTextoActivosFijos = false;
       this.ocultarBotonCrearActa = true;
       this.activosFijos.getBodegaAjusteInventarioIngreso().subscribe(response => {
-
         this.guardarServicioTecnicos = response
-
-
-
-
       });
 
 
@@ -1627,7 +1692,20 @@ export class ActaMovimientoComponent implements OnInit {
     this.anular = false;
     this.activosFijos.getBodegas(this.valorNombreBodega).subscribe(Bodegas => {
 
+
+
       this.guardarServicio = Bodegas;
+
+      if(this.guardarServicio[0].ID == 49){
+        setTimeout(() => {
+          this.guardarServicioTecnicos = Bodegas;
+        }, 800);
+      }else if(this.guardarServicio[0].ID == 48){
+        setTimeout(() => {
+          this.guardarServicioTecnicos = Bodegas;
+        }, 800);
+      }
+
       console.log(this.guardarServicio);
 
     })
@@ -1774,7 +1852,7 @@ export class ActaMovimientoComponent implements OnInit {
     } else {
 
       this.activosFijos.obtenerClienteServicios(this.BodegaEntra).subscribe((res: any) => {
-        
+
         this.combinedData = {
           servicios: res.data
         };
