@@ -271,7 +271,7 @@ export class InventarioInsumosComponent {
 
     } else {
 
-      if (this.nuevoInsumo == "" || this.cantidadNuevoInsumos == "" || this.proveedor == "" || this.marcaText == "" || this.stockMinimoInsumo == "" ) {
+      if (this.nuevoInsumo == "" || this.cantidadNuevoInsumos == "" || this.precioInsumo == "" || this.proveedor == "" || this.marcaText == "" || this.stockMinimoInsumo == "" ) {
 
 
         Swal.fire({
@@ -317,7 +317,7 @@ export class InventarioInsumosComponent {
 
           if (result.isConfirmed) {
 
-            this.servicesInsumos.postInsumoNuevo(this.nuevoInsumo, this.cantidadNuevoInsumos, this.stockMinimoInsumo, this.proveedor, this.marcaText).subscribe((res: any) => {
+            this.servicesInsumos.postInsumoNuevo(this.nuevoInsumo, this.cantidadNuevoInsumos, this.precioInsumo, this.stockMinimoInsumo, this.proveedor, this.marcaText).subscribe((res: any) => {
 
               if (res.estado == 200) {
 

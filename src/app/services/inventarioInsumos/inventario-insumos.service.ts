@@ -9,7 +9,7 @@ import { LoginService } from '../login/login.service';
 export class InventarioInsumosService {
 
   //url de la api
-  urlActivosFijos: String = environment.url_server_pruebas
+  urlActivosFijos: String = environment.ip_serber_pruebas_https
 
   constructor(private http: HttpClient,  private loginServices: LoginService) { }
 
@@ -68,7 +68,7 @@ export class InventarioInsumosService {
   }
 
   //EndPoint para registrar un nuevo insumos
-  postInsumoNuevo(nuevoInsumos:string,cantidadNuevoInsumos:number,stockMinimo:string,proveedor:string,marcaText:string){
+  postInsumoNuevo(nuevoInsumos:string,cantidadNuevoInsumos:number, precioInsumo:string, stockMinimo:string,proveedor:string,marcaText:string){
 
     const usuario = this.loginServices.getUser();
     const headers = this.loginServices.getAuthHeaders();
@@ -77,6 +77,7 @@ export class InventarioInsumosService {
     const nuevoInsumo = {
       nuevoInsumos:nuevoInsumos,
       cantidadNuevoInsumos:cantidadNuevoInsumos,
+      precioInsumo:precioInsumo,
       stockMinimo:stockMinimo,
       proveedor:proveedor,
       marcaText:marcaText,

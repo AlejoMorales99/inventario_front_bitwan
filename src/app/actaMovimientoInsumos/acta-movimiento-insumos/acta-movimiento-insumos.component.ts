@@ -18,6 +18,8 @@ export class ActaMovimientoInsumosComponent implements OnInit {
   getAllActasDeMovimiento:any;
   getListaInsumos:any;
   getbodegasTecnicos:any;
+  itemsPerPage: number = 10;
+  page: number = 1;
 
   constructor(private servicesInsumos:InventarioInsumosService, private bodegasTecnicos:ActivosFijosService){}
 
@@ -62,7 +64,7 @@ export class ActaMovimientoInsumosComponent implements OnInit {
       // Código para crear el acta
 
       this.servicesInsumos.postActasDeMovimientosInsumos(this.insSelecEnviar,this.tecnicoEnvio).subscribe(res=>{
-        
+
       });
 
     }

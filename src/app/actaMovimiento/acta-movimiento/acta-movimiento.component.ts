@@ -412,7 +412,7 @@ export class ActaMovimientoComponent implements OnInit {
 
       if (this.usuario.data.nombres == "alcala1") {
 
-        if (this.RazonMovimiento == '15' || this.RazonMovimiento == '40' || this.RazonMovimiento == '41' || this.RazonMovimiento == '42') {
+        if (this.RazonMovimiento == '15' || this.RazonMovimiento == '40' || this.RazonMovimiento == '41' || this.RazonMovimiento == '42' ||  this.RazonMovimiento == '43') {
 
           if (this.BodegaSale == "" || this.BodegaSale == null) {
 
@@ -1197,7 +1197,7 @@ export class ActaMovimientoComponent implements OnInit {
 
       }
 
-    } else if(this.RazonMovimiento == '40' || this.RazonMovimiento == '41' || this.RazonMovimiento == '42'){
+    } else if(this.RazonMovimiento == '40' || this.RazonMovimiento == '41' || this.RazonMovimiento == '42' || this.RazonMovimiento == '43'){
 
       if (this.BodegaSale == "" || this.BodegaSale == null || this.guardarValorOnts.length == 0) {
         Swal.fire({
@@ -1603,7 +1603,7 @@ export class ActaMovimientoComponent implements OnInit {
       this.ocultarBotonCrearActa = true;
 
 
-    }else if(this.valorNombreBodega == 'Retiro oficina bitwan' || this.valorNombreBodega == 'Retiro infraestructura' || this.valorNombreBodega == 'Instalacion oficina bitwan'){
+    }else if(this.valorNombreBodega == 'Retiro oficina bitwan' || this.valorNombreBodega == 'Retiro infraestructura' || this.valorNombreBodega == 'Instalacion oficina bitwan' || this.valorNombreBodega == 'Instalacion infraestructura'){
       this.BodegaSale = "";
       this.BodegaEntra = "";
       this.ocultarNombreCompletoTecnico = false;
