@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivosFijosService } from 'src/app/services/activosFijos/activos-fijos.service';
 import { InventarioInsumosService } from 'src/app/services/inventarioInsumos/inventario-insumos.service';
+import { LoginService } from 'src/app/services/login/login.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -12,33 +13,57 @@ export class ActaMovimientoInsumosComponent implements OnInit {
 
   insSelecEnviar: { idinsumo: number, nombreInsumo: string, cantidad?: number | string }[] = [];
 
-  tecnicoEnvio:string = "";
+  tecnicoEnvio: string = "";
+  Descripcion:string = "";
+  bodegaAlcala1:string= "";
+
+  permiso:any = "";
+
+  getAllActasDeMovimiento: any;
+  getListaInsumos: any;
+  getbodegasTecnicos: any;
+  getInsumosPorIdActa: any;
 
 
-  getAllActasDeMovimiento:any;
-  getListaInsumos:any;
-  getbodegasTecnicos:any;
   itemsPerPage: number = 10;
   page: number = 1;
 
-  constructor(private servicesInsumos:InventarioInsumosService, private bodegasTecnicos:ActivosFijosService){}
+
+  usuarioLogueado:any;
+
+  constructor(private servicesInsumos: InventarioInsumosService, private bodegasTecnicos: ActivosFijosService,private loginServices: LoginService) { }
 
   ngOnInit(): void {
 
+    this.usuarioLogueado = this.loginServices.getTecnico();
+    this.permiso = localStorage.getItem('permisos');
 
-    this.servicesInsumos.getAllActasDeMovimiento().subscribe((res:any)=>{
-      this.getAllActasDeMovimiento = res;
-    })
+    if(this.permiso == "administrador"){
 
-    this.servicesInsumos.getListInsumos().subscribe((res:any)=>{
+      this.servicesInsumos.getAllActasDeMovimiento().subscribe((res: any) => {
+        this.getAllActasDeMovimiento = res;
+
+      })
+
+    }else{
+
+      this.servicesInsumos.getAllActasDeMovimientoTecnicos().subscribe((res: any) => {
+        this.getAllActasDeMovimiento = res;
+
+      })
+
+    }
+
+    this.servicesInsumos.getListInsumos().subscribe((res: any) => {
       this.getListaInsumos = res;
     })
 
-    this.bodegasTecnicos.getBodegas("Envio a Técnico").subscribe((res:any)=>{
+    this.bodegasTecnicos.getBodegas("Envio a Técnico").subscribe((res: any) => {
 
       this.getbodegasTecnicos = res;
-      console.log( this.getbodegasTecnicos);
+
     })
+
 
 
   }
@@ -61,15 +86,53 @@ export class ActaMovimientoInsumosComponent implements OnInit {
         }
       });
     } else {
-      // Código para crear el acta
 
-      this.servicesInsumos.postActasDeMovimientosInsumos(this.insSelecEnviar,this.tecnicoEnvio).subscribe(res=>{
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Por favor Verifique que la informacion este correcta, ya que no podra modificar la informacion despues de crear el acta!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, estoy seguro',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          popup: 'bg-dark',
+          title: 'text-white',
+          htmlContainer: 'text-white'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
 
-      });
+          this.servicesInsumos.postActasDeMovimientosInsumos(this.insSelecEnviar, this.tecnicoEnvio , this.Descripcion).subscribe(res => {
 
+            this.insSelecEnviar = [];
+            this.tecnicoEnvio = "";
+            this.Descripcion = "";
+            this.ngOnInit();
+
+            Swal.fire({
+              title: 'EXITO',
+              text: 'ACTA CREADA CON EXITO',
+              icon: 'success',
+              customClass: {
+                popup: 'bg-dark',
+                title: 'text-white',
+                htmlContainer: 'text-white'
+              }
+            });
+          });
+        }
+      })
     }
   }
 
+
+  verOntsDeLasActas(idActa: string) {
+
+    this.servicesInsumos.getInsumosPorIdActa(idActa).subscribe(res => {
+      this.getInsumosPorIdActa = res;
+    });
+
+  }
 
   separacionPorPuntosCantidad(event: any, index: number): void {
     const value = event.target.value.replace(/\D/g, ''); // Remove all non-digit characters

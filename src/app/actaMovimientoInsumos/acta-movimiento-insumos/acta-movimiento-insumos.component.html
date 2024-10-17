@@ -149,7 +149,7 @@
 
                 <td>
 
-                  <button type="button" class="btn botonVer text-white " >
+                  <button (click)="verOntsDeLasActas(getAllActasDeMovimiento.idActa)" type="button" class="btn botonVer text-white "  data-bs-toggle="modal" data-bs-target="#nuevoModal" >
 
                     Ver
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
@@ -158,6 +158,22 @@
                     </svg>
                   </button>
                 </td>
+
+                <td *ngIf="getAllActasDeMovimiento.razonM =='Envio a Técnico' &&
+                getAllActasDeMovimiento.serEntra == usuarioLogueado ">
+
+                <!-- Botón con evento de clic que llama a la función aceptarActa() para aceptar el acta y hacer el movimiento de las onts -->
+                <button
+                 class="btn  btn-success">
+
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                  </svg>
+
+
+                </button>
+              </td>
+
 
             </tr>
 
@@ -225,6 +241,13 @@
                       <ng-option *ngFor="let getbodegasTecnicos of getbodegasTecnicos" value="{{getbodegasTecnicos.ID}}">{{getbodegasTecnicos.nombre}} </ng-option>
                     </ng-select>
                   </div>
+
+                  <div>
+                    <label class="form-label">Ingrese una descripcion (opcional)</label>
+                    <input type="text" name="Descripcion" [(ngModel)]="Descripcion" class="form-control bg-dark border-secondary text-white">
+
+                  </div>
+
               </form>
           </div>
           <div class="modal-footer">
@@ -232,6 +255,57 @@
               <button type="button" (click)="crearActa()" class="btn btn-primary">Crear Acta</button>
           </div>
       </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="nuevoModal" tabindex="-1" aria-labelledby="nuevoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title" id="nuevoModalLabel">Contenido de la acta</h5>
+
+
+
+        <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+
+
+
+      </div>
+      <div class="modal-body">
+
+        <table class="table   text-white hover text-center">
+          <thead>
+            <tr>
+
+              <th  scope="col" class="tamañoTitulos">
+                NOMBRE INSUMO
+              </th>
+
+              <th scope="col" class="tamañoTitulos">
+                CANTIDAD
+              </th>
+
+
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let getInsumosPorIdActa of getInsumosPorIdActa" >
+
+              <td>{{getInsumosPorIdActa.nombreInsumo}}</td>
+              <td>{{getInsumosPorIdActa.cantidadMovimientoInsumo | number:'1.0-0'}}</td>
+
+            </tr>
+
+          </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button  type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
   </div>
 </div>
 

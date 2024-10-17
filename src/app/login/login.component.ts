@@ -69,6 +69,7 @@ export class LoginComponent  {
 
             this.loginServicio.loginUsuario(nomTecnico.data[0].nombres.toLowerCase().trim() +" "+ nomTecnico.data[0].apellidos.toLowerCase().trim(),res.data.numerotercero).subscribe( (nombreUsuario:any)=>{
 
+              localStorage.setItem('permisos',nombreUsuario[0].rol);
 
               if(nombreUsuario.error == false){
 

@@ -70,7 +70,7 @@
 
             <tr
               *ngFor="let insumosAll of insumosAll | filter:buscarInsumo | orderBy:config.sortKey:config.sortReverse | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
-              [ngClass]="{'bajo': insumosAll.estadoStock === 'bajo', 'optimo': insumosAll.estadoStock === 'optimo'}">
+            >
 
               <td>{{insumosAll.nombreInsumo}}</td>
               <td>{{insumosAll.totalEntradaInsumos | number:'1.0-0'}}</td>
@@ -78,7 +78,7 @@
               <td>{{ insumosAll.totalInsumosExistentes | number:'1.0-0' }}</td>
               <td>{{insumosAll.stockMinimo | number:'1.0-0'}}</td>
               <td>{{insumosAll.stockOptimo | number:'1.0-0'}}</td>
-              <td>{{insumosAll.estadoStock}}</td>
+              <td   [ngClass]="{'bajo': insumosAll.estadoStock === 'bajo', 'optimo': insumosAll.estadoStock === 'optimo'}">{{insumosAll.estadoStock}}</td>
             </tr>
 
 

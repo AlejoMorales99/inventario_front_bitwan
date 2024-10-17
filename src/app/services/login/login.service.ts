@@ -24,6 +24,8 @@ export class LoginService {
     localStorage.setItem(this.storageKey, JSON.stringify(user));
   }
 
+
+
   setTecnico(user: any) {
     localStorage.setItem(this.tecnico, JSON.stringify(user));
   }
@@ -38,6 +40,8 @@ export class LoginService {
     const userData = localStorage.getItem(this.storageKey);
     return userData ? JSON.parse(userData) : null;
   }
+
+
 
   getTecnico(): any {
     const userData = localStorage.getItem(this.tecnico);

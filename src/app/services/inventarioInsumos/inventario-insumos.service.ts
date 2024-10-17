@@ -47,6 +47,13 @@ export class InventarioInsumosService {
     return this.http.get(`${this.urlActivosFijos}/getOneNombreInsumo/${insumoText}`  , {headers})
   }
 
+  getInsumosPorIdActa(idActa:string){
+
+    const headers = this.loginServices.getAuthHeaders();
+    return this.http.get(`${this.urlActivosFijos}/getInsumosPorIdActa/${idActa}`  , {headers})
+
+  }
+
 
   //endPoint para aumentar insumos ya existentes
   postInsumosExistentes(nuevoInsumos:string,cantidadNuevoInsumos:number,proveedor:string,marcaText:string, precioInsumo:string){
@@ -96,6 +103,12 @@ export class InventarioInsumosService {
     return this.http.get(`${this.urlActivosFijos}/getAllActasDeMovimiento` ,  {headers})
   }
 
+  getAllActasDeMovimientoTecnicos(){
+    const headers = this.loginServices.getAuthHeaders();
+    const usuario = this.loginServices.getUser();
+    return this.http.get(`${this.urlActivosFijos}/getAllActasDeMovimientoTecnicos/${usuario.data.numerotercero}` ,  {headers})
+  }
+
 
 
   getListInsumos(){
@@ -110,17 +123,18 @@ export class InventarioInsumosService {
 
 
   //EndPoint para registrar una acta de movimiento de insumos
-  postActasDeMovimientosInsumos(insSelecEnviar:any,tecnicoEnvio:string){
+  postActasDeMovimientosInsumos(insSelecEnviar:any,tecnicoEnvio:string, Descripcion:string){
 
     const usuario = this.loginServices.getUser();
     const headers = this.loginServices.getAuthHeaders();
-
+    const usuarioSesion = this.loginServices.getTecnico();
 
     const nuevaActaDeMovimientoInsumo = {
       registrosActa:insSelecEnviar,
       tecnicoEnvio:tecnicoEnvio,
+      Descripcion:Descripcion,
       usuarioTercero:usuario.data.numerotercero,
-      usuarioNombre:usuario.data.nombres
+      usuarioNombre:usuarioSesion
     }
 
     return this.http.post(`${this.urlActivosFijos}/postActasDeMovimientosInsumos/` , nuevaActaDeMovimientoInsumo  , {headers})
