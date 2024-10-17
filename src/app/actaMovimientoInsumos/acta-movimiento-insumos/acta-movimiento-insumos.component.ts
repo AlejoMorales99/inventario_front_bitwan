@@ -102,9 +102,26 @@ export class ActaMovimientoInsumosComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
 
-          this.servicesInsumos.postActasDeMovimientosInsumos(this.insSelecEnviar, this.tecnicoEnvio , this.Descripcion).subscribe(res => {
+          this.servicesInsumos.postActasDeMovimientosInsumos(this.insSelecEnviar, this.tecnicoEnvio , this.Descripcion).subscribe((res:any) => {
 
-            this.insSelecEnviar = [];
+            console.log(res);
+
+            if(res.status == 400){
+
+              Swal.fire({
+                title: 'EXITO',
+                text: 'ACTA CREADA CON EXITO',
+                icon: 'success',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
+
+            }else{
+
+              this.insSelecEnviar = [];
             this.tecnicoEnvio = "";
             this.Descripcion = "";
             this.ngOnInit();
@@ -119,6 +136,10 @@ export class ActaMovimientoInsumosComponent implements OnInit {
                 htmlContainer: 'text-white'
               }
             });
+
+            }
+
+
           });
         }
       })
