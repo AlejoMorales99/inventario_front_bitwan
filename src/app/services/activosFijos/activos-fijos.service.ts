@@ -62,6 +62,7 @@ export class ActivosFijosService {
   getActivosFijos(page: number, itemsPerPage: number): Observable<any>{
 
     const headers = this.loginServices.getAuthHeaders();
+    console.log(headers);
 
     return this.http.get(`${this.urlActivosFijos}/getActivosFijos/${page}/${itemsPerPage}` , {headers} )
   }

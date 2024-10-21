@@ -160,14 +160,32 @@
                 </td>
 
                 <td *ngIf="getAllActasDeMovimiento.razonM =='Envio a Técnico' &&
+                getAllActasDeMovimiento.estadoActa!='Aceptada' &&
+                getAllActasDeMovimiento.estadoActa!='Rechazada'  &&
                 getAllActasDeMovimiento.serEntra == usuarioLogueado ">
 
                 <!-- Botón con evento de clic que llama a la función aceptarActa() para aceptar el acta y hacer el movimiento de las onts -->
-                <button
-                 class="btn  btn-success">
+                <button (click)="aceptarActaInsumos(getAllActasDeMovimiento.idActa,getAllActasDeMovimiento.serSale,getAllActasDeMovimiento.serEntra)"  class="btn  btn-success">
 
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
                     <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/>
+                  </svg>
+
+
+                </button>
+              </td>
+
+              <td *ngIf="getAllActasDeMovimiento.razonM == 'Envio a Técnico' &&
+                getAllActasDeMovimiento.estadoActa!='Aceptada' &&
+                getAllActasDeMovimiento.estadoActa!='Rechazada'  &&
+                getAllActasDeMovimiento.serEntra == usuarioLogueado ">
+
+                <!-- Botón con evento de clic que llama a la función anularActa() para anular el acta y dejar todo como estaba -->
+                <button
+                  class="btn   btn-danger" (click)="anularActaInsumos(getAllActasDeMovimiento.idActa)" >
+
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                   </svg>
 
 
@@ -222,7 +240,16 @@
               <!-- Contenido del modal -->
               <form>
 
-                <div class="mb-3">
+
+                <div *ngIf="tipoEnvioInsumosTecnicos" class="mb-3">
+                  <label class="form-label">Seleccione el tipo de envio de los insumos</label>
+                  <select (change)="tipoEnvioInsumo($event.target)" name="tipoEnvioInsumos" [(ngModel)]="tipoEnvioInsumosText" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
+                    <option value="1">Envio a tecnico</option>
+                    <option value="2">Devolucion a central</option>
+                  </select>
+                </div>
+
+                <div *ngIf="tipoEnvioInsumosAdministractivo"  class="mb-3">
                   <label class="form-label">Seleccione los insumos a entregar</label>
                   <select name="insSelecEnviar" [(ngModel)]="insSelecEnviar" class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example" multiple (change)="updateInputs()">
                     <option *ngFor="let insumo of getListaInsumos" [value]="insumo">{{ insumo.nombreInsumo }}</option>
@@ -235,7 +262,7 @@
                   <input (input)="separacionPorPuntosCantidad($event, i)" type="text" [(ngModel)]="insumo.cantidad" class="form-control mb-3 bg-dark border-secondary text-white" placeholder="Ingrese la cantidad">
                 </div>
 
-                  <div class="mb-3">
+                  <div *ngIf="tecnicoEnviarInsumos" class="mb-3">
                     <label class="form-label">Selecione al tecnico al cual le desea enviar el material</label>
                     <ng-select [notFoundText]="'Tecnico no encontrado'" name="tecnicoEnvio" [(ngModel)]="tecnicoEnvio"  class="form-select mb-3 bg-dark border-secondary text-white" aria-label="Default select example">
                       <ng-option *ngFor="let getbodegasTecnicos of getbodegasTecnicos" value="{{getbodegasTecnicos.ID}}">{{getbodegasTecnicos.nombre}} </ng-option>

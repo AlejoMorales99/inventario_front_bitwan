@@ -105,8 +105,9 @@ export class InventarioInsumosService {
 
   getAllActasDeMovimientoTecnicos(){
     const headers = this.loginServices.getAuthHeaders();
+    const usuarioSesion = this.loginServices.getTecnico();
     const usuario = this.loginServices.getUser();
-    return this.http.get(`${this.urlActivosFijos}/getAllActasDeMovimientoTecnicos/${usuario.data.numerotercero}` ,  {headers})
+    return this.http.get(`${this.urlActivosFijos}/getAllActasDeMovimientoTecnicos/${usuario.data.numerotercero}/${usuarioSesion}` ,  {headers})
   }
 
 
@@ -119,6 +120,18 @@ export class InventarioInsumosService {
 
 
   }
+
+
+  getListInsumosTecnicos(){
+
+    const usuario = this.loginServices.getUser();
+    const headers = this.loginServices.getAuthHeaders();
+
+    return this.http.get(`${this.urlActivosFijos}/getListInsumosTecnicos/${usuario.data.numerotercero}` ,  {headers})
+
+
+  }
+
 
 
 
@@ -139,5 +152,39 @@ export class InventarioInsumosService {
 
     return this.http.post(`${this.urlActivosFijos}/postActasDeMovimientosInsumos/` , nuevaActaDeMovimientoInsumo  , {headers})
   }
+
+
+  putAceptarActaDeMovimiento(idActaInsumos:any,servicioSale:string, servicioEntra:string){
+
+    const usuario = this.loginServices.getUser();
+    const headers = this.loginServices.getAuthHeaders();
+    const usuarioSesion = this.loginServices.getTecnico();
+
+    const aceptarActaDeMovimiento = {
+      idActaInsumos:idActaInsumos,
+      servicioSale:servicioSale,
+      servicioEntra:servicioEntra,
+      usuarioTercero:usuario.data.numerotercero,
+      usuarioNombre:usuarioSesion
+    }
+
+    return this.http.post(`${this.urlActivosFijos}/putAceptarActaDeMovimiento/` , aceptarActaDeMovimiento  , {headers})
+  }
+
+
+  putRechazarActaDeMovimiento(razonAnulacionActaInsumos:string,idActaInsumos:string){
+
+    const headers = this.loginServices.getAuthHeaders();
+    const usuarioSesion = this.loginServices.getTecnico();
+
+    const RechazarActaDeMovimiento = {
+      idActaInsumos:idActaInsumos,
+      razonAnulacionActaInsumos:razonAnulacionActaInsumos,
+      usuarioNombre:usuarioSesion
+    }
+
+    return this.http.post(`${this.urlActivosFijos}/putRechazarActaDeMovimiento/` , RechazarActaDeMovimiento  , {headers})
+  }
+
 
 }

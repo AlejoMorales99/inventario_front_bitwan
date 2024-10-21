@@ -16,9 +16,13 @@ export class ActaMovimientoInsumosComponent implements OnInit {
   tecnicoEnvio: string = "";
   Descripcion:string = "";
   bodegaAlcala1:string= "";
+  tipoEnvioInsumosText:string = "";
+  tipoEnvioInsumosTecnicos:boolean = false;
+  tipoEnvioInsumosAdministractivo:boolean = false;
+  tecnicoEnviarInsumos:boolean = false;
 
   permiso:any = "";
-
+  razonAnulacionActaInsumos:any = "";
   getAllActasDeMovimiento: any;
   getListaInsumos: any;
   getbodegasTecnicos: any;
@@ -40,23 +44,37 @@ export class ActaMovimientoInsumosComponent implements OnInit {
 
     if(this.permiso == "administrador"){
 
+      this.tipoEnvioInsumosAdministractivo = true;
+      this.tecnicoEnviarInsumos = true;
+
       this.servicesInsumos.getAllActasDeMovimiento().subscribe((res: any) => {
         this.getAllActasDeMovimiento = res;
 
       })
 
+      this.servicesInsumos.getListInsumos().subscribe((res: any) => {
+        this.getListaInsumos = res;
+        console.log(this.getListaInsumos)
+      })
+
     }else{
+      this.tipoEnvioInsumosTecnicos = true;
 
       this.servicesInsumos.getAllActasDeMovimientoTecnicos().subscribe((res: any) => {
         this.getAllActasDeMovimiento = res;
 
       })
 
+      this.servicesInsumos.getListInsumosTecnicos().subscribe((res: any) => {
+        this.getListaInsumos = res;
+
+        console.log(this.getListaInsumos)
+
+      })
+
     }
 
-    this.servicesInsumos.getListInsumos().subscribe((res: any) => {
-      this.getListaInsumos = res;
-    })
+
 
     this.bodegasTecnicos.getBodegas("Envio a Técnico").subscribe((res: any) => {
 
@@ -106,7 +124,28 @@ export class ActaMovimientoInsumosComponent implements OnInit {
 
             console.log(res);
 
-            if(res.status == 400){
+            if(res.estado == 400) {
+
+              const insumosInsuficientesText = res.insumosInsuficientes.length > 1
+                ? 'Los insumos ' + res.insumosInsuficientes.join(', ')
+                : 'El insumo ' + res.insumosInsuficientes[0];
+
+              Swal.fire({
+                title: 'ERROR',
+                text: insumosInsuficientesText + ' no tiene(n) la cantidad suficiente disponible, por favor intentelo de nuevo.',
+                icon: 'error',
+                customClass: {
+                  popup: 'bg-dark',
+                  title: 'text-white',
+                  htmlContainer: 'text-white'
+                }
+              });
+            } else {
+              // Acción en caso de éxito
+              this.insSelecEnviar = [];
+              this.tecnicoEnvio = "";
+              this.Descripcion = "";
+              this.ngOnInit();
 
               Swal.fire({
                 title: 'EXITO',
@@ -118,25 +157,6 @@ export class ActaMovimientoInsumosComponent implements OnInit {
                   htmlContainer: 'text-white'
                 }
               });
-
-            }else{
-
-              this.insSelecEnviar = [];
-            this.tecnicoEnvio = "";
-            this.Descripcion = "";
-            this.ngOnInit();
-
-            Swal.fire({
-              title: 'EXITO',
-              text: 'ACTA CREADA CON EXITO',
-              icon: 'success',
-              customClass: {
-                popup: 'bg-dark',
-                title: 'text-white',
-                htmlContainer: 'text-white'
-              }
-            });
-
             }
 
 
@@ -151,6 +171,107 @@ export class ActaMovimientoInsumosComponent implements OnInit {
 
     this.servicesInsumos.getInsumosPorIdActa(idActa).subscribe(res => {
       this.getInsumosPorIdActa = res;
+    });
+
+  }
+
+
+  aceptarActaInsumos(idActaInsumos: string, servicioSale: string, servicioEntra: string) {
+
+    Swal.fire({
+      title: '¿Estás seguro de aceptar el acta?',
+      text: 'Por favor verifique bien la informacin antes de aceptar el acta',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, estoy seguro',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'bg-dark',
+        title: 'text-white',
+        htmlContainer: 'text-white'
+      }
+    }).then((result) => {
+
+      if (result.isConfirmed) {
+
+        this.servicesInsumos.putAceptarActaDeMovimiento(idActaInsumos, servicioSale, servicioEntra).subscribe((res: any) => {
+
+          if (res.estado == 200) {
+            this.ngOnInit();
+            Swal.fire({
+              title: 'EXITO',
+              text: 'ACTA ACEPTADA CON EXITO',
+              icon: 'success',
+              customClass: {
+                popup: 'bg-dark',
+                title: 'text-white',
+                htmlContainer: 'text-white'
+              }
+            });
+          } else {
+            Swal.fire({
+              title: 'ERROR',
+              text: 'La acta no se pudo validar con exito',
+              icon: 'error',
+              customClass: {
+                popup: 'bg-dark',
+                title: 'text-white',
+                htmlContainer: 'text-white'
+              }
+            });
+          }
+
+
+
+
+        });
+
+
+      }
+    })
+
+
+
+
+  }
+
+
+  anularActaInsumos(idActaInsumos:string){
+
+    Swal.fire({
+      title: '¿Por qué quieres rechazar el acta?',
+      input: 'text',
+      showCancelButton: true,
+      confirmButtonText: 'Anular',
+      cancelButtonText: 'Cancelar',
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage('Debes ingresar una razón para anular el acta');
+        }
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.razonAnulacionActaInsumos = result.value;
+
+        this.servicesInsumos.putRechazarActaDeMovimiento(this.razonAnulacionActaInsumos,idActaInsumos).subscribe(res=>{
+
+          this.ngOnInit();
+          Swal.fire({
+            title: 'EXITO',
+            text: 'ACTA RECHAZADA CON EXITO',
+            icon: 'success',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          });
+
+
+        })
+
+
+      }
     });
 
   }
@@ -173,6 +294,23 @@ export class ActaMovimientoInsumosComponent implements OnInit {
       }
       return insumo;
     });
+  }
+
+
+
+  tipoEnvioInsumo(evento:any){
+
+    if(evento.value == '1'){
+      this.tipoEnvioInsumosAdministractivo = true;
+      this.tecnicoEnviarInsumos = true;
+    }else{
+
+      this.tipoEnvioInsumosAdministractivo = true;
+      this.tecnicoEnviarInsumos = false;
+      this.tecnicoEnvio = "2"
+    }
+
+
   }
 
 }

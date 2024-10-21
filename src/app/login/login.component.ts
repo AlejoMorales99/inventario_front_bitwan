@@ -59,6 +59,8 @@ export class LoginComponent  {
 
          if (res.code == 200) {
 
+          
+
           this.loginServicio.setToken(res.data.token);
           this.loginServicio.setUser(res)
 
