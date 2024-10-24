@@ -138,11 +138,19 @@ export class InventarioInsumosService {
   //EndPoint para registrar una acta de movimiento de insumos
   postActasDeMovimientosInsumos(insSelecEnviar:any,tecnicoEnvio:string, Descripcion:string){
 
+    let tipoActaDeInsumos = 0;
     const usuario = this.loginServices.getUser();
     const headers = this.loginServices.getAuthHeaders();
     const usuarioSesion = this.loginServices.getTecnico();
 
+    if(tecnicoEnvio == "2"){
+      tipoActaDeInsumos = 10
+    }else{
+      tipoActaDeInsumos = 9;
+    }
+
     const nuevaActaDeMovimientoInsumo = {
+      tipoActaDeInsumos:tipoActaDeInsumos,
       registrosActa:insSelecEnviar,
       tecnicoEnvio:tecnicoEnvio,
       Descripcion:Descripcion,

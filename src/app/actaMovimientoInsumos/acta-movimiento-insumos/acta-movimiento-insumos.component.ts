@@ -40,6 +40,11 @@ export class ActaMovimientoInsumosComponent implements OnInit {
   ngOnInit(): void {
 
     this.usuarioLogueado = this.loginServices.getTecnico();
+
+    if(this.usuarioLogueado == "karol yiseth mosquera alzate"){
+      this.usuarioLogueado = "alcala1";
+    }
+
     this.permiso = localStorage.getItem('permisos');
 
     if(this.permiso == "administrador"){
