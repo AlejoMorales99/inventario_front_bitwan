@@ -188,7 +188,7 @@ export class InventarioInsumosComponent {
   }
 
   postInsumos() {
-    
+
     if (this.condicionNuevoInsumos == 0) {
 
       if (this.aumentarInsumoOregistrarNuevo == "" || this.cantidadNuevoInsumos == "" || this.proveedor == "" || this.marcaText == "" || this.precioInsumo == "") {

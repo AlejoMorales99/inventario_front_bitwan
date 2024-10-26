@@ -19,6 +19,9 @@ export class InventarioInsumosService {
     const usuario = this.loginServices.getUser();
     const headers = this.loginServices.getAuthHeaders();
 
+    if(usuario.data.nombres == "MARI LUZ" ){
+      usuario.data.numerotercero = 5065;
+    }
 
     return this.http.get(`${this.urlActivosFijos}/getAllInsumos/${usuario.data.numerotercero}` , {headers})
   }
@@ -51,6 +54,15 @@ export class InventarioInsumosService {
 
     const headers = this.loginServices.getAuthHeaders();
     return this.http.get(`${this.urlActivosFijos}/getInsumosPorIdActa/${idActa}`  , {headers})
+
+  }
+
+
+  getInsumosPorTecnico(servicioTecnico:string){
+
+    const headers = this.loginServices.getAuthHeaders();
+    const usuario = this.loginServices.getUser();
+    return this.http.get(`${this.urlActivosFijos}/getInsumoPorTecnico/${servicioTecnico}`  , {headers})
 
   }
 

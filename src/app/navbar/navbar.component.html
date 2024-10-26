@@ -40,7 +40,7 @@
               </a>
             </li>
 
-             <li  >
+             <li *ngIf="insumosAdmin" >
               <a  class="dropdown-item text-white " href="/inventarioInsumos "  >
 
 
@@ -193,7 +193,7 @@
             </li>
 
              <li  >
-              <a  class="dropdown-item text-white " href="/actasDeMovimientoInsumos "  >
+              <a  *ngIf="insumosAdmin" class="dropdown-item text-white " href="/actasDeMovimientoInsumos "  >
 
 
                 ACTAS DE MOVIMIENTO INSUMOS

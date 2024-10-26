@@ -5,7 +5,7 @@
   <div class="row borderTable ">
 
     <div class="fondoTable  text-white text-center p-3 " >
-      INVENTARIO TECNICOS
+      INVENTARIO TECNICOS INSUMOS
     </div>
 
     <div class="col-md-12">
@@ -17,8 +17,8 @@
 
 
             <div class="w-50" >
-              <ng-select class="form-select bg-dark text-white border-secondary  mx-2" aria-label="Default select example"  [bindLabel]="'tercerocol'" [bindValue]="'idservicio'">
-                
+              <ng-select class="form-select bg-dark text-white border-secondary  mx-2" aria-label="Default select example" (change)="listarInventarioTecnicos($event)" [bindLabel]="'tercerocol'" [bindValue]="'idservicio'">
+                <ng-option class="text-white " *ngFor="let tecnicos of inventarioTecnicos" [value]="tecnicos">{{tecnicos.tercerocol}}</ng-option>
               </ng-select>
             </div> <br>
 
@@ -28,15 +28,7 @@
 
             <button class="btn  botonesActa mx-3 text-white "  >
               Generar Reporte Excel
-
-
             </button>
-
-            <br><br><button class="btn btn-danger  mx-3 text-white "  >
-              Deshabilitar tecnico
-            </button>
-
-
           </div>
 
 
@@ -51,6 +43,12 @@
             </thead>
             <tbody>
 
+              <tr *ngFor="let insumosTecnico of insumosTecnico  | paginate: { itemsPerPage: itemsPerPage, currentPage:  page } " >
+
+                <td>{{insumosTecnico.nombreInsumo}} </td>
+                <td>{{insumosTecnico.total | number:'1.0-0'}}</td>
+
+              </tr>
 
             </tbody>
           </table>
@@ -59,7 +57,8 @@
           <!-- Opciones de cantidad de registros por página -->
           <label class="text-white" for="itemsPerPage">Registros por página:</label>
           <div class="mx-2 ">
-            <select class="form-select bg-dark text-white border-secondary w-100 mx-2 " id="itemsPerPage">
+            <select class="form-select bg-dark text-white border-secondary w-100 mx-2 " id="itemsPerPage"
+              [(ngModel)]="itemsPerPage" (change)="actualizarPaginacion()">
               <option value="10">10</option>
               <option value="20">20</option>
               <option value="50">40</option>
@@ -68,7 +67,8 @@
             </select>
           </div>
           <!-- Componente de paginación -->
-
+          <pagination-controls (pageChange)="page = $event" class="custom-pagination  border-secondary text-white "
+          previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
         </div>
 
 

@@ -22,8 +22,9 @@ export class NavbarComponent implements OnInit {
   operacionesRol:boolean = true;
   operacionValidarActa:boolean = true;
 
+  permisos:boolean = false;
 
-
+  permiso:any
 
 
 
@@ -31,14 +32,19 @@ export class NavbarComponent implements OnInit {
 
 
     this.usuario = this.servicioLogin.getUser();
+    this.permiso = localStorage.getItem('permisos');
 
-    if(this.usuario.data.nombres == "KAROL YISETH" || this.usuario.data.nombres == "MARI LUZ" || this.usuario.data.nombres=='MILTON FERLEY' || this.usuario.data.alias=='juballesteros'){
+
+    if(this.permiso == "administrador"){
       this.insumosAdmin = true;
       this.operacionesRol = true;
-    }else if(this.usuario.data.idusuario == "43"){
-      this.operacionValidarActa = false;
+    }else if(this.permiso == 'ayudanteInventario' || this.permiso == 'operaciones'){
+
+      this.insumosAdmin = false;
       this.operacionesRol = false;
+
     }else{
+      this.insumosAdmin = true;
       this.operacionesRol = false;
     }
 
