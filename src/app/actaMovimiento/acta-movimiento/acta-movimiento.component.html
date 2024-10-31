@@ -86,8 +86,7 @@
 
 
 
-              <th scope="col" class="tamañoTitulos"
-                [ngClass]="{'sortable': true, 'sort-asc': config.sortKey === 'estadoActaMovimiento' && config.sortOrder === 'asc', 'sort-desc': config.sortKey === 'estadoActaMovimiento' && config.sortOrder === 'desc'}">
+              <th scope="col"  (click)="sortByEstadoActa()" class="tamañoTitulos">
                 ESTADO_ACTA
               </th>
 

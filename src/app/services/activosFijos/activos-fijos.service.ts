@@ -379,6 +379,14 @@ buscarActivoFijoMoverTecnicos(buscar:string){
 
   }
 
+  registroExcelAllActivosFijos() {
+    const headers = this.loginServices.getAuthHeaders();
+    return this.http.get(`${this.urlActivosFijos}/registroExcelAllActivosFijos`, {
+      headers,
+      responseType: 'blob'  // Configurar la respuesta como 'blob'
+    });
+  }
+
 
   cambiarEstadoTecnico(numTerceroTecnico:string){
 

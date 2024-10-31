@@ -59,7 +59,7 @@ export class LoginComponent  {
 
          if (res.code == 200) {
 
-          
+
 
           this.loginServicio.setToken(res.data.token);
           this.loginServicio.setUser(res)
@@ -71,17 +71,21 @@ export class LoginComponent  {
 
             this.loginServicio.loginUsuario(nomTecnico.data[0].nombres.toLowerCase().trim() +" "+ nomTecnico.data[0].apellidos.toLowerCase().trim(),res.data.numerotercero).subscribe( (nombreUsuario:any)=>{
 
-              localStorage.setItem('permisos',nombreUsuario[0].rol);
+
 
               if(nombreUsuario.error == false){
 
-                this.loginServicio.postLoginUsuario(nomTecnico.data[0].nombres.toLowerCase().trim() +" "+ nomTecnico.data[0].apellidos.toLowerCase().trim(),res.data.numerotercero,this.password).subscribe(newUsuario=>{
+                this.loginServicio.postLoginUsuario(nomTecnico.data[0].nombres.toLowerCase().trim() +" "+ nomTecnico.data[0].apellidos.toLowerCase().trim(),res.data.numerotercero,this.password).subscribe((newUsuario:any)=>{
+
+                  localStorage.setItem('permisos',newUsuario[0].rol);
+
                 })
 
                 this.rout.navigate(['/inicio']);
 
               }else{
 
+                localStorage.setItem('permisos',nombreUsuario[0].rol);
                 this.rout.navigate(['/inicio']);
 
               }

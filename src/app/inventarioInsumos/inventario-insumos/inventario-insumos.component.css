@@ -59,3 +59,11 @@ th{
 .custom-modal .modal-dialog {
   max-width: 70%; /* Ajusta el porcentaje según lo necesites */
 }
+
+.botonesActa{
+  background-color: #0099ef;
+}
+
+.botonesActa:hover{
+  background-color: #1B74A7;
+}

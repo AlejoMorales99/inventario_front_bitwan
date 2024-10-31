@@ -49,6 +49,7 @@ export class ActaMovimientoComponent implements OnInit {
   NumServicioOperaciones: string = "";
   totalItems:number = 0;
   condicionBusqueda: number = 0;
+  activosFijosTotalReporte:any;
   //----------------------------------------------------------------------------------//
 
   //variable que sirve para especificar por que columna va a buscar registros el usuario
@@ -310,6 +311,7 @@ export class ActaMovimientoComponent implements OnInit {
           } else {
             this.guardarAllMovimientos = registros.data;
             this.totalItems = registros.total[0].total
+            this.activosFijosTotalReporte = registros.totalReporte;
           }
         });
 
@@ -330,6 +332,7 @@ export class ActaMovimientoComponent implements OnInit {
           } else {
             this.guardarAllMovimientos = registros.data;
             this.totalItems = registros.total[0].total
+            this.activosFijosTotalReporte = registros.totalReporte;
           }
 
         })
@@ -2094,21 +2097,22 @@ export class ActaMovimientoComponent implements OnInit {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        const datosReporte: any[] = this.guardarAllMovimientos;
+
+
+        const datosReporte: any[] =  this.activosFijosTotalReporte;
 
         const datosReporteSinIdActivoFijo = datosReporte.map(item => {
           const newItem = { ...item };
           delete newItem.idactaMovimiento;
           delete newItem.imgGuiaTrans;
           delete newItem.validarActa;
-          delete newItem.entraCliente;
           delete newItem.saleCliente;
           delete newItem.numTercero;
           return newItem;
         });
 
         const promises = datosReporteSinIdActivoFijo.map((item, index) => {
-          return this.activosFijos.getAllActas(this.guardarAllMovimientos[index].idactaMovimiento).toPromise().then(guardarActa => {
+          return this.activosFijos.getAllActas( this.activosFijosTotalReporte[index].idactaMovimiento).toPromise().then(guardarActa => {
             if (Array.isArray(guardarActa)) {
               item['onts'] = guardarActa.map(ont => `${ont.numeroActivo}`).join(', ');
             } else {
@@ -2121,7 +2125,7 @@ export class ActaMovimientoComponent implements OnInit {
         });
 
         Promise.all(promises).then(() => {
-          const columnOrder = ['razonMovimientocol', 'tipoEntrega', 'estadoActaMovimiento', 'tercerocolEntrada', 'tercerocolSalida', 'fechaRegistro', 'fechaValidacion', 'nombreUsuarioRegistra', 'nombreUsuarioValida', 'guiaTransportadora', 'obsActaRecha', 'descripcion', 'onts'];
+          const columnOrder = ['razonMovimientocol', 'tipoEntrega', 'estadoActaMovimiento', 'entraCliente', 'tercerocolSalida', 'fechaRegistro', 'fechaValidacion', 'nombreUsuarioRegistra', 'nombreUsuarioValida', 'guiaTransportadora', 'obsActaRecha', 'descripcion', 'onts'];
 
           const datosReporteConOrden = datosReporteSinIdActivoFijo.map(item => {
             const newItem: any = {};
@@ -2131,7 +2135,7 @@ export class ActaMovimientoComponent implements OnInit {
             return newItem;
           });
 
-          console.log(datosReporteConOrden);
+
 
           const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosReporteConOrden);
           console.log(ws);
@@ -2188,6 +2192,16 @@ export class ActaMovimientoComponent implements OnInit {
 
 
   }
+
+
+  sortByEstadoActa() {
+  if (this.config.sortKey === 'estadoActaMovimiento') {
+    this.config.sortReverse = !this.config.sortReverse;  // alterna el orden
+  } else {
+    this.config.sortKey = 'estadoActaMovimiento';  // establece la clave de orden en 'estadoActaMovimiento'
+    this.config.sortReverse = false;  // reinicia a ascendente
+  }
+}
 
 }
 

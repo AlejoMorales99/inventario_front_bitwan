@@ -93,6 +93,7 @@ export class ConsultarInventarioComponent implements OnInit {
 
   //variable para obtener el valor del select
   textoDelSelectExcel: string = ""
+  selectedIndex:any;
   //----------------------------------------//
 
   //variables de tipo modelo de los valores que traera el backend
@@ -735,9 +736,9 @@ export class ConsultarInventarioComponent implements OnInit {
 
   filtroLimpiar(evento: any){
 
-    const selectedIndex = evento.options[evento.selectedIndex].text;
+    this.selectedIndex = evento.options[evento.selectedIndex].text;
 
-    if(selectedIndex == "Filtrar todo"){
+    if(this.selectedIndex  == "Filtrar todo"){
       this.condicionBusqueda = 0;
       this.ngOnInit();
       this.referenciaMultiple = false;
@@ -745,12 +746,12 @@ export class ConsultarInventarioComponent implements OnInit {
       this.fechaReporte = false;
       this.buscadorCondicion = true;
 
-    }else if(selectedIndex == "fecha/bodega"){
+    }else if(this.selectedIndex  == "fecha/bodega"){
       this.fechaReporte = true;
       this.buscadorCondicion = false;
       this.referenciaMultiple = false;
 
-    }else if(selectedIndex == "Referencia/bodega"){
+    }else if(this.selectedIndex  == "Referencia/bodega"){
       this.referenciaMultiple = true;
       this.fechaReporte = false;
       this.buscadorCondicion = false;
@@ -790,7 +791,28 @@ export class ConsultarInventarioComponent implements OnInit {
       if (result.isConfirmed) {
 
 
-        const datosReporte:any[] = this.activosFijosTotalReporte;
+
+        if(this.selectedIndex  == undefined){
+
+          this.servicioActivosFijos.registroExcelAllActivosFijos().subscribe({
+            next: (res) => {
+              const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'reporte_activos_fijos.xlsx'; // Nombre del archivo a descargar
+              a.click();
+              window.URL.revokeObjectURL(url); // Limpia el objeto URL
+            },
+            error: (err) => {
+              console.error('Error al descargar el archivo:', err);
+            }
+          });
+
+        }else{
+
+
+          const datosReporte:any[] = this.activosFijosTotalReporte;
 
         const datosReporteSinIdActivoFijo = datosReporte.map(item => {
           // Copia el objeto para evitar modificar el objeto original
@@ -853,6 +875,11 @@ export class ConsultarInventarioComponent implements OnInit {
 
         // Guarda el archivo Excel
         XLSX.writeFile(wb, 'InformeInventarioActivosFijos.xlsx');
+
+
+        }
+
+
       }
 
 
