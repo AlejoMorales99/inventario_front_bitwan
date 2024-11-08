@@ -20,7 +20,7 @@ export class ActasDeOperacionesComponent implements OnInit {
 
   condicionBusqueda:number = 0;
 
-  selecColumnaActasOperaciones:string = "";
+  selecColumnaActasOperaciones:string = "mostrarTodo";
   inpBuscadorActasOperaciones:string = "";
 
   razonAnulacion:string = "";
@@ -140,23 +140,41 @@ export class ActasDeOperacionesComponent implements OnInit {
 
   aceptarActaOperaciones(idActaOperacion:number){
 
-    this.actasServicesOperaciones.aceptarActaOperaciones(idActaOperacion).subscribe((res:any)=>{
 
-      Swal.fire({
-        title: 'EXITO',
-        text: 'Acta Validada Exitosamente',
-        icon: 'success',
-        customClass: {
-          popup: 'bg-dark',
-          title: 'text-white',
-          htmlContainer: 'text-white'
-        }
-      });
+    Swal.fire({
+      title: '¿Estás seguro de aceptar el acta?',
+      text: 'Por favor verifique bien la informacin antes de aceptar el acta',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, estoy seguro',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'bg-dark',
+        title: 'text-white',
+        htmlContainer: 'text-white'
+      }
+    }).then((result) => {
 
-      this.ngOnInit();
+      if (result.isConfirmed) {
 
-    });
+        this.actasServicesOperaciones.aceptarActaOperaciones(idActaOperacion).subscribe((res:any)=>{
 
+          Swal.fire({
+            title: 'EXITO',
+            text: 'Acta Validada Exitosamente',
+            icon: 'success',
+            customClass: {
+              popup: 'bg-dark',
+              title: 'text-white',
+              htmlContainer: 'text-white'
+            }
+          });
+
+          this.ngOnInit();
+
+        });
+
+      }})
 
   }
 
@@ -241,4 +259,40 @@ export class ActasDeOperacionesComponent implements OnInit {
   }
 
 
+
+  editingIndex: number | null = null;
+
+  enableEditing(index: number) {
+    this.editingIndex = index;
+  }
+
+
+  perderFoco(){
+    this.editingIndex = null; // Deshabilita el modo de edición
+  }
+
+  saveEdit(idOperacion: any,cambioCaja:any) {
+
+    console.log(idOperacion);
+
+
+    this.actasServicesOperaciones.actualizarNumCaja(idOperacion,cambioCaja).subscribe(res=>{
+
+      Swal.fire({
+        title: 'EXITO',
+        text: 'Numero de caja cambiado con exito',
+        icon: 'success',
+        customClass: {
+          popup: 'bg-dark',
+          title: 'text-white',
+          htmlContainer: 'text-white'
+        }
+      });
+
+      this.ngOnInit();
+
+    })
+
+    this.editingIndex = null; // Deshabilita el modo de edición
+  }
 }

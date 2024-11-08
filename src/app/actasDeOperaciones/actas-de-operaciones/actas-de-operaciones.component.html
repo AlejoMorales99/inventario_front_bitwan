@@ -58,6 +58,8 @@
                 <th class="tamañoTitulos" >FECHA CREACION</th>
                 <th class="tamañoTitulos" >FECHA ACEPTACION</th>
                 <th class="tamañoTitulos" >IMG ACTA</th>
+                <th class="tamañoTitulos" >N. CAJA</th>
+                <th class="tamañoTitulos" >ULT. USUARIO MOD</th>
                 <th class="tamañoTitulos" >DESCRIPCION</th>
                 <th class="tamañoTitulos" >OBS_ACTA_RECHA</th>
                 <th colspan="2" class="tamañoTitulos" >OPERACIONES</th>
@@ -65,7 +67,7 @@
             </thead>
             <tbody>
 
-              <tr class="animacion" *ngFor="let getAllActasMovimiento of getAllActasMovimiento  | paginate: { itemsPerPage: itemsPerPage, currentPage:  page,  totalItems: totalGetAllActasOperaciones }  " >
+              <tr class="animacion" *ngFor="let getAllActasMovimiento of getAllActasMovimiento   | paginate: { itemsPerPage: itemsPerPage, currentPage:  page,  totalItems: totalGetAllActasOperaciones } let i = index  " >
 
                 <td>{{getAllActasMovimiento.razonMovimientocol}} </td>
                 <td
@@ -86,10 +88,32 @@
                 </a>
               </td>
 
+
+
+              <td (dblclick)="enableEditing(i)">
+                <!-- Modo de visualización normal -->
+                <span *ngIf="editingIndex !== i">
+                  {{ getAllActasMovimiento.nCajaNap }}
+                </span>
+
+                <!-- Modo de edición -->
+                <input
+                  *ngIf="editingIndex === i"
+                  [(ngModel)]="getAllActasMovimiento.nCajaNap"
+                  (blur)="perderFoco()"
+                  (keyup.enter)="saveEdit(getAllActasMovimiento.nCajaNap,getAllActasMovimiento.idactasDeOperaciones)"
+                  type="text"
+                />
+              </td>
+
+              <td>{{getAllActasMovimiento.ultimoUsuarioModifica}} </td>
+
                 <td>{{getAllActasMovimiento.descripcion}} </td>
                 <td>{{getAllActasMovimiento.obsActaRecha}} </td>
 
                 <td >
+
+
 
 
                   <button *ngIf="getAllActasMovimiento.usuarioCreoActa != userTecnico_O_Adminiistractivo &&  getAllActasMovimiento.estadoActaNombre != 'Aceptada' && getAllActasMovimiento.estadoActaNombre != 'Rechazada'"

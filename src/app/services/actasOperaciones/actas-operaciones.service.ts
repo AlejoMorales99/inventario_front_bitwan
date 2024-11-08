@@ -92,4 +92,26 @@ export class ActasOperacionesService {
 
   }
 
+
+  actualizarNumCaja(idOperacion:string,cambioCaja:string){
+
+    const headers = this.loginServices.getAuthHeaders();
+    const tecnico_o_administractivo = this.loginServices.getTecnico();
+
+
+
+    const actualizarNumCaja = {
+      idOperacion:idOperacion,
+      cambioCaja:cambioCaja,
+      tecnico_o_administractivo:tecnico_o_administractivo
+    }
+
+    return this.http.put(`${this.urlActivosFijos}/actualizarNumCaja`, actualizarNumCaja , {headers} )
+
+
+
+
+  }
+
+
 }
